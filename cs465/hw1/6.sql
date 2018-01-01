@@ -1,0 +1,1 @@
+SELECT SUM(price) FROM Hotel INNER JOIN Room ON hotelName='Grosvenor Hotel' INNER JOIN Booking WHERE (dateFrom BETWEEN '2015-01-01' AND '2015-09-10') AND (dateTo BETWEEN '2015-09-10' AND '2015-12-31');

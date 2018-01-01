@@ -1,0 +1,65 @@
+INSERT Connor Campion
+STRIP onn
+PRINT
+PRESENT Eli Slouch
+INSERT Savannah Matthew
+INSERT James Commune
+PRESENT Savannah Matthew
+STRIP tt
+PRINT
+# James Commune
+STRIP gwx
+INSERT Aubrey Eire
+INSERT James Commune
+STRIP C
+PRESENT Aubrey Eire
+STRIP y
+PRESENT Audrey Bloodhound
+PRESENT Alexis Chemic
+PRINT
+STRIP ppj
+STRIP bkn
+INSERT Cameron Mcdougall
+INSERT Charlotte Tobago
+INSERT Savannah Golly
+PRESENT Savannah Golly
+PRINT
+# Cameron Mcdougall
+# Charlotte Tobago
+# Savannah Golly
+INSERT Lucy Orthopedic
+STRIP M
+PRINT
+# Lucy Orthopedic
+# Charlotte Tobago
+# Savannah Golly
+ERASE Savannah Golly
+PRESENT Charlotte Tobago
+INSERT Zachary Ersatz
+STRIP lott
+PRESENT Carson Woodcock
+STRIP y O
+PRESENT Nicholas Cosmology
+PRINT
+# Zachary Ersatz
+INSERT Gianna Frazier PhD
+INSERT Ella Grandiose
+INSERT Molly Climactic
+INSERT Lilly Wait
+INSERT Molly Climactic
+PRESENT Jayden Procrustean
+ERASE Lilly Wait
+ERASE Nicholas Nip
+STRIP fqg
+PRESENT Elizabeth Seasonal
+INSERT Parker Fulcrum
+INSERT Lucas Swum
+ERASE Parker Fulcrum
+INSERT Zachary Competition
+PRINT
+# Zachary Ersatz
+# Gianna Frazier PhD
+# Ella Grandiose
+# Molly Climactic
+# Lucas Swum
+# Zachary Competition

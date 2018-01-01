@@ -1,0 +1,437 @@
+<head>
+<style>
+ol ol { list-style-type: lower-alpha; }
+ol ol ol { list-style-type: lower-roman; }
+</style>
+</head>
+<center>
+<h2> Homework Assignment 11</h2>
+</center>
+<p>
+<hr>
+This assignment will give you practice with Java's concurrency mechanisms. The
+last question will have you implement the JTalk lab from CS360, so it will
+also give you an opportunity to compare and contrast the C and Java 
+implementations (at least for those of you who have taken CS360 or are 
+currently taking it). 
+<hr>
+<ol>
+<li> Write a Java program called that simulates a
+  bicycle race among a number of threads. Your program must take one
+  command line argument representing the number of contestants.
+  Each contestant in the bike
+  race will be represented by a thread. The bike race is divided into
+  4 segments. For each segment, a thread will generate a random number
+  between 1000 and 8000 milliseconds, which represents the time it takes
+  the contestant to finish that segment of the race. The thread will
+  then sleep for this number of milliseconds. When it awakens, it will
+  report to a central time keeper that it has completed this segment of
+  the race and it will report its time for this segment of the race. When
+  the thread has finished all four segments, it will ask the central time
+  keeper to add it to a finish queue. 
+  <p>
+  The central time keeper will be a class that keeps track of the following
+  information:
+  <ol>
+    <li> the cumulative time of each contestant, the number of segments
+      completed by each contestant, whether a new segment time has been
+      reported since the last score report (more on this shortly), and the 
+      time required by the contestant to complete the last segment.
+    <li> the finish order of the contestants, which will be represented by
+      the order in which the contestants are added to the finish queue. There
+      is a slight possibility that one contestant could finish all four segments
+      before another contestant, but the race is not over until the contestant
+      is in the finish queue!
+  </ol>
+  <p>
+  Every two seconds your program should print an updated scoreboard showing
+  each thread's contestant number (which will be a number from 1 to n where
+  n is the number of contestants), the number of segments completed by the
+  contestant, the contestant's cumulative time to complete these segments, and if
+  the thread reported a new result in the last two seconds, then the time of
+  the last segment completed by the contestant (this last piece of information will help both you and the
+  TA determine what is happening in your program). Once all
+  the contestants have finished, your program should print both the final scoreboard
+  and the order in which the contestants actually finished, by printing the
+  finish queue. You will need to implement a separate thread for this
+  reporting task, although you may place the methods for printing the scoreboard
+  and the finish queue in the time keeping class (the reporter thread will
+  call these methods).
+  <p>
+  <b>Additional requirements:</b>
+  <ol>
+    <li> You must use 5 classes for this problem:
+      <ol>
+	<li> Contestant.java: The thread class for a contestant
+	<li> Reporter.java: The thread class for the reporter. I understand
+	  that you could do the reporting in main, but I want you to have
+	  experience creating separate thread classes.
+	<li> TimeKeeper.java: The timekeeping class
+	<li> SynchronizedRandom.java: A class that your contestants use
+	 	to obtain a random number. It should have a constructor
+		that creates an instance of Java's Random() class. This
+		instance automatically gets seeded, so you do not have to
+		seed it yourself. SynchronizedRandom should also have a
+		synchronized method called
+		<tt>nextInt()</tt> that returns a random number. An instance
+		of this class should use an instance of Java's Random() class
+		to generate the random numbers. All contestants should use
+		the same instance of SynchronizedRandom to obtain their
+		random numbers (you will need to pass this instance to the
+		constructor for each Contestant).
+	<li> Race.java: The "glue" class that contains main and which creates
+	  instances of the TimeKeeper, Contestant, and Reporter classes.
+      </ol>
+    <li> You must place your classes in a package named <tt>race</tt>.
+    <li> Your central time keeper class should use synchronized methods only 
+      when it is necessary. 
+    <li> Do not use wait or join. Only use sleep for this problem.
+  </ol>
+  <p>
+  <b>Sample Executable</b>
+  <p>
+  <tt>/home/bvz/cs365/hw/hw11/race.jar</tt> contains a sample executable for
+  this problem. 
+  A sample
+  invocation for 3 contestants would be:
+<pre>
+java -jar race.jar 3
+</pre>
+  
+<p>
+<li> In the central time keeping class for question 1, there were two methods
+  you needed to write (these two methods are mandated by the paragraph that
+  describes the Contestant thread):
+  <p>
+    <ol>
+      <li> a time reporting method that allows each thread to report its
+	time when it completes a segment, and
+      <li> a finish method that allows a thread to report that it has finished
+	the race.
+    </ol>
+    For each method, indicate whether or not you made the method synchronized,
+    and justify your decision for doing or not doing so.
+<p>
+<li> Professor <a href=http://www.cs.utk.edu/~plank>Jim Plank's</a> JTalk
+  assignment implemented in Java (<b>you do not need to look at his 
+  description of the assignment--I have completely specified the problem</b>). 
+  I am modifying it somewhat so that it works for Java. You
+  will be creating a chat server using Java threads and Java sockets, rather
+  than pthreads and telnet/jtelnet.
+  The syntax of your server is (you will have to use a classpath flag with
+  all these examples):
+
+<pre>
+UNIX> <font color=darkred><b>java jtalk.ChatServer port Chat-Room-Names ...</b></font>
+</pre>
+
+For example, if you'd like to serve chat rooms for football, bridge and politics on 
+port 8000, you would type:
+
+<pre>
+UNIX> <font color=darkred><b>java jtalk.ChatServer 8000 Football Bridge Politics</b></font>
+</pre>
+
+You will need to be on the server machine when you launch the chat server.
+<p>
+The syntax for attaching a client to the server is:
+
+<pre>
+UNIX> <font color=darkred><b>java jtalk.TalkClient hostname portname chatname</b></font>
+</pre>
+
+Suppose, I have launched the chat server on hydra4.eecs.utk.edu using port 8000
+and a person wishes to attach to the server with the chatname "Dr-Plank". The
+person would type:
+
+<pre> 
+UNIX> <font color=darkred><b>java jtalk.TalkClient hydra4.eecs.utk.edu 8000 Dr-Plank</b></font>
+</pre>
+
+Here is a sample chat between a number of users (dark red input is what the
+user types in the console window):
+<p><center><table border=3 cellpadding=3><td valign=top>
+<hr>
+<pre>
+UNIX> <font color=darkred><b>java jtalk.TalkClient hydra4.eecs.utk.edu 8000 Dr-Plank</b></font>
+Bridge:
+Football:
+Politics:
+
+Enter chat room:
+<font color=darkred><b>Bridge</b></font>
+Dr-Plank has joined
+<font color=darkred><b>There's no one here...</b></font>
+Dr-Plank: There's no one here...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Goofus has joined
+<font color=darkred><b>Hi Goofus -- do you like bridge?</b></font>
+Dr-Plank: Hi Goofus -- do you like bridge?
+
+Goofus: Bridge? You mean that card game my gramma plays?
+<font color=darkred><b>Indeed</b></font>
+Dr-Plank: Indeed
+
+Goofus: Loser.  Bye.
+
+
+Goofus has left
+<font color=darkred><b>Can't say I liked him.</b></font>
+Dr-Plank: Can't say I liked him.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Gallant has joined
+Gallant: Hi Dr. P
+<font color=darkred><b>Greetings, Gallant</b></font>
+Dr-Plank: Greetings, Gallant
+
+Gallant: After memorizing your lecture notes,
+
+Gallant: I like to read books on bridge.
+<font color=darkred><b>I will recommend you for many jobs & scholarships.</b></font>
+Dr-Plank: I will recommend you for many jobs & scholarships.
+<font color=darkred><b>&lt;CNTL-C&gt;</b></font>
+UNIX> <font color=darkred><b></b></font>
+</pre>
+</td><td valign=top>
+On cetus4:
+<hr>
+<pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+UNIX> <font color=darkred><b>java jtalk.TalkClient hydra4.eecs.utk.edu 8000 Goofus</b></font>
+Chat Rooms:
+
+Bridge: Dr-Plank
+Football:
+Politics:
+
+Enter chat room:
+<font color=darkred><b>Bridge</b></font>
+Goofus has joined
+
+Dr-Plank: Hi Goofus -- do you like bridge?
+<font color=darkred><b>Bridge? You mean that card game my gramma plays?</b></font>
+Goofus: Bridge? You mean that card game my gramma plays?
+
+Dr-Plank: Indeed
+<font color=darkred><b>Loser.  Bye.</b></font>
+Goofus: Loser.  Bye.
+<font color=darkred><b>&lt;CNTL-C&gt;</b></font>
+UNIX> <font color=darkred><b></b></font>
+
+UNIX> <font color=darkred><b>java jtalk.TalkClient hydra4.eecs.utk.edu 8000 Gallant</b></font>
+Chat Rooms:
+
+Bridge: Dr-Plank
+Football:
+Politics:
+
+Enter chat room:
+<font color=darkred><b>Bridge</b></font>
+Gallant has joined
+<font color=darkred><b>Hi Dr. P</b></font>
+Gallant: Hi Dr. P
+
+Dr-Plank: Greetings, Gallant
+<font color=darkred><b>After memorizing your lecture notes,</b></font>
+Gallant: After memorizing your lecture notes,
+<font color=darkred><b>I like to read books on bridge.</b></font>
+Gallant: I like to read books on bridge.
+
+Dr-Plank: I will recommend you for many jobs & scholarships.
+
+
+
+Dr-Plank has left
+<font color=darkred><b>I didn't get a chance to be more sycophantic!</b></font>
+Gallant: I didn't get a chance to be more sycophantic!
+<font color=darkred><b>&lt;CNTL-C&gt;</b></font>
+UNIX>
+</pre>
+</td></table></center><p>
+
+To be descriptive, when a client joins, the server sends it information about the current
+chat rooms.  The chat room names will be listed lexicographically, and the name of each
+person chatting should be listed with each chat room, separated by a space.  
+The order of that listing should be the order in which the chatters joined.  
+<p>
+The client then prompts the user for a chat room. 
+It should error check for a bad chat room but do <i>not</i> worry about 
+a premature EOF.  Once the person joins the chat room,
+a line is sent to all others in the chat room that the person has joined.  Lines entered
+by the clients are sent to all the clients in the chat room.
+<p>
+The server should support <i>any</i> number of clients, and should work seamlessly when 
+clients leave, as Goofus, and later Dr-Plank did above.  The server must not 
+print any output. Feel free to add output to your server while testing it, but
+please remove it in your final submission.
+We will only test the behavior of the clients.
+<p>
+<b>Structure</b>
+<p>
+This lab is involved, and will use Java threads, synchronized methods (in place
+of the C mutexes and condition variables you used in the CS360 C implementation),
+and Java sockets. If you are having trouble getting started with the lab,
+look at the <a href="http://docs.oracle.com/javase/tutorial/networking/sockets/clientServer.html">Java KnockKnock server socket tutorial</a>, as its structure
+is what you should start with. At the bottom of the tutorial is an implementation
+for a multi-client KnockKnock server, which is what I used to start writing
+the client and server classes for this assignment.
+<p>
+Suppose 
+there are <i>r</i> chat rooms and <i>c</i> clients.  
+Then your <b>ChatServer</b> will 
+have <i>c+1</i> threads and <i>r</i> instances of a chat room class named
+<tt>ChatData</tt> that will handle the message traffic for the chat rooms.
+Note that unlike the CS360 JTalk lab, you will not use threads to implement
+the chat rooms. 
+<p>
+Your <i>c+1</i> server threads will be allocated as follows:
+<p>
+<UL>
+<LI> There will be one thread that is spinning on a <b>while()</b> loop, waiting for clients
+to attach to the socket.  When it detects a client, it will create a client thread. This thread will be your main method in jtalk.ChatServer. In my 
+implementation, this thread also used a sorted map to keep track of the
+names of the chat rooms and their associated ChatData objects. It passed this
+map to each server thread that it forked, so that the server thread could
+send that information to the client. You should not use this thread to
+determine which chat room the client intends to join, since you would tie
+up the server and prevent other clients from joining. You want to be in a tight
+loop, so let the server threads determine which chat room the client wishes to
+join.
+<p>
+<LI> There will be one server thread for each client. When that thread starts running
+it should send the names of the chat rooms and the chat room users to the
+client and ask the client to send back a chat room selection. 
+The thread should then add the client to the appropriate ChatData object and
+then enter a while loop that reads from the socket. That thread will typically be blocked while
+reading from the socket.  When it receives a line of text from the socket, it will construct
+the proper string from it and notify the appropriate ChatData object. When
+the client exits, the thread will drop out of the loop and should ask the
+ChatData object to remove the client. Note that unlike the CS360 JTalk lab,
+there will not be any subtle issues in dealing with client exit--you will
+get a null value when you try to read from the client's input stream and
+you can simply fall out of your read loop.
+</UL>
+<p>
+Your synchronized methods and data will be restricted to the ChatData objects.
+Each ChatData object needs to keep track of which clients have been allocated
+to it, so that it can distribute messages to these clients. My ChatData object
+had 4 primary methods:
+<p>
+<ol>
+<li> distributeMessage: broadcasts a message to all clients in this chat room.
+<li> addClient: adds a client socket to the data structures for this ChatData
+  object and creates a message indicating that the user has joined the chat
+  room. This message is broadcast by distributeMessage.
+<li> deleteClient: removes a client socket from the data structures for this
+  ChatData object and creates a message indicating that the user has left the
+  chat room. This message is broadcast by distributeMessage.
+<li> broadcastMembers: writes a list of the chat rooms users to a new client so
+  that the client can display the list of users in this chat room.
+
+</ol>
+<p>
+You are free to design your own implementation of ChatData 
+and do not have to use the
+above structure.
+<p>
+The TalkClient class will use main to establish a connection to the server
+and select a chat room. You will then face the problem of having to listen
+to two input streams: 1) stdin, where the user can enter new messages that
+you should send to the server, and 
+2) the socket's input stream, which will send you the list of messages to
+print in the chat window. You can't listen to two streams at once, since you
+will have to block while listening. Hence you will need to fork a thread
+that listens to one of the two streams, while main listens to the other 
+stream. You will be managing three streams: 1) stdin, 2) the socket's input
+stream, and 3) the socket's output stream. You will pass lines from stdin
+to the socket's output stream. The output stream will in turn send them 
+to the server. Finally, the server will send you lines to print in the console
+window via the socket's
+input stream.
+<p>
+You may want to draw yourself some pictures to help visualize the interactions between 
+the server client threads, the chat data objects, and the threads on the
+client side.
+
+<p>
+<b>Example Server and Clients</b>
+<p>
+I have included two jar files named ChatServer.jar and TalkClient.jar
+with this assignment. They are located on the hydra machines at
+<tt>/home/bvz/cs365/hw/hw11/</tt>.
+You can run them if you have questions about how your 
+program should work. The output from them is a bit different then the
+output in the examples. That is fine. Add blank lines if you like to make
+the output easier to read.
+<p>
+<li> <b>Extra Credit (30 points)</b>: 
+  Do the online SAIS evaluation for me and any of the TAs
+  you wish to, and then print a copy of the confirmation page and
+  give it to me at the beginning of class.
+  I will be accepting printed copies through Thursday, April 23. This is
+  the same extra credit as in homework 10. I'm just reminding you of
+  the opportunity.
+</ol>
+<hr>
+<h3> What To Submit </h3>
+<p>
+<ol>
+<li> Question 1: An executable jar file named <tt>race.jar</tt> that 
+  contains your 5 source files.
+<li> Question 2: An ascii text file or pdf file labeled hw11
+<li> Question 3: Two executable jar files named <tt>ChatServer.jar</tt>
+  and <tt>TalkClient.jar</tt>. ChatServer.jar should contain your source
+  files, which at a minimum must include:
+  <ol>
+    <li> ChatServer.java: Your main program for the server
+    <li> TalkClient.java: Your main program for the client
+    <li> ChatData.java: The class that manages the message traffic for
+      each chat room.
+  </ol>
+  You will also need separate .java files on the server side for the
+  server thread class and on the client side for the client thread class 
+  (i.e., the class that listens to either the stdin input stream or the
+  socket's input stream).
+</ol>

@@ -1,0 +1,1 @@
+246 Last7 Linear /home/plank/cs140/Labs/Lab4/Gradescript-Examples/095-dict.txt

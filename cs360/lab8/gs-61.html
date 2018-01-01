@@ -1,0 +1,208 @@
+Let's break down gradescript 61:
+<pre>
+<font color=darkred><b>rm -f f0.txt f1.txt f2.txt f3.txt f4.txt</b></font>
+</pre>
+This is pretty obvious -- deletes those files if they exist.
+
+<pre>
+<font color=darkred><b>awk -f /home/plank/cs360/labs/lab8/Gradescript-Examples/fun-awk-1.txt < /home/plank/cs360/labs/lab8/Gradescript-Examples/Input-File-8.txt |
+         sort -r |
+         sort -r |
+         sed s/a/aa/g |
+         sort |
+         sed s/o/oo/g |
+         sed s/o/oo/g |
+         sed s/1/11/g > f0.txt</b></font>
+</pre>
+So, we're running the <b>awk</b> script in
+<b><a href=/home/plank/cs360/labs/lab8/Gradescript-Examples/fun-awk-1.txt>/home/plank/cs360/labs/lab8/Gradescript-Examples/fun-awk-1.txt</a></b>:
+
+<p><center><table border=3 cellpadding=3><td><pre>
+	{ l++
+          if (l %2 == 0) {
+            print $0
+            print last
+          }
+          last = $0
+         }
+END	{ if (l%2 == 1) print $0 }
+</pre></td></table></center><p>
+
+That flips every two lines if the input file.  The <b>sed</b> scripts just do string substitutions.
+In other words, there's noting fancy going on with this line except a boatload of piped commands
+converting <b>Input-File-8.txt</b> to <b>f0.txt</b>.
+<p>
+The next four commands do the same kinds of things to create <b>f1.txt</b> through
+<b>f4.txt</b>:
+
+<pre>
+<font color=darkred><b>sed s/o/oo/g < /home/plank/cs360/labs/lab8/Gradescript-Examples/Input-File-3.txt |
+         sed s/o/oo/g |
+         sed s/1/11/g |
+         cat -n |
+         sed s/a/aa/g |
+         awk -f /home/plank/cs360/labs/lab8/Gradescript-Examples/fun-awk-2.txt |
+         sort -r |
+         sed s/1/11/g |
+         sort |
+         sed s/o/oo/g > f1.txt</b></font>
+<font color=darkred><b>awk -f /home/plank/cs360/labs/lab8/Gradescript-Examples/fun-awk-2.txt < /home/plank/cs360/labs/lab8/Gradescript-Examples/Input-File-9.txt |
+         sort -r |
+         awk -f /home/plank/cs360/labs/lab8/Gradescript-Examples/fun-awk-3.txt > f2.txt</b></font>
+<font color=darkred><b>sort -r < /home/plank/cs360/labs/lab8/Gradescript-Examples/Input-File-5.txt |
+         awk -f /home/plank/cs360/labs/lab8/Gradescript-Examples/fun-awk-1.txt |
+         awk -f /home/plank/cs360/labs/lab8/Gradescript-Examples/fun-awk-3.txt |
+         sed s/1/11/g |
+         sed s/a/aa/g |
+         sort -r |
+         cat -n |
+         awk -f /home/plank/cs360/labs/lab8/Gradescript-Examples/fun-awk-2.txt |
+         awk -f /home/plank/cs360/labs/lab8/Gradescript-Examples/fun-awk-3.txt > f3.txt</b></font>
+<font color=darkred><b>sed s/a/aa/g < /home/plank/cs360/labs/lab8/Gradescript-Examples/Input-File-2.txt |
+         sed s/a/aa/g |
+         cat -n |
+         sed s/1/11/g |
+         sed s/o/oo/g |
+         cat -n |
+         cat -n |
+         sed s/a/aa/g |
+         awk -f /home/plank/cs360/labs/lab8/Gradescript-Examples/fun-awk-1.txt |
+         sed s/o/oo/g > f4.txt</b></font>
+</pre>
+
+Now, the next sequence of commands either call <b>thisprogramdoesnotexist</b>, which doesn't exist,
+or they call <b>strays-sleep</b>, which as outlined in the lab writeup, sleeps for 0.20 seconds,
+then works like <b>cat</b>, except it checks to make sure that there are no extraneous open 
+file descriptors.  The <b>strays-sleep</b> calls are going in the background.
+The <b>thisprogramdoesnotexist</b> should fail on their <b>execve</b> calls,
+and there should be error statements going to standard error.
+
+<pre>
+<font color=darkred><b>thisprogramdoesnotexist </b></font>
+<font color=darkred><b>/home/plank/cs360/labs/lab8/strays-sleep < /home/plank/cs360/labs/lab8/Gradescript-Examples/Input-File-7.txt >> f0.txt &</b></font>
+<font color=darkred><b>thisprogramdoesnotexist </b></font>
+<font color=darkred><b>/home/plank/cs360/labs/lab8/strays-sleep < /home/plank/cs360/labs/lab8/Gradescript-Examples/Input-File-0.txt >> f1.txt &</b></font>
+<font color=darkred><b>/home/plank/cs360/labs/lab8/strays-sleep < /home/plank/cs360/labs/lab8/Gradescript-Examples/Input-File-4.txt >> f2.txt &</b></font>
+<font color=darkred><b>thisprogramdoesnotexist </b></font>
+<font color=darkred><b>/home/plank/cs360/labs/lab8/strays-sleep < /home/plank/cs360/labs/lab8/Gradescript-Examples/Input-File-6.txt >> f3.txt &</b></font>
+<font color=darkred><b>thisprogramdoesnotexist &</b></font>
+<font color=darkred><b>/home/plank/cs360/labs/lab8/strays-sleep < /home/plank/cs360/labs/lab8/Gradescript-Examples/Input-File-1.txt >> f4.txt &</b></font>
+</pre>
+
+Now, we <b>cat</b> the files.  Because the <b>strays-sleep</b> calls sleep first, at the point
+where we call <b>cat</b> below, they will <i>not</i> have executed.  
+
+<pre>
+<font color=darkred><b>cat f0.txt f1.txt f2.txt f3.txt f4.txt</b></font>
+</pre>
+
+
+So, for example, 
+<b>f0.txt</b> should have the same number of lines as <b>/home/plank/cs360/labs/lab8/Gradescript-Examples/Input-File-8.txt</b>, and it should <i>not</i> have anything 
+from </b>Input-File-7.txt</b> tacked on
+to the end of it.
+<p>
+How do we test that to make sure that our output is correct?  Run the gradescript, and when you see the command that it calls, cut
+and paste it and execute it:
+
+<pre>
+UNIX> <font color=darkred><b>$clab3/lab8/gradescript 61</b></font>
+Problem 061 is correct.
+
+Test: sh -c './jsh3 - < /home/plank/cs360/labs/lab8/Gradescript-Examples/061-input.txt > tmp-061-test-stdout.txt 2>tmp-061-test-stderr.txt'
+UNIX> <font color=darkred><b>sh -c './jsh3 - < /home/plank/cs360/labs/lab8/Gradescript-Examples/061-input.txt > tmp-061-test-stdout.txt 2>tmp-061-test-stderr.txt'</b></font>
+UNIX> <font color=darkred><b></b></font>
+</pre>
+
+Now, take a look at <b>Input-File-8.txt</b>, 
+<b>Input-File-7.txt</b>, and <b>Input-File-3.txt</b>:
+
+<pre>
+UNIX> <font color=darkred><b>cat /home/plank/cs360/labs/lab8/Gradescript-Examples/Input-File-8.txt</b></font>
+Jack the Rabbit and Weak Knees Willie you know they're gonna be there
+Ah sloppy Sue and Big Bones Billie they'll be comin' up for air
+We're gonna play some pool, skip some school, act real cool
+Stay out all night it's gonna feel alright
+So Rosie come out tonight, Oh baby come out tonight
+Windows are for cheaters, chimneys for the poor
+Oh closets are for hangers, winners use the door
+So use it Rosie, that's what its there for
+UNIX> <font color=darkred><b>cat /home/plank/cs360/labs/lab8/Gradescript-Examples/Input-File-7.txt</b></font>
+I've been working on it baby
+I've been thinking about it you see,
+I've been trying to call you all day long but, you see,
+I don't have your phone number, honey
+UNIX> <font color=darkred><b>cat /home/plank/cs360/labs/lab8/Gradescript-Examples/Input-File-3.txt</b></font>
+Strolling slowly towards the sun
+Soothing every wave that comes
+dressed in love she lives for life to be
+feels like I never see
+Setting suns and lonely lovers free
+
+UNIX> <font color=darkred><b></b></font>
+</pre>
+
+And take a look at the first ten lines of standard out from your shell command:
+
+<pre>
+UNIX> <font color=darkred><b>head -n 10 tmp-061-test-stdout.txt</b></font>
+Ah slooooppy Sue aand Big Boooones Billie they'll be coooomin' up foooor aair
+Jaack the Raabbit aand Weaak Knees Willie yoooou knoooow they're goooonnaa be there
+Oh cloooosets aare foooor haangers, winners use the doooooooor
+Soooo Roooosie coooome oooout toooonight, Oh baaby coooome oooout toooonight
+Soooo use it Roooosie, thaat's whaat its there foooor
+Staay oooout aall night it's goooonnaa feel aalright
+We're goooonnaa plaay soooome pooooooool, skip soooome schooooooool, aact reaal cooooooool
+Windoooows aare foooor cheaaters, chimneys foooor the poooooooor
+11 toooooooowaards Stroooooooolling the sloooooooowly sun 
+2 waave Soooooooooooooooothing thaat every coooooooomes 
+UNIX> <font color=darkred><b></b></font>
+</pre>
+
+The first 8 lines should come from <b>f0.txt</b>, because of that first shell command.
+However, the second shell command involving <b>f0.txt</b> -- the one below:
+
+<pre>
+<font color=darkred><b>/home/plank/cs360/labs/lab8/strays-sleep < /home/plank/cs360/labs/lab8/Gradescript-Examples/Input-File-7.txt >> f0.txt &</b></font>
+</pre>
+
+should not have completed at the point where <b>cat</b> was called.  
+So line 9 of standard output should not have 
+any of those lines from <b>Input-File-7.txt</b>.  If you examine it, line nine is
+"11 toooooooowaards Stroooooooolling the sloooooooowly sun", which 
+is derived from <b>Input-File-3.txt</b>.  That's good, because the command which created
+<b>f1.txt</b> did it from <b>Input-File-3.txt</b>.
+<p>
+
+Looks like we're putting a "Hi" at the end of standard output, and then we call <b>sleep 1</b>:
+
+<pre>
+<font color=darkred><b>echo Hi</b></font>
+<font color=darkred><b>sleep 1</b></font>
+</pre>
+
+The <b>sleep</b> command waits for all of those <b>strays-sleep</b> commands above
+to finish.  Were we to cat <b>f0.txt</b> at this point it would have the same 8 lines
+as above, but it would also have the lines from <b>Input-File-7.txt</b>.
+<p>
+Now, we make a bunch of those <b>strays-sleep</b> calls, which again check for
+extraneous open file descriptors, but also append those <b>fx.txt</b> files to each other:
+
+<pre>
+<font color=darkred><b>/home/plank/cs360/labs/lab8/strays-sleep < f1.txt >> f2.txt</b></font>
+<font color=darkred><b>/home/plank/cs360/labs/lab8/strays-sleep < f2.txt >> f3.txt</b></font>
+<font color=darkred><b>/home/plank/cs360/labs/lab8/strays-sleep < f3.txt >> f4.txt</b></font>
+<font color=darkred><b>/home/plank/cs360/labs/lab8/strays-sleep < f4.txt >> f0.txt</b></font>
+</pre>
+
+Finally, we call <b>thisprogramdoesnotexist</b> in the background once, sleep to let it finish,
+and then <b>cat</b> the files again.
+
+<pre>
+<font color=darkred><b><font color=darkred><b>thisprogramdoesnotexist &</b></font></b></font>
+<font color=darkred><b>sleep 1</b></font>
+<font color=darkred><b>cat f0.txt f1.txt f2.txt f3.txt f4.txt</b></font>
+</pre>
+
+I know that this is difficult to trace through, but if you take your time and logic it out,
+you can use the gradescripts to help you debug some of the difficult parts of your shell.

@@ -1,0 +1,25 @@
+rm -f f0.txt f1.txt f2.txt f3.txt f4.txt
+cat -n < /home/plank/cs360/labs/lab8/Gradescript-Examples/Input-File-7.txt | awk -f /home/plank/cs360/labs/lab8/Gradescript-Examples/fun-awk-2.txt | awk -f /home/plank/cs360/labs/lab8/Gradescript-Examples/fun-awk-1.txt | awk -f /home/plank/cs360/labs/lab8/Gradescript-Examples/fun-awk-3.txt | sort -r | awk -f /home/plank/cs360/labs/lab8/Gradescript-Examples/fun-awk-3.txt | cat -n > f0.txt
+awk -f /home/plank/cs360/labs/lab8/Gradescript-Examples/fun-awk-3.txt < /home/plank/cs360/labs/lab8/Gradescript-Examples/Input-File-5.txt | sed s/a/aa/g | awk -f /home/plank/cs360/labs/lab8/Gradescript-Examples/fun-awk-3.txt | awk -f /home/plank/cs360/labs/lab8/Gradescript-Examples/fun-awk-3.txt | awk -f /home/plank/cs360/labs/lab8/Gradescript-Examples/fun-awk-1.txt | sed s/1/11/g | awk -f /home/plank/cs360/labs/lab8/Gradescript-Examples/fun-awk-1.txt | sort -r | awk -f /home/plank/cs360/labs/lab8/Gradescript-Examples/fun-awk-2.txt > f1.txt
+awk -f /home/plank/cs360/labs/lab8/Gradescript-Examples/fun-awk-1.txt < /home/plank/cs360/labs/lab8/Gradescript-Examples/Input-File-6.txt | cat -n | sed s/o/oo/g | awk -f /home/plank/cs360/labs/lab8/Gradescript-Examples/fun-awk-1.txt | sort | sed s/o/oo/g | sed s/1/11/g | sed s/o/oo/g | awk -f /home/plank/cs360/labs/lab8/Gradescript-Examples/fun-awk-3.txt > f2.txt
+sort -r < /home/plank/cs360/labs/lab8/Gradescript-Examples/Input-File-2.txt | sed s/o/oo/g | cat -n | cat -n | sort -r | awk -f /home/plank/cs360/labs/lab8/Gradescript-Examples/fun-awk-3.txt | awk -f /home/plank/cs360/labs/lab8/Gradescript-Examples/fun-awk-1.txt | sed s/1/11/g | sort -r | awk -f /home/plank/cs360/labs/lab8/Gradescript-Examples/fun-awk-3.txt > f3.txt
+sort -r < /home/plank/cs360/labs/lab8/Gradescript-Examples/Input-File-1.txt | sed s/a/aa/g | sed s/a/aa/g | cat -n | sort -r | cat -n | awk -f /home/plank/cs360/labs/lab8/Gradescript-Examples/fun-awk-3.txt > f4.txt
+thisprogramdoesnotexist 
+/home/plank/cs360/labs/lab8/strays-sleep < /home/plank/cs360/labs/lab8/Gradescript-Examples/Input-File-9.txt >> f0.txt &
+thisprogramdoesnotexist 
+/home/plank/cs360/labs/lab8/strays-sleep < /home/plank/cs360/labs/lab8/Gradescript-Examples/Input-File-4.txt >> f1.txt &
+thisprogramdoesnotexist 
+/home/plank/cs360/labs/lab8/strays-sleep < /home/plank/cs360/labs/lab8/Gradescript-Examples/Input-File-0.txt >> f2.txt &
+/home/plank/cs360/labs/lab8/strays-sleep < /home/plank/cs360/labs/lab8/Gradescript-Examples/Input-File-8.txt >> f3.txt &
+thisprogramdoesnotexist &
+/home/plank/cs360/labs/lab8/strays-sleep < /home/plank/cs360/labs/lab8/Gradescript-Examples/Input-File-3.txt >> f4.txt &
+cat f0.txt f1.txt f2.txt f3.txt f4.txt
+echo Hi
+sleep 1
+/home/plank/cs360/labs/lab8/strays-sleep < f1.txt >> f0.txt
+/home/plank/cs360/labs/lab8/strays-sleep < f0.txt >> f4.txt
+thisprogramdoesnotexist &
+/home/plank/cs360/labs/lab8/strays-sleep < f4.txt >> f2.txt
+/home/plank/cs360/labs/lab8/strays-sleep < f2.txt >> f3.txt
+sleep 1
+cat f0.txt f1.txt f2.txt f3.txt f4.txt

@@ -1,0 +1,169 @@
+<title> CS360 -- Lab 2</title>
+
+<h1> CS360 -- Lab 2</h1>
+<UL> <LI> CS360 -- Systems Programming
+<LI> Spring, 2015
+<LI> <a href=http://www.cs.utk.edu/~plank>James S. Plank</a>
+<LI> <a href=http://www.cs.utk.edu/~plank/plank/classes/cs360/360/labs/lab2/index.html>This file:
+     <b>http://www.cs.utk.edu/~plank/plank/classes/cs360/360/labs/lab2/index.html</b></a>
+<LI> Lab Directory: <b>/home/plank/cs360/labs/lab2</b>
+</UL>
+
+<hr>
+<h3>data_uncompress.c - using the C standard I/O library</h3>
+
+Your job is to write the program <b>data_uncompress</b>, using the C standard I/O library.
+In particular, you should read using <b>getchar()</b> and <b>fread()</b>.
+<p>
+This program assumes that standard input is in a compressed format.  The format is a stream of 
+bytes as follows.  You read a character, and that character tells you how to proceed:
+<p>
+<UL>
+<LI>  If the character is not 'n', 's', 'i' or 'd', then the input is not correct.  
+<LI>  If the character is 'n', then print a newline.
+<LI>  If the character is 'i', 'd' or 's', then the next character needs to be interpreted as an integer
+(unsigned char).
+Call this integer <b>n</b>.  Then you are going to read
+<b>n+1</b> contiguous integers, doubles or strings, depending on whether the initial character 
+was 'i', 'd' or 's'.  Integers are 4 bytes and doubles are 8 bytes.  Strings are in a special 
+format.  You read a character <b>size</b> which you interpret as an integer (again -- unsigned char).  
+The string is in the remaining <b>size+1</b> characters.
+Obviously, since <b>size</b> and <b>n</b> are unsigned chars, their values will be limited to 255 or
+less.
+<p>
+You are going to print each integer, double or string on the same line, separated by a single space.
+You only print a newline when you see the 'n'.  
+Do not start a new line with a space. 
+Simply print integers with "%d".  Print doubles
+with "%.10lg".
+Continue reading in this vein until you reach EOF.  You 
+only print a newline when you see the 'n' character.
+</UL>
+
+Here's an example file in <b>comp-1.txt</b> -- each cell of the table is a character of the file:
+
+<p><center><table border=3 cellpadding=3>
+<tr>
+<td>115 ('s')</td>
+<td>1</td>
+<td>2</td>
+<td>74 ('J')</td>
+<td>105 ('i')</td>
+<td>109 ('m')</td>
+<td>4 </td>
+<td>80 ('P')</td>
+</tr><tr>
+<td>108 ('l')</td>
+<td>97 ('a')</td>
+<td>110 ('n')</td>
+<td>107 ('k')</td>
+<td>110 ('n')</td>
+<td>115 ('s')</td>
+<td>0 </td>
+<td>4 </td>
+</tr><tr>
+<td>67 ('C')</td>
+<td>83 ('S')</td>
+<td>51 ('3')</td>
+<td>54 ('6')</td>
+<td>48 ('0')</td>
+<td>110 ('n')</td></tr>
+</table></center><p></td>
+
+When you uncompress this, you first see the 's', and then a one.  That means you need to read two strings.
+The first consists of three characters, which are 'J', 'i' and 'm', and the second consists of five 
+characters  - "Plank".  You print "Jim", a space and "Plank."  Then you read a 'n', and print a newline.
+Next you read a 's' and the number 0, which means to read one string.  That string has five characters:
+"CS360".  You print "CS360", then read the final 'n' and print a newline.  
+<p>
+Thus:
+<p>
+<pre>
+UNIX> <b>data_uncompress < comp-1.txt</b>
+Jim Plank
+CS360
+UNIX> <b></b>
+</pre>
+<p>
+
+I have written a program called <b>data_compress</b>, which turns standard input into the proper 
+format to be read by <b>data_uncompress</b>.  It turns most numbers into integers and doubles, and
+the rest of its words into strings.
+For example, if we do:
+
+<pre>
+UNIX> <b>echo "1234 3.14159 Fred" | data_compress > comp-2.txt</b>
+</pre>
+
+Then <b>comp-2.txt</b> is composed of the following bytes:
+
+<p><center><table border=3 cellpadding=3>
+<tr>
+<td>105('i')</td>
+<td>0</td>
+<td>210</td>
+<td>4</td>
+<td>0</td>
+<td>0</td>
+<td>100('d')</td>
+<td>0</td>
+</tr><tr>
+<td>110</td>
+<td>134</td>
+<td>27</td>
+<td>240</td>
+<td>249</td>
+<td>33</td>
+<td>9</td>
+<td>64</td>
+</tr><tr>
+<td>115('s')</td>
+<td>0</td>
+<td>3</td>
+<td>70('F')</td>
+<td>114('r')</td>
+<td>101('e')</td>
+<td>100('d')</td>
+<td>110('n')</td>
+</tr>
+</table></center><p>
+
+To uncompress, you first read the 'i' and the 0, which says to read one integer.  You will read the next
+four bytes (210, 4, 0, 0) using <b>fread()</b>.  
+You next read the byte 'd' and a 0, which say to read one double.
+You  will thus read the next eight bytes (110, 134,27, 40, 249, 33, 9, 64) again using <b>fread()</b>.  
+Next you read an 's' and 0, which says to read one string.  You read 3, which says that the string is
+four characters (Fred).  After reading those, you read the 'n' which says to print a newline.  
+<p>
+The output is thus:
+<pre>
+UNIX> <b>data_uncompress < comp-2.txt</b>
+1234 3.14159 Fred
+UNIX> <b></b>
+</pre>
+
+If you call <b>data_compress</b> on a file and pipe the output to <b>data_uncompress</b> or
+<b>data_uncompress</b>, you will get a file that is roughly equivalent to the original.
+There may be some formatting that is different.  Your output must match mine exactly, however.
+<p>
+<h3>A Common Mistake</h3>
+
+When you read <i>n</i> and <i>size</i>, you read them as unsigned chars.  However, when you
+use them in your computer program, you should convert them to ints.  Why?  Because if you read
+in 255 as an unsigned char, and then add one to it, it becomes zero, and that is not what
+you want, is it?
+
+<h3>
+Error catching</h3>
+
+Your program must catch the following errors, and then print the given strings on standard error:
+
+<UL>
+<LI> If the <i>type</i> character is not 'n', 's', 'i' or 'd', then print <b>"Input error: bad type\n"</b>
+<LI> If you don't get the size byte <b>n</b>, print <b>"Input error: no size\n"</b>
+<LI> If you don't get the string size byte <b>size</b>, print <b>"Input error: no string size\n"</b>
+<LI> If you don't get enough ints, print <b>"Input error: not enough ints\n"</b>
+<LI> If you don't get enough doubles, print <b>"Input error: not enough doubles\n"</b>
+<LI> If you don't get enough characters in a string, print <b>"Input error: not enough chars\n"</b>
+</UL>
+

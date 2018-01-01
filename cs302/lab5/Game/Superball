@@ -1,0 +1,5 @@
+#!/bin/sh
+
+cd $HOME/Superball
+
+awk 'BEGIN { srand(); while (1) printf "%d\n", rand()*80 }' | wish Superball.tcl

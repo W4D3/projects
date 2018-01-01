@@ -1,0 +1,361 @@
+<h3>Topcoder SRM 496, D1, 500-point problem</h3>
+
+Read over the problem.  When I looked at this, my first thought
+was to solve it recursively.  Write the recursive procedure
+<b>cvg(int v, int index)</b>, which counts the number of valid
+guesses for velocity <b>v</b>, supposing that all balls in 
+<b>firstPicture</b> whose indices are less than <i>index</i> have
+been matched with balls from <b>secondPicture</b>, and
+those matches have been noted somehow.
+<p>
+The basic outline of <b>cvg()</b> will be:
+<p>
+<p><center><table border=3 cellpadding=3><td><pre>
+long long OneDimensionalBalls::cvg(int v, int index)
+{
+  long long rv;
+
+  rv = 0;
+
+  for (i = -1; i &lt;= 1; i += 2) {
+    if (firstPicture[index]+v*i is in secondPicture) {
+      if (index+1 == firstPicture.size()) {
+        rv++;
+      } else {
+        remove the ball from secondPicture that equals firstPicture[index]+v*i;
+        rv += cvg(v, index+1);
+        put the ball back
+      }
+    }
+  }
+  return rv;
+}
+</pre></td></table></center><p>
+    
+This solution will work for small sizes, but the fact that it returns a 
+<b>long long</b> should clue you in that something isn't right.  Regardless,
+it's worth hacking up for practice.  Here is a first pass, in 
+<b><a href=ODB_Rec1.cpp>ODB_Rec1.cpp</a></b>.  First, I save <b>firstPicture</b>
+and <b>secondPicture</b> as <b>FP</b> and <b>SP</b>.  That way, my recursive 
+procedure always has access to them.  I also have two more members: <b>Matched</b>
+is a vector, which is the same size as <b>SP</b>.  If <b>Matched[i]</b> is true,
+then element <i>i</i> of <b>SP</b> has been matched from a previous call to <b>cvb</b>.
+<b>SP_Balls</b> is a map such that if <b>SP[i] = j</b>, then <b>SP_Balls[i] = j</b>.
+It lets us find out quickly whether a ball with a given value is in <b>SP</b>.
+
+<p><center><table border=3 cellpadding=3><td><pre>
+class OneDimensionalBalls {
+  public:
+    long long countValidGuesses(vector &lt;int&gt; firstPicture, vector &lt;int&gt; secondPicture);
+    long long cvg(int v, int index);
+    vector &lt;int&gt; FP;
+    vector &lt;int&gt; SP;
+    vector &lt;int&gt; Matched;
+    map &lt;int, int&gt; SP_Balls;
+};
+</pre></td></table></center><p>
+
+Given that backdrop, <b>cvg</b> works as above, except it fills in the pseudo-code
+with code that uses <b>Matched</b> and <b>SP_Balls</b>:
+
+<p><center><table border=3 cellpadding=3><td><pre>
+long long OneDimensionalBalls::cvg(int v, int index)
+{
+  long long rv;
+  int second_val, sb_index;
+  map &lt;int, int&gt;::iterator mit;
+  int i;
+
+  rv = 0;
+
+  for (i = -1; i &lt;= 1; i += 2) {
+    second_val = FP[index]+v*i;
+    mit = SP_Balls.find(second_val);
+    if (mit != SP_Balls.end() && !(Matched[mit-&gt;second])) {
+      if (index+1 == FP.size()) {
+        rv++;
+      } else {
+        Matched[mit-&gt;second] = 1;
+        rv += cvg(v, index+1);
+        Matched[mit-&gt;second] = 0;
+      }
+    }
+  }
+  return rv;
+}
+</pre></td></table></center><p>
+
+Finally, the code for <b>countValidGuesses()</b> needs to set up <b>FP</b>, 
+<b>SP</b>, <b>Matched</b> and <b>SP_Balls</b>, and just for testing, it calls
+<b>cvg</b> with a velocity of one:
+<p>
+<p><center><table border=3 cellpadding=3><td><pre>
+long long OneDimensionalBalls::countValidGuesses(
+      vector &lt;int&gt; firstPicture, 
+      vector &lt;int&gt; secondPicture)
+{
+  int i;
+
+  FP = firstPicture;
+  SP = secondPicture;
+  Matched.resize(SP.size(), 0);
+  VIT(i, secondPicture) SP_Balls[SP[i]] = i;
+
+  return cvg(1, 0);
+}
+</pre></td></table></center><p>
+
+To compile and run this, I use my standard topcoder-programming trick of having 
+a driver program that includes this program and runs the examples.  This
+is in 
+<b><a href=SRM-496-Driver.cpp>SRM-496-Driver.cpp</a></b>.  To compile, you need
+to copy your program to <b>OneDimensionalBalls.cpp</b>, and then simply 
+compile <b>SRM-496-Driver.cpp</b>:
+
+<pre>
+UNIX> <font color=darkred><b>cp ODB_Rec1.cpp OneDimensionalBalls.cpp</b></font>
+UNIX> <font color=darkred><b>g++ SRM-496-Driver.cpp</b></font>
+UNIX> <font color=darkred><b></b></font>
+</pre>
+
+With example zero, we have:
+
+<p><center><table border=3 cellpadding=3><td><pre>
+FP = { 12, 11 }
+SP = { 10, 11, 13 }
+</pre></td></table></center><p>
+
+Thus, when <b>v=1</b>, we should have two sets of legal guesses: 11 goes to 10 and 12 goes to 
+either 11 or 13.
+When we run it, it gives us the correct answer:
+
+<pre>
+UNIX> <font color=darkred><b>a.out 0</b></font>
+2
+UNIX> <font color=darkred><b></b></font>
+</pre>
+
+You can also call <b>a.out</b> with -1 as an argument, and that allows you to put the
+two vectors of integers on standard input:
+
+<pre>
+UNIX> <font color=darkred><b>cat tmp.txt</b></font>
+12 11
+10 11 13
+UNIX> <font color=darkred><b>a.out -1 < tmp.txt</b></font>
+2
+UNIX> <font color=darkred><b></b></font>
+</pre>
+
+Now, what velocities should we use?  The only ones that will be legal are velocities 
+equal to the difference between each ball in <b>SP</b> and <b>FP[0]</b>.  The 
+code to enumerate these uses a <b>set</b>, because you don't want to test the same 
+velocity twice (in the example above, the differences are 2, 1 and 1)
+(code in <b><a href=ODB_Rec2.cpp>ODB_Rec2.cpp</a></b>):
+
+<p><center><table border=3 cellpadding=3><td><pre>
+long long OneDimensionalBalls::countValidGuesses(
+      vector &lt;int&gt; firstPicture, 
+      vector &lt;int&gt; secondPicture)
+{
+  int i, d;
+  set &lt;int&gt; velocities;
+  set &lt;int&gt;::iterator vit;
+  long long rv;
+
+  FP = firstPicture;
+  SP = secondPicture;
+  Matched.resize(SP.size(), 0);
+  VIT(i, secondPicture) SP_Balls[SP[i]] = i;
+
+  VIT(i, SP) {
+    d = SP[i] - FP[0];
+    if (d &lt; 0) d = -d;
+    if (d != 0) velocities.insert(d);
+  }
+
+  rv = 0;
+  IT(vit, velocities) rv += cvg(*vit, 0);
+  return rv;
+}
+</pre></td></table></center><p>
+
+When we run this, it works on all the test cases:
+
+<pre>
+UNIX> cp ODB_Rec2.cpp OneDimensionalBalls.cpp
+UNIX> g++ SRM-496-Driver.cpp
+UNIX> <font color=darkred><b>a.out 0</b></font>
+3
+UNIX> <font color=darkred><b>a.out 1</b></font>
+0
+UNIX> <font color=darkred><b>a.out 2</b></font>
+1
+UNIX> <font color=darkred><b>a.out 3</b></font>
+6
+UNIX> <font color=darkred><b>a.out 4</b></font>
+7
+UNIX> <font color=darkred><b></b></font>
+</pre>
+
+So compile and submit????  You should be worried.  Each recursive case can make two
+recursive calls, and if there are roughly 25 levels of recursive calls, your code
+may take on the order of <i>2<sup>25</sup></i> operations.  That's too much.  Indeed,
+when I compiled and submitted, it choked on the following input:
+
+
+<p><center><table border=3 cellpadding=3><td><pre>
+FP = { 9, 10, ..., 39, 40 }
+SP = { 1, 2, 3, ..., 49, 50 }
+</pre></td></table></center><p>
+
+I put that into case 6 in <b>SRM-496-Driver.cpp</b>, and <b>"a.out 6"</b> takes much longer than
+the requisite 2 seconds.  Dang, back to the drawing board.  At least we've had some
+more practice with maps and sets.
+<p>
+When you learn about dynamic programming later, you'll see that memoization doesn't
+work here either.
+
+<hr>
+<h3>Giving the problem more thought.</h3>
+
+Instead, let's think more about the problem.  Again, we'll restrict our attention to
+velocity <i>v</i>.  Each ball in <b>FP</b> can be matched to zero, one or two 
+balls in <b>SP</b>.  If zero, then there's no valid guess.  You can return zero.  
+If one, there is only
+one potential valid guess, and you can remove the ball from <b>FP</b> and remove its
+corresponding ball from <b>SP</b>.  At this point, you can also remove all balls 
+from <b>SP</b> that don't match to any balls in <b>FP</b>.  Let's take a look at
+such a system.  Example 4 from the problem suffices:
+
+<p><center><table border=3 cellpadding=3><td><pre>
+FP = { 2, 4, 6 }
+SP = { 1, 2, 3, 4, 5, 7, 8 }
+</pre></td></table></center><p>
+
+We have 5 potential values of <i>v</i>: 1, 2, 3, 5 and 6.  I draw the <b>SP</b> and
+their matching <b>FP</b> for the first four of these below:
+
+<p><center><table border=3>
+   <tr><td><img src=SRM-496-500-Ex1.jpg width=300></td>
+       <td><img src=SRM-496-500-Ex2.jpg width=300></td></tr>
+   <tr><td><img src=SRM-496-500-Ex3.jpg width=300></td>
+       <td><img src=SRM-496-500-Ex4.jpg width=300></td></tr>
+</table></center><p>
+
+Let's consider the simplest: <i>v=5</i>.  In this case, 4 cannot be matched to anything,
+so there are zero valid guesses. (The same is true of <i>v=6</i>, which is not drawn).
+<p>
+Next, let's consider <i>v=2</i>.  In this case, 2 and 4 match to one number in <b>SP</b>.
+We can thus remove them from the system.  When we do so, 6 matches to one number, and we 
+remove it.  We are left with an empty system.  That corresponds to one
+valid guess.  
+<p>
+How about when <i>v=3</i>?  Here, 2 and 6 each match to one number, so they can be removed
+from the system.  We can also remove any balls in <b>SP</b> that don't match any balls in 
+<b>FP</b> (at this point, the only ball in <b>FP</b> is 4), so we're left with:
+
+<p><center><table border=3><td><img src=SRM-496-500-Ex5.jpg width=300></td></table></center><p>
+
+There are two ways to perform this match, so there are two valid matches.  The last case is
+<i>v=1</i>, which requires a little more thought.  Let's look for a pattern.  When
+we have a system that looks like:
+
+<p><center><table border=3><td><img src=SRM-496-500-Ex8.jpg width=132></td></table></center><p>
+
+As we said above, this corresponds to two valid guesses.  Let's make it a little more
+complex:
+
+<p><center><table border=3><td><img src=SRM-496-500-Ex7.jpg width=199></td></table></center><p>
+
+If we have the leftmost number in <b>FP</b> match the leftmost in <b>SP</b>, then there are
+two ways to match the remaining elements (since it's equal to the previous picture). 
+If we have the leftmost number in <b>FP</b> match the second element in <b>SP</b>, 
+then there is just one way to match the remaining element.  That makes three ways in total.
+<p>
+Let's make it a little more complex still:
+
+<p><center><table border=3><td><img src=SRM-496-500-Ex6.jpg width=267></td></table></center><p>
+
+If we have the leftmost number in <b>FP</b> match the leftmost in <b>SP</b>, then there are
+three ways to match the remaining elements (since it's equal to the previous picture). 
+If we have the leftmost number in <b>FP</b> match the second element in <b>SP</b>, 
+then there is just one way to match the remaining elements.  That makes four ways in total.
+<p>
+Do you see the pattern?  If you have a set of <i>n</i> elements in <b>FP</b>, then they 
+will match to the elements in <b>SP</b> in <i>n+1</i> ways.  Thus, the <i>v=1</i>
+case in Example 4 has four matches.  The answer to example 4 is thus 4 + 1 + 2 = 7.
+<p>
+If we have multiple sets of matching elements, we have to multiply their
+number of guesses.  For example, suppose we have:
+
+<p><center><table border=3><td><img src=SRM-496-500-Ex9.jpg width=500></td></table></center><p>
+
+The first set matches in two ways, the second in four, and the third in three.  Thus, the
+total number of matches is 2*4*3 = 24.
+<p>
+Let's take one final concrete and complex example to make sure that we understand.  
+Suppose our system looks like:
+
+<p><center><table border=3><td><img src=SRM-496-500-ExA.jpg width=500></td></table></center><p>
+
+The first thing that we do is remove the numbers in <b>FP</b> (4, 15 and 22), 
+that only match one number in <b>SP</b>.  We also remove their matches in <b>SP</b>:
+
+<p><center><table border=3><td><img src=SRM-496-500-ExB.jpg width=500></td></table></center><p>
+
+We're left with more numbers in <b>FP</b> (2 and 20) that only match one number in <b>SP</b>.
+We keep removing them and their corresponding numbers in <b>SP</b> until we only are left
+with numbers that have two corresponding numbers in <b>SP</b>:
+
+<p><center><table border=3><td><img src=SRM-496-500-ExC.jpg width=500></td></table></center><p>
+
+From our discussion above, this one has four ways to be matched.
+
+<hr>
+<h3>Turning this into code</h3>
+
+Now we know what we want to do -- we have to code it up.  I think that a good way 
+to start is to represent each ball as its own instance of a <b>Ball</b> class.  We'll
+define it:
+
+<p><center><table border=3 cellpadding=3><td><pre>
+class Ball {
+  public:
+    int val;
+    Ball *low;
+    Ball *high;
+};
+</pre></td></table></center><p>
+
+<b>Val</b> is its value, and <b>low</b> and <b>high</b> are pointers to other balls.
+If <b>b</b> is in <b>FP</b>, then <b>low</b> points to the ball in <b>SP</b> whose
+values is <b>b->val-v</b>.  If there is no such ball, then it is <b>NULL</b>.
+Similarly, <b>b->high</b> points to the ball in <b>SP</b> whose
+values is <b>b->val+v</b>.  If there is no such ball, then it is <b>NULL</b>.
+
+<p>
+The balls in <b>SP</b> point to the balls in <b>FP</b>.  To be precise, 
+If <b>b</b> is in <b>SP</b>, then <b>b->low</b> points to the ball in <b>FP</b> whose
+values is <b>b->val-v</b>.  If there is no such ball, then it is <b>NULL</b>.
+<b>b->high</b> is defined similarly.
+
+<p>
+When we call <b>cvg()</b> we just call it with a velocity.  We then set up the balls
+and their pointers.  Then, we do the following:
+<UL>
+<LI> Check all the balls in <b>FP</b>.  If any don't have a valid <b>low</b> or <b>high</b>,
+then return 0, becuase there is no valid guess.
+<p>
+<LI> Check all the balls in <b>FP</b>.  If any ball <b>b</b> has 
+just one valid <b>low</b> or <b>high</b>,
+then remove it and the ball in <b>SP</b> that it points to.  In doing that, you may have to
+remove other pointers, becuase there may be another ball pointing to the ball in <b>SP</b>.
+<p>
+<LI> Keep repeating this step until the only balls in <b>FP</b> have two pointers.
+Now, identify all the sets of balls like those in the last picture, determine how
+many valid guesses correspond to each, and multiply them.
+</UL>
+
+
+

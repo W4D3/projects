@@ -1,0 +1,51 @@
+INSERT Joshua Wireman 402-847-7401 438-75-0213
+INSERT John Pharaoh 785-364-1064 481-37-9875
+INSERT Lucy Mackenzie Carson 571-674-0937 270-48-5331
+FIND Daniel Accipiter
+INSERT Cameron Trick 276-809-4171 218-11-6682
+INSERT Lily Exhibit 497-487-3093 572-19-3820
+INSERT Makayla Bobby 383-849-4532 305-85-7442
+FIND John Pharaoh
+INSERT Charlotte Uproot 910-159-5752 380-99-9382
+INSERT Audrey Grave 094-169-6573 239-19-2927
+ROTATE John Pharaoh
+INSERT Brianna Coffey 494-404-3091 659-67-3115
+DEPTH Eli Antipasto
+DELETE John Pharaoh
+INSERT Lauren Buffet 262-299-8662 636-00-7603
+INSERT Joshua Detoxify 205-613-5385 363-30-7771
+INSERT Alyssa Distribution 090-682-3722 142-94-7957
+ROTATE Alyssa Distribution
+PRINT
+INSERT Chloe Game 662-838-4465 783-72-3382
+DELETE Charlotte Uproot
+ROTATE Audrey Grave
+INSERT Sydney Pyracanth 496-209-9767 235-52-7796
+INSERT Eli Loggerhead 138-001-7359 219-15-4954
+INSERT Eli Parboil 730-001-4583 669-82-9983
+FIND Brianna Coffey
+INSERT Gavin Andrew 613-358-7416 124-56-5987
+INSERT Isabella Lovelorn 597-960-4357 341-69-2436
+DEPTH Eli Parboil
+ROTATE Brody Inholding
+ROTATE Makayla Bobby
+HEIGHT
+INSERT Lauren Buffet 872-532-6986 661-86-1641
+INSERT Avery Pueblo 445-957-8490 269-51-4082
+INSERT William John Cutset 873-880-0077 689-73-4069
+DEPTH Makayla Bobby
+INSERT Aubrey Indeterminate 190-106-9723 305-82-9867
+INSERT Xavier Anthology 735-497-4252 501-96-2193
+DELETE Xavier Anthology
+INSERT Morgan Carcinogen 599-808-1032 824-14-6436
+ROTATE Lily Exhibit
+DEPTH Lucas Waterbury Esq
+INSERT Dontonio Revving 122-337-8621 559-32-8844
+INSERT Elizabeth Kaylee Carbonyl 246-162-7985 502-00-7181
+ISAVL
+INSERT Benjamin Postgraduate 594-536-3548 509-02-3936
+ISAVL
+DEPTH Dontonio Revving
+ROTATE Lucy Mackenzie Carson
+DEPTH Morgan Carcinogen
+PRINT

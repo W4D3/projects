@@ -1,0 +1,27 @@
+void JLS::GenDiskFails(int index, int ndisks) {
+    if (ndisks == 0) {
+        // stuff goes here!!!
+        // nested recursion goes here <-- checking sector failures
+        // are we still looking at all of the sectors?
+        // ignore sectors that are already down at this point
+        return;
+    }
+
+    if (ndisks > disks.size()-index) return;
+    diskfails.push_back(disks[index]);
+        //stuff goes here !!! <--- incremental inverse <-- call the function Add_Col <-- call it on the disks that failed
+        // 1. adding all of the columns that correspond to that failure
+        // 2. print out the string of used d's and s's and also changing letters in that string
+            // changing our letters from u's to d's
+    GenDiskFails(index+1, ndisks-1);
+    diskfails.pop_back();
+        // 1. change the string back
+        // 2. delete cols
+    //Stuff goes here!!!
+    GenDiskFails(index+1, ndisks);
+
+
+    // Stuff goes here are loops
+
+    // Do the same thing for another function we have to write
+}

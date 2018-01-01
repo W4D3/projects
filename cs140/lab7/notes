@@ -1,0 +1,47 @@
+//error check before calling new
+// ^if not you will create a memory leak
+
+//write a destructor
+    //if new was called and then delete was called
+    //the descrutcor gets called
+    //it makes sure that anything the code processor do gets deleted as well
+
+//loop over all the users
+//call delete
+//loop over all the prizes
+//call delete
+
+//only call new when adding a user and adding a prize
+//look up a user and attach a phone number to the name
+
+
+//when calling delete user also remove it from the map of names
+    // if not you will try and call invalid memory
+
+//call find on the user
+//erase the user from the map and delete the pointer
+//delete the pointer and then erase the iterator so that you can access the user to erase it
+
+//error check before making new calls
+
+//Write()
+    //checkpointing
+    //fault tolerance
+    //after a bunch of transactions, making users,
+
+    //takes the database and puts out cmds for code processor that puts it into     //a state exactly like you have
+
+//Mark Used
+
+    //you can put 19 codes on a line
+    //however, for simplicity sake put 1 on a line
+
+    //f1, f2, f3 <-- files we wrote out which are passed to planks server and
+    //our output is then stored and there is his output 
+
+//phones have to come after there respective user
+
+//the formats of the commands are not in the same order as the User public
+    variables
+
+//store your return value into an unsigned int

@@ -1,0 +1,52 @@
+#!/bin/sh 
+
+dir=/home/plank/cs302/Labs/Lab4
+ge="$dir/Gradescript-Examples"
+
+if [ $# -ne 1 ]; then
+  echo 'usage: gradescript problem_number (1-100)' >&2
+  exit 1
+fi
+
+if [ "$1" -gt 0 -a "$1" -le 100 ]; then
+  enum=`echo $1 | awk '{ printf "%03d\n", $1 }'`
+else
+  echo 'usage: gradescript problem_number (1-100)' >&2
+  exit 1
+fi
+  
+program=is_jls
+  
+if [ ! -f $program ]; then
+  echo "Problem $enum is incorrect."
+  echo ""
+  echo "Your program $program does not exist."
+  exit 0
+fi
+
+
+params=`cat $ge/$enum.txt`
+output=`./$program $params | awk '{ print $NF }'`
+if [ "a$output" = a ]; then
+   echo "Problem $enum is incorrect."
+   echo ""
+   echo "It gave no output."
+   exit 0
+fi
+
+check=`sh $dir/is_correct.sh $params $output`
+if [ "$check" = Correct ]; then
+   echo "Problem $enum is correct."
+   echo ""
+   echo "Call: ./$program $params"
+   if [ $output = OK ]; then
+     echo "Output: OK"
+   else 
+     echo "Output: No: $output"
+   fi
+   exit 0
+fi
+
+echo "Problem $enum is incorrect."
+echo ""
+echo "$check"

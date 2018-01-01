@@ -1,0 +1,4 @@
+When assigning a value using print in gdb the register will
+only subtract if r0 = 1. Therefore, either DoAdd is the
+function that is always called and we can manipulate our data
+based on what we input into gdb using print.

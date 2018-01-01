@@ -1,0 +1,48 @@
+First copy the application CelsiusConverter to your laptop by remote
+copying ~bvz/cs365/lec/EventHandlingIntro/CelsiusConverter.*
+to your computer. Run the application. You should be able to enter
+values into the text field next to Celsius, then hit the convert button
+to see result in fahrenheit. You can enter values and hit the convert
+button as many times as you like.
+
+You are now going to write the CelsiusConverter application.
+
+Start with HelloWorldSwing: Copy it from ~bvz/cs365/lec/EventHandlingIntro
+
+1) Create the following 4 objects
+    --JLabel for "Celsius"
+    --JLabel for "Fahrenheit"  (32 only comes in after conversion)
+    --JTextField for entering celsius value
+    --JButton for converting celsius to fahrenheit
+
+2) Create a GridLayout(2,2)
+    --get the content pane from the frame and save it
+    --set the content pane's layout to be a GridLayout(2,2)
+    --add the 4 objects in the order:
+	JTextField
+	Celsius Label
+	Converter Button
+	Fahrenheit Label
+
+3) Display the application and try resizing it
+    --note that the layout is a bit cramped
+    --add hgap and vgap parameters to the GridLayout to create a
+	bit of breathing space
+
+4) Add the logic to convert celsius to fahrenheit
+    --create an ActionListener and add it to the Converter Button
+    --the logic is:
+	    int tempFahr = (int)((Double.parseDouble(celsiusValue.getText()))
+				 * 1.8 + 32);
+	    fahrenheitLabel.setText(tempFahr + " Fahrenheit");
+
+5) Note that if the celsius value is large, then the fahrenheit value
+	is cut off at the edge of the window
+    --call fahrenheitLabel.revalidate() and frame.pack() to resize the window
+	so that it accommodates the fahrenheit value and its label
+
+6) Note that the fahrenheit label is now contained in the window but that
+	it butts up directly against the window's edge
+    --add an empty border to create space using
+      fahrenheitLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
+    --run the application and enter some values for celsius

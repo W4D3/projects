@@ -1,0 +1,19 @@
+INSERT Andrew Ravine
+PRINT
+INSERT Molly Monoid
+PRESENT Molly Monoid
+INSERT Emma Lilly Terminal
+PRESENT Molly Monoid
+PRESENT Jacob Fascism
+ERASE Joshua Rotate
+PRINT
+PRESENT Molly Monoid
+ERASE Emma Lilly Terminal
+PRESENT Molly Monoid
+PRESENT Julian Groundwork
+INSERT Alexis Incurred
+INSERT Joshua Alexander Ruben
+INSERT Eli Belying
+INSERT Lilly Anna Ares
+INSERT Lilly Eruption
+PRINT

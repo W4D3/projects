@@ -1,0 +1,1 @@
+191 XOR Linear /home/plank/cs140/Labs/Lab4/Gradescript-Examples/082-dict.txt

@@ -1,0 +1,5 @@
+/home/plank/cs360/labs/lab7/strays-files /home/plank/cs360/labs/lab7/Gradescript-Examples/Input-File-6.txt f1.txt &
+this-program-does-not-exist &
+cat /home/plank/cs360/labs/lab7/Gradescript-Examples/Input-File-7.txt
+cat /home/plank/cs360/labs/lab7/Gradescript-Examples/Input-File-8.txt
+sleep 1

@@ -1,0 +1,28 @@
+Mitchell Wade
+COSC461 - Compilers
+PA2 - NFA2DFA
+
+   This program converts a nondeterministic finite state automata (NFA) 
+into a deterministic finite state automata (DFA) 
+
+
+The subset construction
+algorithm and other supporting algorithms such as the epsilon closure 
+
+The user will generate the NFA/DFA diagrams by passing in the input
+from a file,
+
+which is written
+in python, will then transform the NFA state diagram into its corresponding
+DFA state diagram using the subset construction algorithm as well as other
+supporting algorithms. The main algorithms that were coded are for epsilon
+closure, checking if a state already exists, moving from one state to the
+next, and for printing a string in set notation or standard notation.
+   I approached this lab easily the second time around because I now fully
+understand how the algorithms work and why automata are the central point in
+understand how to program anything that changes state. The
+program reads input using the standard sys library module. Then using the 
+   that represents the NFA diagram as input, transforming the NFA diagram into its corresponding DFA states, and printing the result as a corresponding DFA diagram. We had to use the subset construction algorithm, other functions like an epsilon closure function, and a move function for changing states I will be able to fully translate between an NFA to a DFA.
+   I wrote the program using python and used a deque() data structure for the main generation of state diagrams. I also used lists and dictionaries in order to keep track of all of the state and its corresponding data. The input files we were given for each NFA2DFA translation will contain the number of total states the diagram will consume, the initial state, and the finial state that the automata corresponds too. One requirement was that we could not program in a limit for the number of states that can be generated; however, this was not a problem with a deque.
+   I wrote the entire program in vim using the standard python toolkits that are installed on the hydra machines. Testing was also standard and involved running the program and printing output to view the states of each diagram. The hardest part was conceptualizing the data and picking the appropriate data structures for manipulating the input data.
+   I first tried to use a Queue() data structure, but it ended up giving me problems with infinite loops. I then switched over to a doubly-ended queue deque() data structure for my NFA and DFA diagrams. This was the biggest issue I had in completing the assignment; however, I also had some smaller issues understanding python lists and how the information of each state was moving around from time to time. I created a function for printing out the states as either a set or in standard notion. This was hard to do and I had help from others completing this function, but it makes perfect sense now how it parses the functions arguments and converts accordingly. I also wrote an epsilon function, a move function, a check state function for updating the tables, and I also created a function for creating the DFA diagrams.

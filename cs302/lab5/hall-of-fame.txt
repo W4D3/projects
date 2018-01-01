@@ -1,0 +1,37 @@
+14555.83       Adam Disney / Ben Arnold (Tie)             CS302, Fall, 2011 / 2012
+14555.83       Adam Disney / Ben Arnold (Tie)             CS302, Fall, 2011 / 2012
+11380.74      Nathan Ziebart             CS302, Fall, 2011
+11291.39      Michael Jugan              CS302, Fall, 2010
+7003.56       Andrew LaPrise             CS302, Fall, 2011
+5467.56       Tyler Marshall             CS302, Fall, 2013
+4808.03      Matt Baumgartner            CS302, Fall, 2010
+4586.51      Jeramy Harrison             CS302, Fall, 2013
+3882.53       Pranshu Bansal             CS302, Fall, 2013
+3849.24      Chris Richardson            CS302, Fall, 2010
+3464.83      Patrick Slavick             CS302, Fall, 2012
+3436.21          sb-play3                CS140, Fall, 2007
+3080.15       Andrew Messing             CS302, Fall, 2013
+2903.38        Adam LaClair              CS302, Fall, 2013
+2335.88         Mark Clark               CS302, Fall, 2012
+2307.16        John Burnum               CS302, Fall, 2012
+2205.17         Shawn Cox                CS302, Fall, 2011
+2163.70     Alex Wetherington            CS302, Fall, 2011
+2134.99       Julian Kohann              CS302, Fall, 2013
+1778.83       Keith Clinart              CS302, Fall, 2011
+1634.49      William Brummette         CS302, Fall, 2013
+1340.32        John Murray               CS302, Fall, 2012
+1329.34      Benjamin Brock            CS302, Fall, 2013
+1149.80        Will Houston              CS302, Fall, 2010
+1096.48        Daniel Cash               CS302, Fall, 2011
+1059.91      Kaleb McClure            CS302, Fall, 2013
+1058.26          sb-play2                CS140, Fall, 2007
+972.36      Erik Rutledge             CS302, Fall, 2013
+908.09        Chris Rains               CS302, Fall, 2012
+875.44       Allen McBride              CS302, Fall, 2012
+810.17        Collin Bell               CS302, Fall, 2012
+763.58      Jacob Lambert            CS302, Fall, 2013
+703.00         Don Lopez                CS140, Fall, 2007
+677.83         KC Bentjen               CS302, Fall, 2011
+665.60        Joshua Clark              CS302, Fall, 2012
+659.96        Warren Dewit              CS302, Fall, 2010
+650.98     Joaquin Bujalance            CS140, Fall, 2007

@@ -1,0 +1,51 @@
+INSERT Hannah Littoral 399-908-9583 247-33-7029
+PRINT
+DELETE Joshua Flock Jr
+INSERT Zoe Obdurate 146-598-5372 184-30-3348
+INSERT Paige Insolvable 390-444-1238 912-49-0019
+PREORDER
+FIND Hannah Littoral
+INSERT Charlie Gavin Polarimeter 877-826-0927 053-02-2385
+DELETE Michael Sumeria
+INSERT Alex Postoperative 000-250-7236 055-33-5462
+INSERT Brooke Finessed 921-451-4135 851-97-5226
+DELETE Zoe Obdurate
+INSERT Lucas Proof 249-274-5490 600-55-0207
+INSERT Victoria Rejoice 656-275-2364 388-86-5971
+INSERT Nathan Coincide 656-274-9914 777-50-8694
+INSERT Mason Parentage 991-549-9441 754-61-2832
+ROTATE Nathan Coincide
+INSERT Lucas Proof 716-590-7366 904-67-7352
+INSERT Elijah Raster 623-530-7987 694-94-9123
+DELETE Charlie Gavin Polarimeter
+INSERT Hannah Apse 170-533-5569 662-11-0684
+INSERT Benjamin Indisputable 437-304-3787 589-12-9941
+ISAVL
+INSERT Claire Nov PhD 814-523-3335 769-91-3859
+DELETE Claire Nov PhD
+ROTATE Paige Insolvable
+ROTATE Anna Stop
+INSERT Charlotte Hermetic 512-885-0169 592-68-9827
+INSERT Blake Julian Gaston 858-347-9033 176-95-5712
+ROTATE Benjamin Indisputable
+FIND Paige Insolvable
+SORT
+DELETE Nathan Coincide
+INSERT Mason Parentage 677-191-2877 585-89-6140
+POSTORDER
+INSERT Lilly Ceremony 518-074-1962 786-11-5415
+INSERT Brooke Patrol MD 624-698-0381 218-36-4047
+INSERT Liam Miasmal 375-858-2781 489-44-6239
+HEIGHT
+INSERT Xavier Cadent 265-160-2117 425-61-5465
+FIND Hannah Littoral
+DEPTH Brooke Patrol MD
+FIND Victoria Rejoice
+DEPTH Gabriel Gymnosperm
+INSERT Aidan Technology 837-911-9817 323-65-9880
+ROTATE Benjamin Indisputable
+DEPTH Dylan Masterful
+INSERT Isabelle Hash 542-056-6161 913-83-5160
+PRINT
+DELETE Victoria Rejoice
+PRINT

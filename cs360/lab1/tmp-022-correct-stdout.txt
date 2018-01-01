@@ -1,0 +1,139 @@
+Alexandra Lynchburg
+  Sex: Female
+  Father: Unknown
+  Mother: Unknown
+  Children:
+    Andrew Adam Shopkeep
+
+Andrew Adam Shopkeep
+  Sex: Male
+  Father: Unknown
+  Mother: Alexandra Lynchburg
+  Children:
+    Jayden Interstitial
+
+Jayden Interstitial
+  Sex: Male
+  Father: Andrew Adam Shopkeep
+  Mother: Unknown
+  Children:
+    Allison Bella Limpkin
+
+Allison Bella Limpkin
+  Sex: Female
+  Father: Jayden Interstitial
+  Mother: Unknown
+  Children:
+    Alexander Impediment
+
+Alexander Impediment
+  Sex: Male
+  Father: Unknown
+  Mother: Allison Bella Limpkin
+  Children:
+    Lucas Minerva
+
+Lucas Minerva
+  Sex: Male
+  Father: Alexander Impediment
+  Mother: Unknown
+  Children:
+    Addison Eva Amorphous
+
+Addison Eva Amorphous
+  Sex: Female
+  Father: Lucas Minerva
+  Mother: Unknown
+  Children:
+    Kylie Together
+
+Kylie Together
+  Sex: Female
+  Father: Unknown
+  Mother: Addison Eva Amorphous
+  Children:
+    Aaron Successor
+
+Aaron Successor
+  Sex: Male
+  Father: Unknown
+  Mother: Kylie Together
+  Children:
+    Joseph Letitia
+
+Joseph Letitia
+  Sex: Male
+  Father: Aaron Successor
+  Mother: Unknown
+  Children:
+    Nathan Deane
+
+Nathan Deane
+  Sex: Male
+  Father: Joseph Letitia
+  Mother: Unknown
+  Children:
+    Hailey Prof
+
+Hailey Prof
+  Sex: Female
+  Father: Nathan Deane
+  Mother: Unknown
+  Children:
+    Joseph Taught
+
+Joseph Taught
+  Sex: Male
+  Father: Unknown
+  Mother: Hailey Prof
+  Children:
+    Wyatt Waist
+
+Wyatt Waist
+  Sex: Male
+  Father: Joseph Taught
+  Mother: Unknown
+  Children:
+    Mackenzie Bronchial
+
+Mackenzie Bronchial
+  Sex: Female
+  Father: Wyatt Waist
+  Mother: Unknown
+  Children:
+    Audrey Icebox
+
+Audrey Icebox
+  Sex: Female
+  Father: Unknown
+  Mother: Mackenzie Bronchial
+  Children:
+    Julia Holst
+
+Julia Holst
+  Sex: Female
+  Father: Unknown
+  Mother: Audrey Icebox
+  Children:
+    Christian Flick
+
+Christian Flick
+  Sex: Male
+  Father: Unknown
+  Mother: Julia Holst
+  Children:
+    Ian Shortfall
+
+Ian Shortfall
+  Sex: Male
+  Father: Christian Flick
+  Mother: Unknown
+  Children:
+    Andrew Smaller
+
+Andrew Smaller
+  Sex: Male
+  Father: Ian Shortfall
+  Mother: Unknown
+  Children: None
+

@@ -1,0 +1,101 @@
+PREORDER
+INSERT Oliver Ethereal 741-482-7900 989-12-7816
+HEIGHT
+INSERT Brooklyn Riley Wyeth 162-859-7123 973-01-6323
+INSERT Christopher Del MD 930-899-6013 859-81-7674
+INSERT Carter Incisive 188-830-1211 826-42-1766
+INSERT Wyatt Pogrom 688-318-8559 538-18-3610
+DELETE Oliver Ethereal
+POSTORDER
+PRINT
+DEPTH Christopher Del MD
+INSERT Alexander Bateau 830-274-3213 906-80-6040
+INSERT Alexander Bateau 280-905-8134 803-47-3945
+FIND Alexander Bateau
+DEPTH Alexander Bateau
+INSERT Gabriella Instillation 763-303-6210 359-03-0312
+ROTATE Alyssa Feudal
+SORT
+INSERT Sydney Perilous 571-912-4770 882-63-4094
+DEPTH Claire Swat
+ROTATE Christopher Del MD
+FIND Luke Usgs MD
+DELETE Christian Tabloid
+INSERT Kaitlyn Sommelier 315-996-4830 621-47-2935
+DELETE Wyatt Pogrom
+INSERT Sophia Clint 364-473-1898 000-85-0036
+INSERT Sophie Softball 453-806-5607 499-70-3314
+SORT
+DEPTH Brooklyn Riley Wyeth
+INSERT John Deaden 932-130-2212 164-10-0799
+POSTORDER
+DEPTH Sophie Softball
+INSERT Makayla Finish 357-948-4853 781-06-1580
+PRINT
+SORT
+INSERT Christopher Enormity 920-938-0293 688-93-0474
+PREORDER
+ROTATE Sophia Clint
+DELETE Sophia Clint
+INSERT Alyssa Saviour 890-029-8125 577-61-2052
+DEPTH Dontonio Birthplace IV
+FIND Hailey Salesgirl
+DEPTH Makayla Finish
+INSERT Dontonio Gnome 075-871-9396 084-66-5405
+DELETE Gabriella Instillation
+DELETE Sophie Softball
+INSERT William Laos IV 220-019-0301 163-62-9059
+ISAVL
+FIND Makayla Finish
+DELETE Alyssa Saviour
+PREORDER
+FIND Evelyn Ninety MD
+DELETE Dontonio Gnome
+INSERT Kate Floor 124-817-2949 778-89-4598
+ROTATE Christopher Enormity
+INSERT Noah Naivete 962-952-3050 949-35-2630
+ISAVL
+INSERT William Laos IV 750-208-0357 210-24-4899
+INSERT Matthew Arose 989-267-3644 411-79-2765
+INSERT Benjamin Marsh 088-071-0106 588-08-4148
+ROTATE Carter Incisive
+INSERT Addison Superannuate 763-583-7307 933-11-0414
+ISAVL
+INSERT Katelyn Beadle 239-901-0715 511-81-8193
+ROTATE Sydney Perilous
+INSERT Emily Auckland 050-505-8774 922-65-6189
+DELETE Kate Floor
+INSERT Kayla Upheaval 565-784-0865 492-00-9579
+ROTATE Matthew Arose
+INSERT Brianna Handleable 331-867-0766 839-76-2957
+INSERT Kayla Astringent 584-309-7358 774-82-7236
+DELETE Emily Auckland
+ROTATE Addison Superannuate
+ROTATE Noah Naivete
+INSERT Elijah PhD 740-682-2414 257-97-4342
+INSERT Abigail Grass 372-980-0591 319-09-7157
+INSERT Brody Allis 260-398-0303 493-17-2044
+PRINT
+FIND Christopher Del MD
+FIND John Deaden
+INSERT Isabella Pollutant MD 568-447-5347 254-71-0823
+INSERT Sophie Megabyte 719-325-1889 645-92-3176
+DELETE Elijah PhD
+INSERT Olivia Kate Aaas 410-852-2005 340-74-2327
+DELETE Alexander Bateau
+SORT
+ROTATE Brody Allis
+FIND William Laos IV
+DEPTH Aidan Lamarck
+INSERT Bailey Buoy 824-325-6267 230-11-2700
+INSERT Tristan Catholicism 106-927-9334 142-82-9247
+ISAVL
+INSERT Olivia 394-099-5603 676-20-8700
+FIND John Deaden
+ROTATE Maya Bacon
+FIND Isabella Pollutant MD
+INSERT Gabriella Vantage 081-842-0973 178-57-9158
+SORT
+FIND Nathan Categoric
+SORT
+PRINT

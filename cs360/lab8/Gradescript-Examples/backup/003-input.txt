@@ -1,0 +1,2 @@
+sed s/o/oo/g /home/plank/cs360/labs/lab7/Gradescript-Examples/Input-File-5.txt
+grep /home/plank/cs360/labs/lab7/Gradescript-Examples/Input-File-5.txt

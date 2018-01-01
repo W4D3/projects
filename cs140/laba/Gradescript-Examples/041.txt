@@ -1,0 +1,5 @@
+INSERT Caleb Lamprey 983-537-2342 483-05-2143
+INSERT Madison Breadwinner 688-033-6209 171-67-2914
+INSERT Nathan Pathogenic 174-788-0187 875-97-3468
+ROTATE Madison Breadwinner
+PRINT

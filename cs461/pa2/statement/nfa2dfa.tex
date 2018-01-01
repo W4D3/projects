@@ -1,0 +1,126 @@
+\documentclass[11pt]{article}
+\usepackage{graphicx}
+\usepackage[margin=1.0in]{geometry}
+
+\renewcommand{\baselinestretch}{1}
+
+
+\begin{document}
+
+\begin{center}
+  \large{COSC -- Fall 2014 \\
+    Assignment 1 \\
+    nfa2dfa -- Subset construction to convert NFA to DFA
+  }
+\end{center}
+
+Your assignment is to implement the subset construction algorithm (Figure
+3.32 in the text) to convert an NFA to the equivalent DFA.
+You will also need to implement other algorithms, such as those for the
+\emph{move} (Figure 3.31) and \emph{$\epsilon$--closure} (Figure 3.33)
+operations, required for subset construction.
+
+Both the input NFA and the output DFA will be represented as a transition
+table.
+You should represent the NFA and DFA states as integer numbers, starting at
+1.
+A special symbol 'E' will be used to indicate the $\epsilon$--transition.
+You may choose any language you wish to implement the assignment.
+The input will come from \emph{standard input} and the output should be
+printed to \emph{standard output}.
+You should not make any assumptions regarding the maximum number of states or
+transitions in the input NFA or the output DFA.
+You should also carefully consider how you will represent the NFA and
+corresponding DFA in memory.
+If you struggle writing the algorithm, consider using a different data
+structure.
+
+After you complete your implementation, you should rigorously test your
+program to ensure its correctness. We will test your code using the inputs
+available from the course website as well as a number of other randomly
+generated input NFA's.
+
+Finally, you will submit a project report. The project report is a short (one to two
+page, single-spaced) document that describes:
+
+\begin{enumerate}
+\item (in your own words) the problem you set set out to solve, 
+\item your approach (i.e. design and relevant implementation details) for
+solving this problem,
+\item how you debugged and tested your solution, and 
+\item any issues you had in completing the assignment.
+\end{enumerate}
+
+This assignment will be due on \textbf{Tuesday, September 16}.
+You should comment your program so that others (e.g. the grader) can
+understand it. You should also have comments at the top of the file
+indicating your name, this course, and the assignment.
+You should attempt to match your output as closely to my output as possible.
+E-mail a gzipped tar file (created with \texttt{tar xvzf ...}) with your
+source code, instructions for building and running your program, and a pdf of
+your report to \texttt{teffler@vols.utk.edu} and CC it to
+\texttt{mrjantz@utk.edu} before the beginning of class on Tuesday, September
+16$^{th}$.
+
+Partial credits will be given for incomplete efforts. However, a program
+that does not compile or run will get 0 points. Point breakdown is below:
+
+\begin{itemize}
+\item Reads / writes from standard input and standard output            (10)
+\item Input file parsed into NFA data structure                         (10)
+\item NFA to DFA conversion                                             (40)
+\item Output is clear and in the appropriate format                     (10)
+\item Code is easy to understand (e.g., contains appropriate comments)  (10)
+\item Project report                                                    (20)
+\end{itemize}
+
+\newpage
+
+\noindent
+Example input NFA:
+\begin{verbatim}
+Initial State:  1
+Final States:   {11}
+Total States:   11
+State   a                b                E
+1       {}               {}               {2,5}
+2       {3}              {}               {}
+3       {}               {4}              {}
+4       {}               {}               {8}
+5       {}               {6}              {}
+6       {7}              {}               {}
+7       {}               {}               {8}
+8       {}               {}               {9,11}
+9       {10}             {}               {}
+10      {}               {}               {9,11}
+11      {}               {}               {}
+\end{verbatim}
+
+\noindent
+Output from NFA2DFA executable:
+\begin{verbatim}
+reading NFA ... done.
+
+creating corresponding DFA ...
+new DFA state:  1    -->  {1,2,5}
+new DFA state:  2    -->  {3}
+new DFA state:  3    -->  {6}
+new DFA state:  4    -->  {4,8,9,11}
+new DFA state:  5    -->  {7,8,9,11}
+new DFA state:  6    -->  {9,10,11}
+done.
+
+final DFA:
+Initial State:  1
+Final States:   {4,5,6}
+Total States:   6
+State   a                b
+1       {2}              {3}
+2       {}               {4}
+3       {5}              {}
+4       {6}              {}
+5       {6}              {}
+6       {6}              {}
+\end{verbatim}
+
+\end{document}

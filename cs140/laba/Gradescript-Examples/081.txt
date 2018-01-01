@@ -1,0 +1,51 @@
+INSERT Elijah Aristotelean 197-204-6808 102-98-6714
+INSERT Anthony Logarithmic 749-475-4769 979-45-5482
+INSERT Gavin Elijah Satyr 569-834-9108 618-63-3075
+ROTATE Gavin Elijah Satyr
+INSERT Oliver Bluff 819-098-6954 694-15-8586
+SORT
+POSTORDER
+INSERT Amelia Wrist 560-334-1327 914-02-2970
+INSERT Nathan Amongst 104-258-5575 793-85-2971
+INSERT Brody Lisbon PhD 680-750-0154 629-22-7064
+INSERT Joshua Ronald 176-737-4710 387-39-1657
+INSERT Lillian Katelyn Filial 303-408-9801 248-85-6609
+INSERT Brooklyn Stardom 605-578-1653 315-99-6818
+INSERT Michael Coffer 637-691-4240 874-14-9919
+INSERT Charlie Tight 779-343-6341 964-41-4371
+ROTATE Gavin Elijah Satyr
+INSERT Taylor Sarah Petrochemical 661-428-8323 200-31-7163
+INSERT Benjamin Amen 010-034-7419 156-09-0778
+INSERT Evelyn Torpedo 449-272-4422 933-74-4631
+DELETE Elijah Aristotelean
+ROTATE Lillian Katelyn Filial
+DELETE Brody Lisbon PhD
+INSERT Joshua Champaign 310-228-5732 122-63-7068
+DEPTH Christopher Prayer
+POSTORDER
+INSERT Cooper Benjamin Sacrament 666-021-7502 078-05-8693
+INSERT Lillian Emitted 429-739-5944 394-57-6536
+ROTATE Addison Flight
+DEPTH Matthew Gigahertz
+INSERT Lillian Emitted 514-613-6461 881-25-7188
+SORT
+ISAVL
+INSERT Lauren Browse 100-084-1774 261-65-8378
+POSTORDER
+HEIGHT
+INSERT Brody Peninsula 730-115-1793 928-26-7415
+INSERT Victoria Inertance 662-478-2309 420-91-2029
+DEPTH Cooper Benjamin Sacrament
+FIND Oliver Bluff
+DELETE Charlie Tight
+DELETE Amelia Wrist
+FIND Ryan Minoan
+SORT
+INSERT Sophia Quint 358-047-7568 078-56-1457
+FIND Joshua Champaign
+DELETE Brody Peninsula
+PREORDER
+ISAVL
+INSERT Madison Anaheim 016-925-5058 672-39-1516
+ROTATE Gavin Elijah Satyr
+PRINT

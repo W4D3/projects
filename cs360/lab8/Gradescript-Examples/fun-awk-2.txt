@@ -1,0 +1,4 @@
+	{ for (i = 1; i <= NF; i += 3) printf "%s ", $i
+	  for (i = 2; i <= NF; i += 3) printf "%s ", $i
+	  for (i = 3; i <= NF; i += 3) printf "%s ", $i
+          printf "\n" }

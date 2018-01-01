@@ -1,0 +1,8 @@
+	{ l++
+          if (l %2 == 0) {
+            print $0
+            print last
+          }
+          last = $0
+         }
+END	{ if (l%2 == 1) print $0 }

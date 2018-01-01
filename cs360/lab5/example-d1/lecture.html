@@ -1,0 +1,645 @@
+<title>CS360 Lecture notes -- Atomic Actions and more on I/O</title>
+<body bgcolor=ffffff>
+<h1>CS360 Lecture notes -- Atomic Actions and more on I/O</h1>
+<LI><a href=http://www.cs.utk.edu/~plank>Jim Plank</a>
+<LI>Directory: <b>/home/plank/cs360/notes/Logfile</b>
+<LI>Lecture notes:
+    <a href=http://www.cs.utk.edu/~plank/plank/classes/cs360/360/notes/Atomic/lecture.html>
+    <b>
+  http://www.cs.utk.edu/~plank/plank/classes/cs360/360/notes/Atomic/lecture.html</b></a>
+<LI> <i>Fri Feb 12 13:57:27 EST 2010</i>
+
+<hr>
+
+If you are going over these programs, it is a good idea to make sure that you are
+executing on a directory that is on a disk on the machine that you are using.  You 
+may want to do "cd /var/tmp" and do your work there.  Make sure to delete the files
+when you are done.
+
+<h1>Atomic Actions</h1>
+
+A sequence of actions is <i>atomic</i> if the actions are guaranteed to be performed 
+without interruption.    Atomic actions are important in all computer applications
+where multiple processors or processes share resources.  Consider the following 
+problem -- you want to create a file and open it for writing only if it does
+not exist already.  Why might you want to do this?  Perhaps you are writing a program
+like a web browser that needs to use a temporary file -- you want that file to be 
+unique and not to be used by any other program.  Thus, you want to create it only if
+it doesn't exist already.
+<p>
+Without any additional knowledge, you might try the code in 
+<b><a href=openunique_1.c>openunique_1.c</a></b>:
+
+<p><center><table border=3 cellpadding=3><td><pre>
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+#include &lt;sys/stat.h&gt;
+#include &lt;fcntl.h&gt;
+#include &lt;errno.h&gt;
+
+main(int argc, char **argv)
+{
+  struct stat buf;
+  int fd;
+  char *filename;
+  char *string;
+
+  if (argc != 2) {
+    fprintf(stderr, "usage: openunique_1 filename\n");
+    exit(1);
+  }
+    
+  filename = argv[1];
+  string = "Example string\n";
+
+  if (stat(argv[1], &buf) != 0) {
+    fd = open(filename, O_WRONLY | O_CREAT, 0);
+    if (fd &lt;  0) {
+      perror(filename);
+      exit(1);
+    } 
+    write(fd, string, strlen(string));
+    close(fd);
+  } else {
+    printf("%s already exists -- not opening\n", filename);
+  }
+  exit(0);
+}
+</pre></td></table></center><p>
+
+This code uses <b>stat()</b> to test whether the given file exists.  If it does, then
+the program says so and exits.  Otherwise, it creates the file and writes the string
+<b>"Example string"</b> to it.  Let's run it a few times:
+
+<pre>
+UNIX> <font color=darkred><b>ls f1.txt</b></font>
+ls: f1.txt: No such file or directory
+UNIX> <font color=darkred><b>openunique_1 f1.txt</b></font>
+UNIX> <font color=darkred><b>ls -l f1.txt</b></font>
+----------   1 plank  plank  15 Feb 12 11:44 f1.txt
+UNIX> <font color=darkred><b>cat f1.txt</b></font>
+cat: f1.txt: Permission denied
+UNIX> <font color=darkred><b>chmod 0644 f1.txt</b></font>
+UNIX> <font color=darkred><b>ls -l f1.txt</b></font>
+-rw-r--r--   1 plank  plank  15 Feb 12 11:44 f1.txt
+UNIX> <font color=darkred><b>cat f1.txt</b></font>
+Example string
+UNIX> <font color=darkred><b>openunique_1 f1.txt</b></font>
+f1.txt already exists -- not opening
+UNIX> <font color=darkred><b>rm f1.txt</b></font>
+UNIX> <font color=darkred><b>openunique_1 f1.txt</b></font>
+UNIX> <font color=darkred><b>ls -l f1.txt</b></font>
+----------   1 plank  plank  15 Feb 12 11:45 f1.txt
+UNIX> <font color=darkred><b>rm -f f1.txt</b></font>
+UNIX> <font color=darkred><b></b></font>
+</pre>
+
+The first time we run it, it creates <b>f1.txt</b>.  Take a look at the "mode" parameter of the <b>open()</b>
+call.  It is zero.  That means that the file will be created so that no one can read, write or execute it.
+However, the <b>openunique_1</b> program can write to it, because it was opened for writing.  
+Any <i>subsequent</i> <b>open()</b> call will fail.  When we do a long listing on it, we see
+all those dashes, meaning that we don't have permission to do anything with the file.  This is 
+why <b>cat</b> fails on it.  We can do the <b>chmod</b> command to give us permissions and then
+we can <b>cat</b> the file.  A second call to <b>openunique_1</b> fails because the file exists.
+After we remove it, <b>openunique_1</b> succeeds.
+<p>
+Now, let's test how well this works when two processes are competing to open the same file.
+Take a look at
+<b><a href=openunique_2.c>openunique_2.c</a></b>:
+
+<p><center><table border=3 cellpadding=3><td><pre>
+main(int argc, char **argv)
+{
+  struct stat buf;
+  int fd;
+  char *filename;
+  int iterations, i;
+  int successful, unsuccessful, erroneous;
+
+  if (argc != 3) {
+    fprintf(stderr, "usage: openunique_2 filename iterations\n");
+    exit(1);
+  }
+    
+  filename = argv[1];
+  iterations = atoi(argv[2]);
+  successful = 0;
+  unsuccessful = 0;
+  erroneous = 0;
+
+  for (i = 0; i &lt; iterations; i++) {
+    if (stat(argv[1], &buf) != 0) {
+      fd = open(filename, O_WRONLY | O_CREAT, 0);
+      if (fd &lt;  0) {
+        erroneous++;
+      } else {
+        close(fd);
+        remove(filename);
+        successful++;
+      }
+    } else {
+      unsuccessful++;
+    }
+  }
+  printf("  Successful: %5d\n", successful);
+  printf("Unsuccessful: %5d\n", unsuccessful);
+  printf("   Erroneous: %5d\n", erroneous);
+  exit(0);
+}
+</pre></td></table></center><p>
+
+This program iterates trying to create a file if it doesn't exist, and it keeps track
+of three results: it is <b>successful</b> if the file doesn't exist and it is created
+successfully.  In this case, the open file is closed, and the <b>remove()</b> system 
+call removes it.  It is <b>unsuccessful</b> if the file already exists.  It is <b>erroneous</b>
+if the <b>stat()</b> call said that the file didn't exist, but when we try to open it, we
+can't.  Why would that happen?  It would happen if someone creates the file with no
+permissions between the <b>stat()</b> and the <b>open()</b> call.  Can that really happen?
+Take a look:
+
+<pre>
+UNIX> <font color=darkred><b>ls f1.txt</b></font>
+ls: cannot access f1.txt: No such file or directory
+UNIX> <font color=darkred><b>openunique_2 f1.txt 10000</b></font>
+  Successful: 10000
+Unsuccessful:     0
+   Erroneous:     0
+UNIX> <font color=darkred><b>touch f1.txt</b></font>
+UNIX> <font color=darkred><b>openunique_2 f1.txt 10000</b></font>
+  Successful:     0
+Unsuccessful: 10000
+   Erroneous:     0
+UNIX> <font color=darkred><b>rm f1.txt</b></font>
+UNIX> <font color=darkred><b>openunique_2 f1.txt 10000 & ; openunique_2 f1.txt 10000</b></font>
+[1] 28140
+  Successful:  1511
+Unsuccessful:  6881
+   Erroneous:  1608
+UNIX> Successful:  2440
+Unsuccessful:  6079
+   Erroneous:  1481
+
+[1]    Done                          openunique_2 f1.txt 10000
+UNIX> <font color=darkred><b></b></font>
+</pre>
+
+The first <b>openunique_2</b> runs successfully, because <b>f1.txt</b> doesn't exist.
+The second <b>openunique_2</b> runs unsuccessfully, because <b>f1.txt</b> does exist.
+In the third call, we run two <b>openunique_2</b>'s simultaneously by putting the
+first in the <i>background</i> with the ampersand.  The cluttered output is because
+the second <b>openunique_2</b> finished before the first one, and gave us the
+<b>UNIX</b> prompt back.  I typed <b>&lt;RETURN&gt;</b> to get my prompt back.
+What you see there, is that both processes have a significant number of erroneous
+open calls -- the file was changed between the <b>stat()</b> and <b>open()</b>
+calls!
+<p>
+If you read the man page for <b>open()</b> ("man -s 2 open"), you'll see the following
+flag:
+
+<p><center><table border=3 cellpadding=3><td valign=top><pre>
+           O_EXCL          error if create and file exists
+
+     .................................  If O_EXCL is set with O_CREAT and the
+     file already exists, open() returns an error.  This may be used to imple-
+     ment a simple exclusive access locking mechanism.  
+</pre></td></table></center><p>
+
+Let's test this out in
+<b><a href=openunique_3.c>openunique_3.c</a></b>:
+
+<p><center><table border=3 cellpadding=3><td><pre>
+main(int argc, char **argv)
+{
+  int fd;
+  char *filename;
+  char *string;
+
+  if (argc != 2) {
+    fprintf(stderr, "usage: openunique_3 filename\n");
+    exit(1);
+  }
+    
+  filename = argv[1];
+  string = "Example string\n";
+
+  fd = open(filename, O_WRONLY | O_CREAT | O_EXCL, 0);
+  if (fd &lt;  0) {
+    perror(filename);
+    exit(1);
+  } 
+  write(fd, string, strlen(string));
+  close(fd);
+  exit(0);
+}
+</pre></td></table></center><p>
+
+And try some calls:
+
+<pre>
+UNIX> <font color=darkred><b>ls f1.txt</b></font>
+ls: cannot access f1.txt: No such file or directory
+UNIX> <font color=darkred><b>openunique_3 f1.txt</b></font>
+UNIX> <font color=darkred><b>ls -l f1.txt</b></font>
+---------- 1 plank loci 15 2010-02-12 12:05 f1.txt
+UNIX> <font color=darkred><b>openunique_3 f1.txt</b></font>
+f1.txt: File exists
+UNIX> <font color=darkred><b>rm -f f1.txt</b></font>
+UNIX> <font color=darkred><b>openunique_3 f1.txt</b></font>
+UNIX> <font color=darkred><b>ls -l f1.txt</b></font>
+---------- 1 plank loci 15 2010-02-12 12:05 f1.txt
+UNIX> <font color=darkred><b></b></font>
+</pre>
+
+The flag works as advertized.  We can chase down the proper <b>errno</b> by looking
+at <b>/usr/include/errno.h</b>, and finding the proper include file that contains
+the string "File exists".  On my macintosh, that's <b>/usr/include/sys/errno.h</b>.
+On my office machine, you have to chase down a bunch of include statements to 
+find that it's in <b>/usr/include/asm-generic/errno-base.h</b>:
+
+<pre>
+UNIX> <font color=darkred><b>grep 'File exists' /usr/include/asm-generic/errno-base.h</b></font>
+#define EEXIST          17      /* File exists */
+UNIX> <font color=darkred><b></b></font>
+</pre>
+
+Armed with that knowledge, we write 
+<b><a href=openunique_4.c>openunique_4.c</a></b>, which is like
+<b><a href=openunique_2.c>openunique_2.c</a></b>, except it uses the <b>O_EXCL</b> flag
+instead of <b>stat()</b>:
+
+<p><center><table border=3 cellpadding=3><td><pre>
+main(int argc, char **argv)
+{
+  int fd;
+  char *filename;
+  int iterations, i;
+  int successful, unsuccessful, erroneous;
+
+  if (argc != 3) {
+    fprintf(stderr, "usage: openunique_4 filename iterations\n");
+    exit(1);
+  }
+    
+  filename = argv[1];
+  iterations = atoi(argv[2]);
+  successful = 0;
+  unsuccessful = 0;
+  erroneous = 0;
+
+  for (i = 0; i &lt; iterations; i++) {
+    fd = open(filename, O_WRONLY | O_CREAT | O_EXCL, 0);
+    if (fd &lt; 0 && errno == EEXIST) {
+      unsuccessful++;
+    } else if (fd &lt; 0) {
+      perror(filename);
+      exit(1);
+      erroneous++;
+    } else {
+      close(fd);
+      remove(filename);
+      successful++;
+    }
+  }
+  printf("  Successful: %5d\n", successful);
+  printf("Unsuccessful: %5d\n", unsuccessful);
+  printf("   Erroneous: %5d\n", erroneous);
+  exit(0);
+}
+</pre></td></table></center><p>
+
+Running two of these simultaneously now works -- the file is never opened erroneously:
+
+<pre>
+UNIX> <font color=darkred><b>rm -f f1.txt</b></font>
+UNIX> <font color=darkred><b>openunique_4 f1.txt 10000</b></font>
+  Successful: 10000
+Unsuccessful:     0
+   Erroneous:     0
+UNIX> <font color=darkred><b>touch f1.txt</b></font>
+UNIX> <font color=darkred><b>openunique_4 f1.txt 10000</b></font>
+  Successful:     0
+Unsuccessful: 10000
+   Erroneous:     0
+UNIX> <font color=darkred><b>rm -f f1.txt</b></font>
+UNIX> <font color=darkred><b>openunique_4 f1.txt 10000 & ; openunique_4 f1.txt 10000</b></font>
+[1] 28790
+  Successful:  3895
+Unsuccessful:  6105
+   Erroneous:     0
+  Successful:  3764
+Unsuccessful:  6236
+   Erroneous:     0
+[1]  + Done                          openunique_4 f1.txt 10000
+UNIX> <font color=darkred><b></b></font>
+</pre>
+
+Oddly, this fails on my macintosh, with the <b>open()</b> call returning
+-1 and setting <b>errno</b> to <b>ENOENT</b>:  "No such file or directory."
+I can only conclude that this is a bug in the Mac's operating system, and
+that if you get this, you should retry it.  Welcome to the ills of systems
+programming!
+
+
+<hr>
+<h1>Umask</h1>
+   Read chapter 4.8, and the <b>umask</b> man page 
+   (say "<b>man -s 2 umask</b>"):
+<pre>
+     umask() sets the process's file creation mask  to  mask  and
+     returns  the  previous  value  of the mask.  The low-order 9
+     bits of mask are used whenever a file is  created,  clearing
+     corresponding  bits  in  the  file access permissions.  (see
+     stat(2V)).  This clearing restricts the default access to  a
+     file.
+
+     The mask is inherited by child processes.
+</pre>
+   When you call <b>umask</b> from a program, or from the shell, it changes the
+   "File creation mask".  This mask consists of 9 bits.  Whenever a file
+   is created, for example by <b>open()</b>, <b>creat()</b>, or <b>mkdir()</b>, 
+   and a mode <b>m</b>
+   is specified, then the file is created with the mode:
+<pre>
+(m & ~umask)
+</pre>
+
+   <b>Umask</b> the system call returns the old <b>umask</b> value.<p>
+
+   For example, look at the following program (<b><a href=um1.c>um1.c</a></b>)
+
+<p><center><table border=3 cellpadding=3><td><pre>
+main()
+{
+  int fd;
+  int old_mask;
+
+  old_mask = umask(0);
+  printf("The old mask was 0%o\n", old_mask);
+
+  fd = open("f1", O_WRONLY | O_CREAT | O_TRUNC, 0666);
+  close(fd);
+  printf("created f1: 0666\n");
+  fd = open("f2", O_WRONLY | O_CREAT | O_TRUNC, 0200);
+  close(fd);
+  printf("created f2: 0200\n");
+
+  umask(022);
+  fd = open("f3", O_WRONLY | O_CREAT | O_TRUNC, 0666);
+  close(fd);
+  printf("created f3: 0%o\n", 0666 & ~022 & 0777);
+  fd = open("f4", O_WRONLY | O_CREAT | O_TRUNC, 0777);
+  close(fd);
+  printf("created f4: 0%o\n", 0777 & ~022 & 0777);
+  fd = open("f5", O_WRONLY | O_CREAT | O_TRUNC, 0200);
+  close(fd);
+  printf("created f5: 0%o\n", 0200 & ~022 & 0777);
+}
+</pre></td></table></center><p>
+
+When we execute <b>um1</b> and list the five files created, we see the following:
+
+<pre>
+UNIX> <font color=darkred><b>um1</b></font>
+The old mask was 022
+created f1: 0666
+created f2: 0200
+created f3: 0644
+created f4: 0755
+created f5: 0200
+UNIX> <font color=darkred><b>ls -l f?</b></font>
+-rw-rw-rw-   1 plank  plank  0 Feb 12 12:27 f1
+--w-------   1 plank  plank  0 Feb 12 12:27 f2
+-rw-r--r--   1 plank  plank  0 Feb 12 12:27 f3
+-rwxr-xr-x   1 plank  plank  0 Feb 12 12:27 f4
+--w-------   1 plank  plank  0 Feb 12 12:27 f5
+UNIX> <font color=darkred><b></b></font>
+</pre>
+
+The first two </b>open()</b> calls created the file with the exact mode specified.
+The other three had the modes modified by the <b>umask</b>, which was set to 022.
+In terms of bits, 022 is equal to (000 010 010).  Thus, ~022 is equal to (111 101 101).
+The third <b>open()</b> call specifies a mode of 0666, which is (110 110 110),
+and if we take the binary AND of the two numbers:
+<pre>
+111 101 101
+110 110 110
+-----------
+110 100 100
+</pre>
+We get 0644, which corresponds to "-rw-r--r--".  Similarly, opening the file with 0777
+gets you 0755.     
+<p>
+The <b>umask</b> is convenient because it allows the user to get his or her default 
+protection mode.  Programs typically call <b>open()</b> with modes of 0666 or 0777
+(if the file is executable), and the <b>umask</b> handles the user's preference as to
+who can see the file.  I typically set my <b>umask</b> to 022, which lets others read
+and execute my files, but not write them. Some people like to set it to 077, which 
+doesn't let others do anything with the files.
+<p>
+   The <b>umask</b> value is set per process, not per user.  So, if your
+   shell's <b>umask</b> is 022, and you have a program set it to 0, then 
+   that does not affect the shell:
+
+<pre>
+UNIX> <font color=darkred><b>cat um2.c</b></font>
+main()
+{
+  umask(0);
+}
+UNIX> <font color=darkred><b>umask</b></font>
+22
+UNIX> <font color=darkred><b>um2</b></font>
+UNIX> <font color=darkred><b>umask</b></font>
+22
+UNIX> <font color=darkred><b></b></font>
+</pre>
+
+<hr>
+<h1>Random File/Inode System calls.</h1>
+
+These are sketchy because they are straightforward.
+
+<UL>
+<LI> <b>chmod(char *path, mode_t mode)</b>  -- Works just like chmod when executed from
+            the shell.  E.g.   <b>chmod("f1", 0600)</b>  will set the protection of
+            file <b>f1</b> to be "rw-" for you, and "---" for everyone else.
+<p>
+            Read section 4.9 of the bookfor a more thorough description, including 
+            use of the mode bits like S_IRUSR, etc.
+<p>
+The program 
+<b><a href=o1.c>o1.c</a></b> has an example that you may want to go over:
+
+<p><center><table border=3 cellpadding=3><td><pre>
+main()
+{
+  struct stat buf;
+  int fd;
+
+  fd = open("f1.txt", O_WRONLY | O_CREAT | O_TRUNC);
+  sleep(1);
+  printf("Doing chmod\n");
+  chmod("f1.txt", 0000);
+  sleep(1);
+  printf("Doing write\n");
+  write(fd, "Hi\n", 3);
+}
+</pre></td></table></center><p>
+
+The program opens <b>f1.txt</b> for writing, and after a second, it calls <b>chmod</b>
+to set the permissions to nothing.  One second later, it writes to the open file.
+Should this write succeed or not?  Let's see:
+
+<pre>
+UNIX> <font color=darkred><b>rm -f f1.txt</b></font>
+UNIX> <font color=darkred><b>o1</b></font>
+Doing chmod
+Doing write
+UNIX> <font color=darkred><b>ls -l f1.txt</b></font>
+----------   1 plank  plank  3 Feb 12 13:36 f1.txt
+UNIX> <font color=darkred><b>chmod 0644 f1.txt</b></font>
+UNIX> <font color=darkred><b>cat f1.txt</b></font>
+Hi
+UNIX> <font color=darkred><b>chmod 0644 f1.txt</b></font>
+UNIX> <font color=darkred><b>echo "New Text" > f1.txt</b></font>
+UNIX> <font color=darkred><b>cat f1.txt</b></font>
+New Text
+UNIX> <font color=darkred><b>chmod 0 f1.txt</b></font>
+UNIX> <font color=darkred><b>o1</b></font>
+Doing chmod
+Doing write
+UNIX> <font color=darkred><b>ls -l f1.txt</b></font>
+----------   1 plank  plank  9 Feb 12 13:38 f1.txt
+UNIX> <font color=darkred><b>chmod 0644 f1.txt</b></font>
+UNIX> <font color=darkred><b>cat f1.txt</b></font>
+New Text
+UNIX> <font color=darkred><b></b></font>
+</pre>
+
+The answer is that the program can write to the file even after the <b>chmod</b> call.
+This is similar to <b>openunique_1.c</b> which can open a file with no permissions set,
+yet it can still write to the file.  If the open call is successful, then the operating
+system won't change the open file from under you -- the <b>write</b> is successful.
+<p>
+Now, what happens in the second call to <b>o1</b>.  Here, the <b>open()</b> call fails
+because the file exists and has no permissions set.  The <b>chmod()</b> call works, 
+but the <b>write()</b> call fails because <b>fd</b> will be -1.  For that reason, <b>f1.txt</b>
+is unmodified by running <b>o1</b>.
+
+
+<p><LI> <b>chown()</b> -- ignore.
+
+<p><LI> <b>link, unlink, remove, rename</b>:  Section 4.15 of the book.
+
+ These are straightforward: <b> link(char *f1, char *f2)</b> works just like:
+<pre>
+UNIX> <font color=darkred><b>ln f1 f2</b></font>
+</pre>
+<b>f2</b> has to be a file -- it cannot be a directory.
+<p>
+   <b>unlink(char *f1)</b> works like:
+
+<pre>
+UNIX> <font color=darkred><b>rm f1</b></font>
+</pre>
+
+<b>   remove(char *f1)</b> works like unlink, but it also works for (empty) 
+                    directories.  unlink fails on directories.  Take a look 
+at <b><a href=o2.c>o2.c</a></b>:
+
+<p><center><table border=3 cellpadding=3><td><pre>
+main()
+{
+  int fd;
+  char s[11];
+  int i;
+
+  strcpy(s, "Fun Fun\n");
+  fd = open("f1.txt", O_RDONLY);
+  sleep(1);
+  printf("Removing f1.txt\n");
+  remove("f1.txt");
+  sleep(1);
+  system("ls -l f1.txt");
+  i = read(fd, s, 10);
+  s[i] = '\0';
+  printf("Read returned %d: %d %s\n", i, fd, s);
+}
+</pre></td></table></center><p>
+
+This program opens <b>f1.txt</b> for reading, sleeps a second, and then removes <b>f1.txt</b>.
+It sleeps again, performs a long listing and then tries to read 10 bytes from the open file.
+The question is -- what happens when we remove <b>f1.txt</b>?  Will the read call succeed,
+or fail because the file is gone?
+
+<pre>
+UNIX> <font color=darkred><b>cat > f1.txt</b></font>
+Tramp - You can call me that.
+UNIX> <font color=darkred><b>cat f1.txt</b></font>
+Tramp - You can call me that.
+UNIX> <font color=darkred><b>o2</b></font>
+Removing f1.txt
+ls: f1.txt: No such file or directory
+Read returned 10: 3 Tramp - Yo
+UNIX> <font color=darkred><b></b></font>
+</pre>
+
+The <b>ls</b> command shows that <b>f1.txt</b> is indeed gone after the <b>remove()</b> call.
+However, the operating system does not delete the file until the last file descriptor to 
+it is closed.  For that reason, the <b>read()</b> call succeeds.
+<p>
+Try <b>o2</b> when <b>f1.txt</b> doesn't exist:
+
+<pre>
+UNIX> <font color=darkred><b>rm -f f1.txt</b></font>
+UNIX> <font color=darkred><b>o2</b></font>
+Removing f1.txt
+ls: f1.txt: No such file or directory
+Read returned -1: -1 Fun Fun
+
+UNIX> <font color=darkred><b></b></font>
+</pre>
+
+What happened?  First, the <b>open()</b> call failed and returned -1. 
+Thus, the <b>read()</b> call also failed and returned -1.  Since the <b>read</b>
+call failed, the bytes of <b>s</b> were never overwritten - thus when we printed
+them out, we got "Fun Fun."  Make sure you understand this code and its output.
+It is deterministic -- we are not getting segmentation violations or random behavior
+with these calls -- we are simply getting well-defined errors in our  system calls.
+
+<p>
+<b>   rename(char *f1, char *f2) </b> works just like:
+
+<pre>
+UNIX> <font color=darkred><b>mv f1 f2</b></font>
+</pre>
+
+<p><LI> <b>symlink</b> and <b>readlink</b>:  Read chapter 4.17 or the man pages.  These routines mess with
+          symbolic links.  You will need them in your <b>jtar</b> assignment.
+
+<p><LI> <b>utime</b>:  Read chapter 4.19 or the man page.  This system call lets you change the time
+           fields of a file's inode.  It looks like it should
+           be illegal (for example, one could write a program to make it look
+           like one has finished his homework on time...), but it is very 
+           handy, especially for writing tar (and jtar).
+
+<p><LI> <b>mkdir</b> and <b>rmdir</b>:  Again straightforward, and like:
+
+<pre>
+UNIX> <font color=darkred><b>mkdir ...</b></font>
+UNIX> <font color=darkred><b>rmdir ...</b></font>
+</pre>
+
+Read chapter 4.20 or the man pages.
+
+<p><LI> <b>chdir, getcwd</b>:  Like 
+
+<pre>
+UNIX> <font color=darkred><b>cd ...</b></font>
+UNIX> <font color=darkred><b>pwd</b></font>
+</pre>
+
+Read chapter 4.22 or the man pages.  You will not need these for <b>jtar</b>, but can use
+           them if you'd like.
+</pre>

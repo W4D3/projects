@@ -1,0 +1,51 @@
+INSERT Joshua Guignol 876-217-5027 392-13-5271
+PREORDER
+INSERT Xavier Calf 437-291-5102 882-23-9467
+ROTATE Joshua Guignol
+DEPTH Xavier Calf
+DEPTH Xavier Calf
+ISAVL
+INSERT Joshua Guignol 960-918-7683 261-08-4605
+ISAVL
+FIND Sofia Temporal
+DELETE Xavier Calf
+INSERT Madison Insecure 934-451-4631 660-18-8163
+INSERT Madison Insecure 446-257-1712 477-77-0400
+ROTATE Madison Insecure
+PRINT
+INSERT Caleb Aiden Rancho 960-979-5831 441-29-4049
+ISAVL
+INSERT Hunter James Abo 998-005-1229 937-01-4998
+INSERT William Stoichiometry 218-205-1654 970-33-6621
+INSERT Evan Topography 408-101-4616 712-01-7336
+INSERT James Ecosystem 684-855-8299 239-71-8627
+INSERT Lillian Kylie Starkey PhD 427-094-8787 028-28-2284
+PREORDER
+FIND James Ecosystem
+ROTATE Hunter James Abo
+INSERT Taylor Chromic 981-516-2702 596-77-3040
+INSERT Anna Ares 620-370-1011 553-29-7330
+DELETE Lillian Kylie Starkey PhD
+DELETE Paige Rung
+ISAVL
+DEPTH Madison Insecure
+DELETE Hunter James Abo
+PRINT
+DELETE Madison Insecure
+INSERT Austin Ouzo MD 766-693-2124 549-31-2508
+FIND Caleb Aiden Rancho
+INSERT Jayden Spacious 751-695-1299 822-37-3943
+DELETE Jayden Spacious
+ISAVL
+DELETE Caleb Aiden Rancho
+DELETE William Stoichiometry
+INSERT Ryan Inferential 996-527-0676 675-42-4728
+INSERT Brooke Ana 588-295-6657 156-25-2778
+INSERT Brooke Ana 826-583-0555 491-15-2164
+FIND Ryan Inferential
+INSERT Austin Comedy 516-437-1059 440-97-3483
+FIND Joshua Guignol
+INSERT Elizabeth Chinatown 814-273-5699 982-07-0958
+FIND Taylor Chromic
+ISAVL
+PRINT

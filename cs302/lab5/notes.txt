@@ -1,0 +1,9 @@
+At the end of the first game he gives a subtle hint
+saying that he should have preformed a certain swap
+earlier. Maybe we should use a vector and store the
+connected pieces in there and when the number of
+empty spaces gets scarily low then swap and score a 
+goal
+
+- Is it better to swap and score asap or to let a
+big number of pieces collect before scoring?

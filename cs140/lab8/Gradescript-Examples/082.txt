@@ -1,0 +1,29 @@
+STRIP pnn
+ERASE Paige Birmingham
+INSERT Evan Jacob Ellsworth Esq
+INSERT Avery Lilly Olden
+PRESENT Parker Binary
+ERASE Evan Jacob Ellsworth Esq
+PRESENT Kate Julia Redbud
+PRINT
+# Avery Lilly Olden
+INSERT Savannah Lillian Marriageable
+PRESENT Avery Lilly Olden
+ERASE Jackson Eternity
+ERASE Avery Lilly Olden
+INSERT Claire Troupe
+INSERT Michael Douglas
+ERASE Michael Douglas
+PRESENT Avery Influent
+PRESENT Julian Joss
+INSERT Charlie Urban
+INSERT Madeline Bode
+PRINT
+# Savannah Lillian Marriageable
+# Claire Troupe
+# Charlie Urban
+# Madeline Bode
+# Savannah Lillian Marriageable
+# Claire Troupe
+# Charlie Urban
+# Madeline Bode

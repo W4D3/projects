@@ -1,0 +1,101 @@
+DEPTH Amelia Concertina
+ISAVL
+INSERT Hannah Cozy 227-443-3194 455-09-0718
+INSERT Gavin Opprobrium 379-563-3537 212-72-4377
+INSERT Jonathan Ibid 730-054-4283 514-85-7462
+ROTATE Hannah Cozy
+DELETE Hannah Cozy
+INSERT Benjamin Slag Jr 085-596-4379 604-46-7004
+INSERT Jackson Omnipotent 156-473-7213 426-28-9121
+INSERT Sophia Declamation 415-782-7259 427-46-8111
+INSERT Benjamin William Revolve 807-255-9881 990-79-1336
+SORT
+INSERT Hannah Frau 499-652-1153 864-14-4593
+INSERT Savannah Degeneracy 891-059-8550 804-47-7571
+INSERT Eva Wolfish 467-406-8612 592-71-1940
+ROTATE Hannah Frau
+INSERT Xavier Prohibition 649-181-4877 617-63-7158
+FIND Benjamin Slag Jr
+FIND James Corn
+DEPTH Hannah Exhort
+INSERT Sofia Cold 406-220-5313 588-17-2242
+DELETE Jonathan Ibid
+INSERT Caroline Jounce 194-676-0426 215-46-9398
+DELETE Benjamin William Revolve
+INSERT Madelyn Alacrity 506-874-7080 625-59-2531
+INSERT Sofia Cold 834-231-2668 946-09-1279
+DEPTH Logan Lam
+FIND Gavin Opprobrium
+INSERT Caroline Jounce 664-932-1940 931-14-6307
+ROTATE Xavier Prohibition
+DELETE Jackson Omnipotent
+INSERT Landon Veda 653-422-8661 432-61-0173
+INSERT Ella Coleridge 321-152-2918 991-37-6358
+SORT
+INSERT Max Slang 847-378-7087 416-28-7306
+DEPTH Madelyn Alacrity
+SORT
+FIND Mia Slop
+INSERT Grace Panicle 601-152-8125 321-69-7733
+DEPTH Caroline Jounce
+INSERT Caroline Colorate 550-738-9195 633-42-5755
+PREORDER
+ISAVL
+INSERT Samuel Lancashire 199-804-3095 649-84-3989
+INSERT Sofia Harrington 671-528-8584 608-38-3988
+SORT
+PREORDER
+FIND Ella Coleridge
+INSERT Dontonio Alex Apostolic 615-058-2529 701-63-8484
+INSERT Alexis Salmonberry 077-910-6362 609-14-8288
+INSERT Amelia Ballfield 770-312-7164 973-18-4912
+INSERT Addison Applause 143-320-0585 848-05-5150
+INSERT Sophia Declamation 204-944-3066 046-68-5186
+PRINT
+INSERT Makayla Delusive 686-664-8709 311-02-9876
+ROTATE Xavier Tab
+INSERT Evelyn Soothsayer 900-462-9127 228-38-9478
+INSERT Tyler Analogue 130-919-7570 593-47-9668
+ISAVL
+INSERT Lillian Effort MD 383-415-4662 426-60-9202
+INSERT Jonathan Mummy 660-752-0583 989-89-4096
+INSERT Anna Indignant 258-613-5923 374-25-7229
+DEPTH Matthew Hines MD
+FIND Benjamin Slag Jr
+INSERT Alyssa Implementor 713-663-6728 839-74-5625
+ROTATE Dontonio Alex Apostolic
+INSERT Bella Francisco 198-337-5320 744-34-5522
+INSERT Lauren Salmonberry 427-351-8305 114-16-8512
+INSERT Tristan Tattle 481-597-2919 111-36-7833
+DEPTH Jacob Runway
+ISAVL
+DELETE Jonathan Mummy
+DELETE Sofia Harrington
+FIND Savannah Degeneracy
+FIND Gianna Epithelial
+ISAVL
+INSERT Lucas Honda 369-440-9496 528-37-9141
+DELETE Joseph Liam Alumna
+INSERT Adam Iris 232-417-6621 307-27-9126
+DELETE Madelyn Ava Clothe
+FIND Hannah Frau
+INSERT Brody Iffy 662-585-9525 537-08-2169
+DEPTH Landon Veda
+ROTATE Morgan Akin
+ROTATE Mackenzie Makayla Mysterious PhD
+INSERT Grace Crucifixion 948-011-1381 061-61-7896
+PRINT
+DELETE Eva Wolfish
+INSERT Henry Liturgic 728-312-6968 047-28-6339
+DELETE Hannah Frau
+INSERT Natalie Sofia Bluish 888-543-8575 823-08-6916
+ISAVL
+INSERT Jordan Derelict 527-309-6355 371-66-8072
+POSTORDER
+PREORDER
+INSERT Gavin Opprobrium 550-187-8605 620-47-9021
+DEPTH Landon Veda
+HEIGHT
+DEPTH Grace Panicle
+ROTATE Madelyn Alacrity
+PRINT

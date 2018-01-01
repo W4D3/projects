@@ -1,0 +1,67 @@
+<title> CS302 -- Lab 2</title>
+
+<h1> CS302 -- Lab 2</h1>
+<h3>
+<UL> <LI> CS302 -- Data Structures and Algorithms II
+<LI> Fall, 2014
+<LI> <a href=http://www.cs.utk.edu/~plank>James S. Plank</a>
+<LI> <a href=http://www.cs.utk.edu/~plank/plank/classes/cs302/Labs/Lab2/index.html>This file:
+     <b>http://www.cs.utk.edu/~plank/plank/classes/cs302/Labs/Lab2</b></a>
+<LI> Lab Directory: <b>/home/plank/cs302/Labs/Lab2</b>
+</UL>
+</h3>
+
+<p>
+Your assignment is simple:
+<p>
+<UL>
+<LI> <b>Part 1</b>: Do the 500-point problem from Topcoder SRM 496, Division 1. 
+If you can't get to it on topcoder, you can read the 
+description <a href=http://community.topcoder.com/stat?c=problem_statement&pm=11318&rd=14425>here.</a>
+You <i>must</i> solve it as I describe in 
+the <a href=SRM-496-D1-500.html>notes on SRM-496-D1-500</a>.  You must comment
+your code very cleanly, and explain each step that you do.  You are <i>not</i> 
+allowed to solve this code in a different manner than the one I describe.  That's
+because it's too easy to cut and paste other people's code from Topcoder.
+<p>
+To compile this, go ahead and grab
+<b><a href=SRM-496-Driver.cpp>SRM-496-Driver.cpp</a></b> from the lab directory.
+Make sure your program is in the file <b>OneDimensionalBalls.cpp</b>.  Then, when
+you execute the command ``<b>g++ SRM-496-Driver.cpp</b>,'' it will compile the
+driver with your implementation.  The result will be in <b>a.out</b>.
+
+<p>
+<LI> <b>Part 2</b>: Do the 500-point problem from Topcoder SRM 337, Division 1. 
+If you can't get to topcoder, you may read the description
+<a href=http://community.topcoder.com/stat?c=problem_statement&pm=7473&rd=10661>here</a>.
+I have <a href=SRM-337-D1-500.html>notes to help you</a>.  
+Once again, your commenting here must be flawless, and must describe each step
+that you are doing, so that the TA's can be sure that you know what you're doing.
+<p>
+To compile this, grab
+<b><a href=SRM-337-Driver.cpp>SRM-337-Driver.cpp</a></b> from the lab directory.
+Make sure your program is in the file <b>BuildingAdvertise.cpp</b>.  Then, when
+you execute the command ``<b>g++ SRM-496-Driver.cpp</b>,'' it will compile the
+driver with your implementation.  The result will be in <b>a.out</b>.
+</UL>
+<hr>
+In each case, you will get a zero if your code takes three seconds or longer on
+an unloaded machine (type <b>top</b> to find out if anyone is CPU-hogging your
+machines).
+The whole point of this lab is to use the proper data
+structures to make your programs run in <i>O(n </i>log<sub>2</sub><i> n)</i>
+time.
+
+<p>
+You will only submit two files: 
+<b>OneDimensionalBalls.cpp</b>
+and
+<b>BuildingAdvertise.cpp</b>.  The TA's will compile them with the drivers
+and run the gradescript on them.
+
+<p>
+<h3>For the gradescript</h3>
+
+Go ahead and compile the first program and move the executable to <b>a.out-496</b>.
+Put the second one's executable into <b>a.out-337</b>.  Then the gradescript runs
+as normal.   The gradeall also tells you a rough timing of your program.

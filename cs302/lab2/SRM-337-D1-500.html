@@ -1,0 +1,159 @@
+<h3>Topcoder SRM 337, D1, 500-point problem</h3>
+
+If Topcoder isn't working, you may read the problem description
+at <a href=http://community.topcoder.com/stat?c=problem_statement&pm=7473&rd=10661>http://community.topcoder.com/stat?c=problem_statement&pm=7473&rd=10661</a>.
+<p>
+To compile this one, solve the problem as you would on Topcoder
+in the file
+<b>BuildingAdvertise.cpp</b>.  Then compile by calling <b>g++</b>
+on <b><a href=SRM-337-Driver.cpp>SRM-337-Driver.cpp</a></b>.
+You give the example number on the command line.  If you give an argument
+of -1, you enter <b>h</b> and <b>n</b> on standard input:
+<p>
+<pre>
+UNIX> <font color=darkred><b>cp /home/plank/cs360/Labs/Lab2/SRM-337-Driver.cpp</b></font>
+UNIX> <font color=darkred><b>g++ SRM-337-Driver.cpp</b></font>
+UNIX> <font color=darkred><b>a.out 0</b></font>
+15
+UNIX> <font color=darkred><b>a.out 1</b></font>
+7
+UNIX> <font color=darkred><b>a.out 2</b></font>
+104858900000
+UNIX> <font color=darkred><b>a.out -1</b></font>
+<font color=darkred><b>30 40 40 30</b></font>
+<font color=darkred><b>4</b></font>
+120
+UNIX> <font color=darkred><b></b></font>
+</pre>
+
+To solve this problem, you'd like to be able to do something like the following.
+First, you create <b>R</b> using pretty much the exact code from the problem 
+specification.   To make your life easier, put a zero in front of <b>R</b>
+and at the end.  Then, you do something like:
+
+<p><center><table border=3 cellpadding=3><td><pre>
+  rv = 0;
+  for (i = 1; i &lt; R.size()-1; i++) {
+    l = index of the first building to my left whose height is &lt; R[i];
+    r = index of the first building to my right whose height is &lt; R[i];
+    area = R[i] * (r-l-1)
+    if (area &gt; rv) rv = area;
+  }
+  return rv;
+</pre></td></table></center><p>
+
+Now, you can find <b>l</b> and <b>r</b> with <b>for</b> loops starting from <b>i</b>.
+Unfortunately, though, that is too slow.  If you try such an approach on example 2,
+where <b>n</b> is 100000, it runs too slowly.  This is because your <b>for</b> 
+loops are each potentially <i>O(n)</i>, which means that the running time of your
+program can be <i>O(n<sup>2</sup>)</i>.  That's too slow.
+<p>
+Instead, try a different approach.  Create a multimap that stores building heights
+in its keys, and indices in <b>R</b> in its vals.  Include
+the two sentinels at the beginning and at the end of <b>R</b>.  
+Create a set <b>X</b> whose elements are integers.
+Then, for each successive element of the map you do the following:
+<p>
+<UL>
+<LI> Let <b>H</b> be the height and <b>I</b> be the index of the element.
+<LI> If the element is one of the sentinels, store <b>I</b> in <b>X</b>.
+<LI> Otherwise, look up the element in <b>X</b> whose value is the smallest
+greater than <b>I</b>.  That will equal <b>r</b> in the <b>for</b> loop above.
+Look up the previous element to <b>r</b> in <b>X</b>.  That will equal <b>l</b>.
+Now you can calculate the area of the element with index <b>I</b>.  
+<LI> Finally, if you haven't done so already, store <b>I</b> in the set.
+</UL>
+
+This isn't exactly equivalent to the for loop above.  It looks at the elements in
+a different order, and it also treats elements with equal values of <b>H</b> 
+differently.  But it will work correctly.  Working through an example should help
+convince you.  Let's take example 0 to illustrate.
+<p>
+Your multimap will contain the following elements:
+<p><center><table border=3 cellpadding=3><td><pre>
+(0,0) (0,7) (2,5) (3,1) (4,6) (5,3) (6,2) (6,4)
+</pre></td></table></center><p>
+
+When we iterate through the map, here's what happens to <b>X</b>, <b>area</b> and <b>rv</b>:
+
+
+<p><center><table border=3 cellpadding=3>
+<tr><td><b>H</b></td>
+    <td><b>I</b></td>
+    <td><b>X</b> before</td>
+    <td><b>l</b></td>
+    <td><b>r</b></td>
+    <td><b>area</b></td>
+    <td><b>rv</b></td>
+    <td><b>X</b> after</td></tr>
+<tr><td>0</td>
+    <td>0</td>
+    <td>{ } </td>
+    <td><i>na</i></td>
+    <td><i>na</i></td>
+    <td><i>na</i></td>
+    <td>0</td>
+    <td>{ 0 } </td></tr>
+<tr><td>0</td>
+    <td>7</td>
+    <td>{ 0 } </td>
+    <td><i>na</i></td>
+    <td><i>na</i></td>
+    <td><i>na</i></td>
+    <td>0</td>
+    <td>{ 0, 7 } </td></tr>
+<tr><td>2</td>
+    <td>5</td>
+    <td>{ 0, 7 } </td>
+    <td>0</td>
+    <td>7</td>
+    <td>12</td>
+    <td>12</td>
+    <td>{ 0, 5, 7 } </td></tr>
+<tr><td>3</td>
+    <td>1</td>
+    <td>{ 0, 5, 7 } </td>
+    <td>0</td>
+    <td>5</td>
+    <td>12</td>
+    <td>12</td>
+    <td>{ 0, 1, 5, 7 } </td></tr>
+<tr><td>4</td>
+    <td>6</td>
+    <td>{ 0, 1, 5, 7 } </td>
+    <td>5</td>
+    <td>7</td>
+    <td>4</td>
+    <td>12</td>
+    <td>{ 0, 1, 5, 6, 7 } </td></tr>
+<tr><td>5</td>
+    <td>3</td>
+    <td>{ 0, 1, 5, 6, 7 } </td>
+    <td>1</td>
+    <td>5</td>
+    <td>15</td>
+    <td>15</td>
+    <td>{ 0, 1, 3, 5, 6, 7 } </td></tr>
+<tr><td>6</td>
+    <td>2</td>
+    <td>{ 0, 1, 3, 5, 6, 7 } </td>
+    <td>1</td>
+    <td>3</td>
+    <td>6</td>
+    <td>15</td>
+    <td>{ 0, 1, 2, 3, 5, 6, 7 } </td></tr>
+<tr><td>6</td>
+    <td>4</td>
+    <td>{ 0, 1, 2, 3, 5, 6, 7 } </td>
+    <td>3</td>
+    <td>5</td>
+    <td>6</td>
+    <td>15</td>
+    <td>{ 0, 1, 2, 3, 4, 5, 6, 7 } </td></tr>
+</table></center><p>
+
+And we return <b>15</b>.
+<hr>
+The running time of this will be <i>O(n </i>log<sub>2</sub><i> n)</i>.
+<p>
+Hack it up.  Remember to use <b>upper_bound</b>.

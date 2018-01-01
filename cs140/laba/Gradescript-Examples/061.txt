@@ -1,0 +1,31 @@
+ISAVL
+SORT
+DEPTH Mackenzie Incommunicable Esq
+INSERT Aubrey Annihilate 160-316-4514 174-93-5626
+DELETE Aubrey Annihilate
+DELETE Julia Leah Blithe
+INSERT Gabriel Philip 394-549-1008 393-67-0334
+INSERT Sarah Hilarity 964-082-4709 050-73-1217
+DEPTH Grace Certificate
+SORT
+INSERT Madelyn Acculturate 343-460-6894 408-47-6662
+ISAVL
+ROTATE Owen Pegboard
+INSERT Alexandra Inflammable 246-626-9017 094-60-9923
+INSERT Eva Enclave 944-673-7910 995-07-6402
+DEPTH Emma Limit
+INSERT Benjamin Hone 240-691-5925 196-28-5962
+INSERT Blake Butyric 945-923-4918 090-30-0850
+INSERT Ava Sydney Regional 235-427-8594 647-03-2518
+INSERT Jackson Captaincy 550-077-6630 477-49-7114
+INSERT Parker Saleslady 781-293-7260 716-92-0056
+DELETE Alexandra Sophia Wheedle
+SORT
+DEPTH Ava Gecko
+ROTATE Ava Sydney Regional
+INSERT Oliver Crusade 085-868-1830 511-21-6383
+DELETE Eva Enclave
+PREORDER
+ROTATE Ava Succeed
+PREORDER
+PRINT

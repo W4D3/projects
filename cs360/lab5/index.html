@@ -1,0 +1,651 @@
+<TITLE>CS360 Lab 5 -- Jtar</title>
+
+<body bgcolor=ffffff>
+<h1>CS360 Lab #5 -- Jtar</h1>
+<h2>
+<LI> <a href=http://www.cs.utk.edu/~plank>Jim Plank</a>
+<LI> <a href=http://www.cs.utk.edu/~plank/plank/classes/cs360/>CS360</a>
+</h2>
+<hr>
+
+So, this is your first real systems program.
+You will be writing a pared-down version of <b>tar(1)</b>.
+It will help you to read the man page for <b>tar</b>, and try using 
+it a bit.  Use ``<b>tar cvf tarfile files</b>'' to create a tar file,
+and ``<b>tar xpfv tarfile</b>'' to unpack a tar file.  <b>Jtar</b>
+will work like ``<b>tar cf - files</b>'' and ``<b>tar xpf -</b>''.
+
+<HR>
+<H2>Description of <b>jtar</b></h2>
+
+Your job is to write the program <b>jtar</b>.  Like <b>tar</b>, <b>jtar</b>
+can be called in one of two ways:
+<UL>
+<LI> <b>jtar c [ filename... ]</b>
+This specifies <b>jtar</b> to make a ``tarfile'' and print it on standard
+output.  A tarfile is a file that holds enough information to recreate
+each file on the command line.  If the file is a directory, then it holds
+enough information to recreate all files reachable from that directory.
+
+<LI> <b>jtar x</b>
+This specifies that <b>jtar</b> should read a tarfile on standard input,
+and recreate all the files saved in that tarfile.  This includes making
+any directories that must exist to hold the files.    The files thus
+created should be <i>exactly</i> like the original files.  This means 
+that they should have the same access and modification times, and the
+same protection modes.   Hard links
+should be the same, meaning if two files are hard-linked to each other
+when the tar file is created, they should be hard-linked to each other
+when the tar file is extracted.
+</UL>
+
+<HR><H2>Examples</H2>
+
+Suppose we have an example user <b>fred</b>, and suppose he <b>cd</b>'s
+to the directory <b>/home/plank/cs360/labs/lab3</b>, and
+does the following.
+<pre>
+UNIX> <font color=darkred><b>cd ~plank/cs360/labs/lab5/example-d1</b></font>
+UNIX> <font color=darkred><b>ls -l</b></font>
+total 76
+-rw-r--r-- 1 plank loci 22299 2010-02-12 15:08 lecture.html
+-rw-r--r-- 1 plank loci   737 2010-02-12 15:08 makefile
+-rwxr-xr-x 1 plank loci  8338 2010-02-12 15:09 o1
+-r--r--r-- 1 plank loci   461 2010-02-12 15:08 o1.c
+-rw-r--r-- 1 plank loci  3312 2010-02-12 15:09 o1.o
+-rw-r--r-- 1 plank loci   552 2010-02-12 15:08 o2.c
+-r--r--r-- 1 plank loci   803 2010-02-12 15:08 openunique_1.c
+-rw-r--r-- 1 plank loci  1076 2010-02-12 15:08 openunique_2.c
+-rw-r--r-- 1 plank loci   670 2010-02-12 15:08 openunique_3.c
+-rw-r--r-- 1 plank loci  1077 2010-02-12 15:08 openunique_4.c
+-r--r--r-- 1 plank loci   881 2010-02-12 15:08 um1.c
+-rw-r--r-- 1 plank loci   165 2010-02-12 15:08 um2.c
+UNIX> <font color=darkred><b>~plank/cs360/labs/lab5/jtar c . > ~/tarfile</b></font>
+UNIX> <font color=darkred><b>ls -l ~/tarfile</b></font>
+-rw-r--r-- 1 plank loci 41692 2010-02-12 15:12 /home/plank/tarfile
+UNIX> <font color=darkred><b></b></font>
+</pre>
+
+What he has done is create a tarfile which holds the stuff in my directory
+<b>cs360/labs/lab5/example-d1</b>.  Now, he can recreate those files in a 
+directory of his own:
+<pre>
+UNIX> <font color=darkred><b>pwd</b></font>
+/home/fred
+UNIX> <font color=darkred><b>cd</b></font>
+UNIX> <font color=darkred><b>mkdir tmpdir</b></font>
+UNIX> <font color=darkred><b>cd tmpdir</b></font>
+UNIX> <font color=darkred><b>~plank/cs360/labs/lab5/jtar x < ../tarfile</b></font>
+UNIX> <font color=darkred><b>ls -l</b></font>
+total 76
+-rw-r--r-- 1 fred loci 22299 2010-02-12 15:08 lecture.html
+-rw-r--r-- 1 fred loci   737 2010-02-12 15:08 makefile
+-rwxr-xr-x 1 fred loci  8338 2010-02-12 15:09 o1
+-r--r--r-- 1 fred loci   461 2010-02-12 15:08 o1.c
+-rw-r--r-- 1 fred loci  3312 2010-02-12 15:09 o1.o
+-rw-r--r-- 1 fred loci   552 2010-02-12 15:08 o2.c
+-r--r--r-- 1 fred loci   803 2010-02-12 15:08 openunique_1.c
+-rw-r--r-- 1 fred loci  1076 2010-02-12 15:08 openunique_2.c
+-rw-r--r-- 1 fred loci   670 2010-02-12 15:08 openunique_3.c
+-rw-r--r-- 1 fred loci  1077 2010-02-12 15:08 openunique_4.c
+-r--r--r-- 1 fred loci   881 2010-02-12 15:08 um1.c
+-rw-r--r-- 1 fred loci   165 2010-02-12 15:08 um2.c
+UNIX> <font color=darkred><b></b></font>
+</pre>
+All of the files are recreated with the same protection modes and 
+the same modification times.  They also have the same access times
+(as you would be able to see with <b>ls -lu</b>).  <b>Jtar</b> also
+saves hard links and directories, as well as the contents of directories.
+However, <b>jtar</b> ignores soft links and all other non-regular files.
+Thus, for example, suppose that <b>fred</b> <b>cd</b>'s 
+to the directory <b>/home/plank/cs360/labs/lab5/example-d2</b>, and
+does the following:
+<pre>
+UNIX> <font color=darkred><b>cd /home/plank/cs360/labs/lab5/example-d2</b></font>
+UNIX> <font color=darkred><b>ls -l</b></font>
+total 12
+-rw-r--r-- 2 plank guest   11 1995-02-20 10:29 f2
+-rw-r--r-- 2 plank guest   11 1995-02-20 10:29 f2-hard-link
+lrwxrwxrwx 1 plank loci     2 2009-01-19 17:07 f2-soft-link -> f2
+dr-xr-xr-x 2 plank guest 4096 1995-02-20 10:29 sub_dir
+UNIX> <font color=darkred><b>ls -l sub_dir</b></font>
+total 4
+-r--r--r-- 1 plank guest 11 1995-02-20 10:29 f1
+UNIX> <font color=darkred><b>~plank/cs360/labs/lab5/jtar c . > ~/tarfile-2</b></font>
+UNIX> <font color=darkred><b>~plank/cs360/labs/lab5/jtar c sub_dir > ~/tarfile-3</b></font>
+UNIX> <font color=darkred><b>~plank/cs360/labs/lab5/jtar c sub_dir/f1 > ~/tarfile-4</b></font>
+UNIX> <font color=darkred><b>ls -l ~/tarfile*</b></font>
+-rw-r--r-- 1 fred loci 41692 2010-02-12 15:12 /home/plank/tarfile
+-rw-r--r-- 1 fred loci   522 2010-02-12 15:27 /home/plank/tarfile-2
+-rw-r--r-- 1 fred loci   212 2010-02-12 15:27 /home/plank/tarfile-3
+-rw-r--r-- 1 fred loci   113 2010-02-12 15:27 /home/plank/tarfile-4
+UNIX> <font color=darkred><b></b></font>
+</pre>
+So, what's going on? The directory has 3 files and a subdirectory.
+<b>f2</b> and <b>f2-hard-link</b> are the same file (i.e. both links to the
+same file), and <b>f2-soft-link</b> is a soft link to <b>f2</b>.  
+<b>Sub_dir</b> is a subdirectory with one file.  Note the protection modes
+of both <b>sub_dir</b> and <b>f1</b>.<p>
+<p>
+Now, <b>fred</b> first extracts <b>tarfile-2</b>:
+<pre>
+UNIX> <font color=darkred><b>cd</b></font>
+UNIX> <font color=darkred><b>pwd</b></font>
+/home/fred
+UNIX> <font color=darkred><b>rm -rf tmpfile</b></font>
+UNIX> <font color=darkred><b>mkdir tmpfile</b></font>
+UNIX> <font color=darkred><b>cd tmpfile</b></font>
+UNIX> <font color=darkred><b>~plank/cs360/labs/lab5/jtar x < ~/tarfile-2</b></font>
+UNIX> <font color=darkred><b>ls -l</b></font>
+total 12
+-rw-r--r-- 2 fred loci   11 1995-02-20 10:29 f2
+-rw-r--r-- 2 fred loci   11 1995-02-20 10:29 f2-hard-link
+dr-xr-xr-x 2 fred loci 4096 1995-02-20 10:29 sub_dir
+UNIX> <font color=darkred><b>ls -l sub_dir</b></font>
+total 4
+-r--r--r-- 1 plank loci 11 1995-02-20 10:29 f1
+UNIX>
+</pre>
+<b>Jtar</b> remade all the files in <b>~plank/cs360/labs/lab5/example-d2</b> with the exception
+of the symbolic link.  Again, all the protection modes and times are the same.  It also remade
+the directory and its files, and again protection modes and times are the same.  The files
+<b>f2</b> and <b>f2-hard-link</b> are linked to the same file.
+<p>
+Now, <b>fred</b> tries again with <b>tarfile-3</b>:
+
+<pre>
+UNIX> <font color=darkred><b>cd </b></font>
+UNIX> <font color=darkred><b>rm -rf tmpfile</b></font>
+rm: cannot remove `tmpfile/sub_dir/f1': Permission denied
+UNIX> <font color=darkred><b>chmod 0755 tmpfile/sub_dir</b></font>
+UNIX> <font color=darkred><b>rm -rf tmpfile</b></font>
+UNIX> <font color=darkred><b>mkdir tmpfile</b></font>
+UNIX> <font color=darkred><b>cd tmpfile</b></font>
+UNIX> <font color=darkred><b>~plank/cs360/labs/lab5/jtar x < ~/tarfile-3</b></font>
+UNIX> <font color=darkred><b>ls -l</b></font>
+total 4
+dr-xr-xr-x 2 fred loci 4096 1995-02-20 10:29 sub_dir
+UNIX> <font color=darkred><b>ls -l sub_dir</b></font>
+total 4
+-r--r--r-- 1fredplank loci 11 1995-02-20 10:29 f1
+UNIX> <font color=darkred><b></b></font>
+</pre>
+
+First, the <b>rm -rf</b> failed because the of protections of <b>sub_dir</b> -- they
+had to be changed so that the directory could be deleted.  The untarring of <b>tarfile-3</b>
+creates only <b>sub_dir</b> and its contents.  Again, the protections are as they were.
+<p>
+Now <b>tarfile-4</b>:
+
+<pre>
+UNIX> <font color=darkred><b>chmod 0755 sub_dir</b></font>
+UNIX> <font color=darkred><b>cd</b></font>
+UNIX> <font color=darkred><b>rm -rf tmpfile</b></font>
+UNIX> <font color=darkred><b>mkdir tmpfile</b></font>
+UNIX> <font color=darkred><b>cd tmpfile</b></font>
+UNIX> <font color=darkred><b>~plank/cs360/labs/lab5/jtar x < ~/tarfile-4</b></font>
+UNIX> <font color=darkred><b>ls -l</b></font>
+total 4
+drwxr-xr-x 2 fred loci 4096 2010-02-12 15:37 sub_dir
+UNIX> <font color=darkred><b>ls -l sub_dir</b></font>
+total 4
+-r--r--r-- 1 fred loci 11 1995-02-20 10:29 f1
+UNIX> <font color=darkred><b></b></font>
+</pre>
+
+This time <b>sub_dir</b> has been created, but the modification times and permissions
+were not reset to their original values.  Why?  Because <b>jtar</b> only records the
+times for the last file in the given pathnames.  All of the other directories leading
+up to that last file are simply created with <b>mkdir()</b>.
+<p>
+
+Finally, if you can't read a file or directory, then it's ok for <b>jtar</b> to fail
+on it.  For example:
+
+<pre>
+UNIX> <font color=darkred><b>touch f1.txt</b></font>
+UNIX> <font color=darkred><b>chmod 0 f1.txt</b></font>
+UNIX> <font color=darkred><b>~plank/cs360/labs/lab5/jtar c f1.txt > ~/tarfile</b></font>
+Couldn't open f1.txt
+UNIX> <font color=darkred><b></b></font>
+</pre>
+
+<HR><H3>The <b>cv</b> and <b>xv</b> options</H3>
+
+<b>Jtar</b> should also support the options <b>cv</b> and <b>xv</b> in
+place of <b>c</b> and <b>x</b>.  This should work just as before, only
+<b>jtar</b> should print on standard error the directories and files 
+that are saved, along with their sizes as it does so.  For example:
+
+<pre>
+UNIX> <font color=darkred><b>cd ~plank/cs360/labs/lab5/example-d2</b></font>
+UNIX> <font color=darkred><b>../jtar cv . > ~/tarfile-4</b></font>
+Directory .
+Regular File ./f2 11
+Directory ./sub_dir
+Regular File ./sub_dir/f1 11
+Regular File ./f2-hard-link 11
+(link ./f2-hard-link to ./f2)
+Ignoring soft link: ./f2-soft-link
+UNIX> <font color=darkred><b>cd</b></font>
+UNIX> <font color=darkred><b>rm -rf tmpdir</b></font>
+UNIX> <font color=darkred><b>mkdir tmpdir</b></font>
+UNIX> <font color=darkred><b>~plank/cs360/labs/lab5/jtar xv < ~/tarfile-4</b></font>
+File: .
+File: ./f2
+File: ./sub_dir
+File: ./sub_dir/f1
+File: ./f2-hard-link
+UNIX> <font color=darkred><b></b></font>
+</pre>
+
+You will <i>not</i> be graded on your <b>cv</b> and <b>xv</b> outputs.  They are simply
+there to help you out.
+
+<HR><H3>Duplicates</H3>
+
+cd ~plank/cs360/labs/lab5/example-d2
+mamba/example-d2: ../jtar c . . . > ~/tarfile-5
+If duplicate files are somehow specified, tar should be able to 
+recognize that, and only save one copy.  For example:
+
+<pre>
+UNIX> <font color=darkred><b>~plank/cs360/labs/lab5/jtar c . > ~/tmpfile-5</b></font>
+UNIX> <font color=darkred><b>~plank/cs360/labs/lab5/jtar c . . . > ~/tmpfile-6</b></font>
+UNIX> <font color=darkred><b>~plank/cs360/labs/lab5/jtar c . . . f2 f2 f2 f2 > ~/tmpfile-7</b></font>
+UNIX> <font color=darkred><b>ls -l ~/tmpfile*</b></font>
+-rw-r--r-- 1 plank loci  522 2010-02-12 15:53 /home/plank/tmpfile-5
+-rw-r--r-- 1 plank loci  522 2010-02-12 15:53 /home/plank/tmpfile-6
+-rw-r--r-- 1 plank loci  898 2010-02-12 15:53 /home/plank/tmpfile-7
+UNIX>
+</pre>
+Note that <b>tmpfile-6</b> is the same size as <b>tmpfile-5</b>, and
+that <b>tmpfile-7</b> is a little bigger.
+The reason is that my version of <b>jtar</b> ignores duplicate directories,
+but for each file specified on the command line, it stores the files name and <b>stat</b>
+buf.  It only stores the contents once.  Yours does not have to do exactly as mine does,
+but it should not store duplicate contents for duplicate files.
+<p>
+The simplest way to identify duplicate files is to make use of the library call 
+<b>realpath()</b> (read the man page).  You can maintain a rb-tree
+of real path names, and whenever you discover a duplicate, you can 
+ignore it.  (You still need a rb-tree for inodes
+so that you can recognize hard links).
+
+<HR><H2>A word of warning</h2>
+
+Make sure you always try to extract files into a clean directory.
+Do not extract files into your working directory, because if you have
+a bug, you may trash your files.  I've heard of students trashing their
+home directories doing this program.  Make sure you be careful not
+to let that happen to you.  Saving full path names or following
+.. in this assigment can also do this.  Be careful.
+
+<HR><H2>Also</h2>
+
+No use of the <b>system()</b> command is allowed.  You must make use
+of the system calls that Unix provides for you (note that "system 
+call" is different from the <b>system()</b> procedure call).
+
+<HR><H2>My <b>jtar</b></H2>
+
+When in doubt, check your code against my <b>jtar</b>.  Let me know if you find bugs.
+
+<HR><H2><b>tar-checker</b></H2>
+
+I have written a program called <b>tar-checker</b>, which takes two directories as command
+line arguments, and tests to see whether they are the same.  You may give it optional
+arguments that help refine the testing.   The default is to simply check whether the same
+files and directories exist in both directories.  For example, the directory <b>example-d3</b>
+contains three files -- <b>f1.txt</b>, <b>f2.txt</b> and <b>f3.txt</b>, which contain a 
+single line of text.  There is a directory <b>dir1</b>, which also contains a file <b>f3.txt</b>,
+which is a link to <b>f3.tx</b> in the original directory.  The listing below shows both the 
+"full time" listing, and the inode numbers so that you can see the hard links:
+
+<pre>
+UNIX> <font color=darkred><b>ls -li --full-time /home/plank/cs360/labs/lab5/example-d3</b></font>
+total 16
+5492237 dr-xr-xr-x 2 plank loci 4096 2010-02-15 16:44:10.000000000 -0500 dir1
+5492235 -rw-r--r-- 1 plank loci   11 2010-02-15 16:43:03.000000000 -0500 f1.txt
+5492245 -rw-r--r-- 1 plank loci   11 2010-02-17 08:57:35.000000000 -0500 f2.txt
+5492238 -r--r--r-- 2 plank loci   15 2010-02-15 16:43:14.000000000 -0500 f3.txt
+UNIX> <font color=darkred><b>ls -li --full-time /home/plank/cs360/labs/lab5/example-d3/dir1</b></font>
+total 4
+5492238 -r--r--r-- 2 plank loci 15 2010-02-15 16:43:14.000000000 -0500 f3.txt
+UNIX> <font color=darkred><b></b></font>
+</pre>
+
+If I use "<b>cp -r</b>" to make a copy of the directory, you'll see that the files are
+the same, but there are a few differences.  First, the <b>f3.txt</b> files are no longer
+links to each other.  Second, the modification times of all the files are different.
+Since the default of <b>tar-checker</b> is to just check that the names of the files
+are the same, it works fine (no output means that the two directories are the same):
+
+<pre>
+UNIX> <font color=darkred><b>cp -r ~plank/cs360/labs/lab5/example-d3 d3-copy</b></font>
+UNIX> <font color=darkred><b>ls -li --full-time d3-copy</b></font>
+total 16
+5342067 dr-xr-xr-x 2 plank loci 4096 2010-02-17 09:03:23.000000000 -0500 dir1
+5342066 -rw-r--r-- 1 plank loci   11 2010-02-17 09:03:23.000000000 -0500 f1.txt
+5342064 -rw-r--r-- 1 plank loci   11 2010-02-17 09:03:23.000000000 -0500 f2.txt
+5342065 -r--r--r-- 1 plank loci   15 2010-02-17 09:03:23.000000000 -0500 f3.txt
+UNIX> <font color=darkred><b>ls -li --full-time d3-copy/dir1</b></font>
+total 4
+5342068 -r--r--r-- 1 plank loci 15 2010-02-17 09:03:23.000000000 -0500 f3.txt
+UNIX> <font color=darkred><b>~plank/cs360/labs/lab5/tar-checker ~plank/cs360/labs/lab5/example-d3 d3-copy</b></font>
+UNIX> <font color=darkred><b></b></font>
+</pre>
+
+There are four optional arguments to <b>tar-checker</b>: 
+<UL>
+<LI> <b>c</b> checks the contents of the files to make sure that they match.
+<LI> <b>l</b> checks the hard links to make sure that they match.
+<LI> <b>p</b> checks the permissions to make sure that they match.
+<LI> <b>t</b> checks the modification times to make sure that they match.
+</UL>
+
+In the example above, the contents and permissions of the files will match, but the times
+and the links will not:
+
+<pre>
+UNIX> <font color=darkred><b>~plank/cs360/labs/lab5/tar-checker ~plank/cs360/labs/lab5/example-d3 d3-copy c</b></font>
+UNIX> <font color=darkred><b>~plank/cs360/labs/lab5/tar-checker ~plank/cs360/labs/lab5/example-d3 d3-copy l</b></font>
+Error: files f3.txt and dir1/f3.txt are links in /home/plank/cs360/labs/lab5/example-d3 but not in d3-copy
+UNIX> <font color=darkred><b>~plank/cs360/labs/lab5/tar-checker ~plank/cs360/labs/lab5/example-d3 d3-copy p</b></font>
+UNIX> <font color=darkred><b>~plank/cs360/labs/lab5/tar-checker ~plank/cs360/labs/lab5/example-d3 d3-copy t</b></font>
+Error: dir1: modification times don't match.
+UNIX> <font color=darkred><b></b></font>
+</pre>
+
+I'll fix the links and the modification times:
+
+<pre>
+UNIX> <font color=darkred><b>rm d3-copy/f3.txt</b></font>
+rm: remove write-protected regular file `d3-copy/f3.txt'? <font color=darkred><b>y</b></font>
+UNIX> <font color=darkred><b>ln d3-copy/dir1/f3.txt d3-copy</b></font>
+UNIX> <font color=darkred><b>~plank/cs360/labs/lab5/tar-checker ~plank/cs360/labs/lab5/example-d3 d3-copy l</b></font>
+UNIX> <font color=darkred><b>touch -t 02151643.14 d3-copy/f3.txt</b></font>
+UNIX> <font color=darkred><b>touch -t 02170857.35 d3-copy/f2.txt</b></font>
+UNIX> <font color=darkred><b>touch -t 02151643.03 d3-copy/f1.txt</b></font>
+UNIX> <font color=darkred><b>touch -t 02151644.10 d3-copy/dir1</b></font>
+UNIX> <font color=darkred><b>~plank/cs360/labs/lab5/tar-checker ~plank/cs360/labs/lab5/example-d3 d3-copy t</b></font>
+UNIX> <font color=darkred><b></b></font>
+</pre>
+
+<b>tar-checker</b> ignores hard links.
+
+<HR><H2><b>mrd</b></H2>
+
+The program in the grading scripts directory --
+<b>/home/plank/cs360/labs/lab5/Gradescript-Examples/mrd</b>  -- may be used to 
+generate random directories for testing.
+The usage is:
+
+<p><center><table border=3 cellpadding=3><td><pre>
+usage: mrd seed dir-level fpd randprot(n|y|d) linkperc stem
+</pre></td></table></center><p>
+
+
+The arguments are:
+<p>
+<UL>
+<LI> <b>seed</b> for <b>srand48()</b>
+<LI> <b>dir-level</b>: this is the maximum number of nested subdirectories.  They were always be
+a chain of directories of length <b>dir-level</b>.  There may be more than one.
+<LI> <b>fpd</b>: Maximum files per directory.
+<LI> <b>randprot</b>: If 'y', set the protection bits of files randomly.  
+The "user read" bit will always be set.  If 'd', also set the protection bits of directories
+randomly.  The "user read" and "user execute" bits will always be set.
+<LI> <b>linkperc</b> the percentage of times that the program will create hard links to existing
+files rather than new files.  
+<LI> <b>stem</b> this is the directory into which to put the files.
+</UL>
+
+A couple quick examples:
+
+<pre>
+UNIX> <font color=darkred><b>mkdir tmp</b></font>
+UNIX> <font color=darkred><b>cd tmp</b></font>
+UNIX> <font color=darkred><b>/home/plank/cs360/labs/lab5/Gradescript-Examples/mrd 2 1 15 y 0 ex1</b></font>
+UNIX> <font color=darkred><b>ls -li --full-time ex1</b></font>
+total 52
+5310623 -r--r----- 1 plank loci 11 2009-09-11 11:54:43.000000000 -0400 b6lAEuZwl
+5310624 -r---wx-w- 1 plank loci 50 2009-05-09 16:18:49.000000000 -0400 bQEFP4vdBVq4
+5310625 -r--rwx-w- 1 plank loci 75 2009-09-02 00:06:30.000000000 -0400 ce7gwhmc
+5310617 -rw-rw--wx 1 plank loci 30 2009-07-25 02:45:32.000000000 -0400 CPt2
+5310618 -r--r--rw- 1 plank loci 77 2009-06-14 22:14:06.000000000 -0400 DVD
+5310619 -r---wxr-x 1 plank loci 67 2009-01-21 19:02:02.000000000 -0500 GPX5v
+5310620 -r-------- 1 plank loci 57 2009-08-27 14:45:30.000000000 -0400 HHOSU2o5
+5310621 -rwxr--r-x 1 plank loci  9 2009-03-16 02:02:49.000000000 -0400 JikTtd0eo
+5310626 -r-x-w--w- 1 plank loci 21 2009-08-02 18:45:41.000000000 -0400 kQV5
+5310627 -r-x--xr-- 1 plank loci 63 2009-03-18 20:50:19.000000000 -0400 oUqOzTZXl3SZ94V
+5310628 -r---wx--- 1 plank loci 38 2009-03-10 15:02:32.000000000 -0400 wb31yIuVqOuDZ
+5310629 -rwx-w---- 1 plank loci 29 2009-05-09 00:11:45.000000000 -0400 zOCTn9
+5310622 -r--r--r-- 1 plank loci 32 2009-08-12 12:55:34.000000000 -0400 ZUl
+UNIX> <font color=darkred><b>/home/plank/cs360/labs/lab5/Gradescript-Examples/mrd 2 1 15 y 25 ex1</b></font>
+./ex1/DVD: Permission denied
+UNIX> <font color=darkred><b>/home/plank/cs360/labs/lab5/Gradescript-Examples/mrd 2 1 15 y 25 ex2</b></font>
+UNIX> <font color=darkred><b>ls -li --full-time ex2</b></font>
+total 52
+5310635 -r--r----- 1 plank loci 10 2009-12-14 19:12:52.000000000 -0500 b6lAEuZwl
+5310636 -r---wx-w- 1 plank loci 71 2009-02-02 13:53:50.000000000 -0500 bQEFP4vdBVq4
+5310631 -r--rwx-w- 1 plank loci 77 2009-05-05 08:43:42.000000000 -0400 DVD
+5310637 -r---wxr-x 1 plank loci 57 2009-12-14 03:17:42.000000000 -0500 eIPt2ytg1e7gwhmc
+5310632 -r-------- 3 plank loci 17 2009-02-13 18:54:12.000000000 -0500 GPX5v
+5310632 -r-------- 3 plank loci 17 2009-02-13 18:54:12.000000000 -0500 HHOSU2o5
+5310638 -r--r--rw- 1 plank loci 76 2009-05-27 02:47:54.000000000 -0400 h-srhxrJI0
+5310633 -rwxr--r-x 1 plank loci 59 2009-08-09 22:56:06.000000000 -0400 JikTtd0eo
+5310639 -r-x-w--w- 1 plank loci 62 2009-08-10 13:09:44.000000000 -0400 kQV5
+5310640 -r-x--xr-- 1 plank loci  6 2009-04-17 14:05:39.000000000 -0400 oUqOzTZXl3SZ94V
+5310641 -r---wx--- 1 plank loci 68 2009-08-15 02:23:23.000000000 -0400 wb31yIuVqOuDZ
+5310632 -r-------- 3 plank loci 17 2009-02-13 18:54:12.000000000 -0500 zOCTn9
+5310634 -r--r--r-- 1 plank loci 64 2009-10-16 02:03:51.000000000 -0400 ZUl
+UNIX> <font color=darkred><b></b></font>
+</pre>
+
+Both <b>ex1</b> and <b>ex2</b> are one-level directories with random protections.
+The only difference is that <b>ex1</b>'s <b>linkperc</b> was zero, so all files are distinct.
+In <b>ex2</b>, <b>linkperc</b> was 25 percent, which resulted in files "GPX5v", "HHOSU2o5"
+and "zOCTn9" being hard links to one another.
+<p>
+Further examples:
+
+<pre>
+UNIX> <font color=darkred><b>/home/plank/cs360/labs/lab5/Gradescript-Examples/mrd 2 3 15 y 25 ex3</b></font>
+UNIX> <font color=darkred><b>ls -li --full-time ex3</b></font>
+total 8
+5310643 -r---wx-w- 2 plank loci   77 2009-04-06 08:32:04.000000000 -0400 CqOhUikTtd0eo1
+5310644 drwxr-xr-x 4 plank loci 4096 2009-01-05 16:03:25.000000000 -0500 JfHOSU2o56Nxb31y
+UNIX> <font color=darkred><b>ls -li --full-time ex3/JfHOSU2o56Nxb31y</b></font>
+total 32
+5310658 -r---wxrw- 2 plank loci   75 2009-02-16 02:52:30.000000000 -0500 DuZwlRtaTPX5
+5310647 -r------w- 1 plank loci   38 2009-11-05 06:42:11.000000000 -0500 eIPt2ytg1e7gwhmc
+5310648 drwxr-xr-x 2 plank loci 4096 2009-02-12 02:39:13.000000000 -0500 gDOyVZ
+5310655 -r-xrwxr-x 1 plank loci   19 2009-06-05 17:33:57.000000000 -0400 khxrJI0zvvYOxt
+5310645 -rwx---r-- 2 plank loci   45 2009-05-07 13:56:31.000000000 -0400 OZ94Vkv3aOCTn9k
+5310656 drwxr-xr-x 2 plank loci 4096 2009-11-18 01:40:52.000000000 -0500 pVqOuDZXzoYQV51BP
+5310646 -r----xr-- 1 plank loci   44 2009-12-30 05:36:56.000000000 -0500 TFP4vdBVq4ob3
+5310667 -rw-rw---- 1 plank loci   20 2009-01-09 06:38:41.000000000 -0500 zzT
+UNIX> <font color=darkred><b>ls -li --full-time ex3/JfHOSU2o56Nxb31y/gDOyVZ</b></font>
+total 28
+5310654 -r-x-w---x 1 plank loci 36 2009-06-25 06:08:18.000000000 -0400 c51a8mwuo7pczb2l
+5310643 -r---wx-w- 2 plank loci 77 2009-04-06 08:32:04.000000000 -0400 cQysyAo2q-ntP
+5310649 -r-x-w---- 1 plank loci 62 2009-01-07 17:13:47.000000000 -0500 FqSkvK
+5310650 -r-------- 1 plank loci  6 2009-03-21 07:56:05.000000000 -0400 Lwh3N9
+5310651 -r---wxr-x 1 plank loci 68 2009-04-12 17:06:22.000000000 -0400 RsJqfSWHdm
+5310652 -rw------x 1 plank loci 50 2009-09-05 23:22:11.000000000 -0400 WJZ808hh
+5310653 -rw--w--wx 1 plank loci 12 2009-09-11 02:08:21.000000000 -0400 YH-N
+UNIX> <font color=darkred><b>ls -li --full-time ex3/JfHOSU2o56Nxb31y/pVqOuDZXzoYQV51BP</b></font>
+total 44
+5310660 -r--r--rwx 1 plank loci 31 2009-12-27 17:17:11.000000000 -0500 e2ArwPda
+5310661 -rw------- 1 plank loci 44 2009-02-23 23:18:33.000000000 -0500 g10Ld
+5310657 -rw-r--r-- 1 plank loci 57 2009-09-09 06:40:52.000000000 -0400 KQofGOKqwJzB
+5310662 -rw--w---- 1 plank loci 67 2009-10-05 22:25:58.000000000 -0400 mgjGHFXVg1p-M2oUN
+5310645 -rwx---r-- 2 plank loci 45 2009-05-07 13:56:31.000000000 -0400 sslAo
+5310658 -r---wxrw- 2 plank loci 75 2009-02-16 02:52:30.000000000 -0500 UR7XeW
+5310663 -r---wxr-- 1 plank loci 34 2009-10-24 00:33:06.000000000 -0400 uSuQOeW8HvXjM
+5310664 -rw--w--w- 1 plank loci 65 2009-07-26 16:13:06.000000000 -0400 v688KhmqdCGZHI
+5310659 -r---wx--x 1 plank loci 59 2009-04-25 08:24:30.000000000 -0400 Vv1-w6WcDc5M-1uPb
+5310665 -r-----r-- 1 plank loci  4 2009-10-16 11:48:52.000000000 -0400 wxr
+5310666 -rwx---r-x 1 plank loci 32 2009-08-10 18:23:06.000000000 -0400 zDavFl
+UNIX> <font color=darkred><b>/home/plank/cs360/labs/lab5/jtar c ex3 > tarfile</b></font>
+UNIX> <font color=darkred><b>mv ex3 ex3-old</b></font>
+UNIX> <font color=darkred><b>/home/plank/cs360/labs/lab5/jtar x <  tarfile</b></font>
+UNIX> <font color=darkred><b>/home/plank/cs360/labs/lab5/tar-checker ex3 ex3-old c t l p</b></font>
+UNIX> <font color=darkred><b>ls -li --full-time ex3/JfHOSU2o56Nxb31y/pVqOuDZXzoYQV51BP</b></font>
+total 44
+5310684 -r--r--rwx 1 plank loci 31 2009-12-27 17:17:11.000000000 -0500 e2ArwPda
+5310690 -rw------- 1 plank loci 44 2009-02-23 23:18:33.000000000 -0500 g10Ld
+5310686 -rw-r--r-- 1 plank loci 57 2009-09-09 06:40:52.000000000 -0400 KQofGOKqwJzB
+5310682 -rw--w---- 1 plank loci 67 2009-10-05 22:25:58.000000000 -0400 mgjGHFXVg1p-M2oUN
+5310683 -rwx---r-- 2 plank loci 45 2009-05-07 13:56:31.000000000 -0400 sslAo
+5310680 -r---wxrw- 2 plank loci 75 2009-02-16 02:52:30.000000000 -0500 UR7XeW
+5310687 -r---wxr-- 1 plank loci 34 2009-10-24 00:33:06.000000000 -0400 uSuQOeW8HvXjM
+5310688 -rw--w--w- 1 plank loci 65 2009-07-26 16:13:06.000000000 -0400 v688KhmqdCGZHI
+5310681 -r---wx--x 1 plank loci 59 2009-04-25 08:24:30.000000000 -0400 Vv1-w6WcDc5M-1uPb
+5310689 -r-----r-- 1 plank loci  4 2009-10-16 11:48:52.000000000 -0400 wxr
+5310685 -rwx---r-x 1 plank loci 32 2009-08-10 18:23:06.000000000 -0400 zDavFl
+UNIX> <font color=darkred><b></b></font>
+</pre>
+
+For <b>ex3</b>, we specify <b>dir-level</b> to be three.  As such, <b>ex3</b> has one subdirectory, "JfHOSU2o56Nxb31y",
+and that directory has two subdirectories: "gDOyVZ" and "pVqOuDZXzoYQV51BP".  You can see from the inode numbers
+that "ex3/JfHOSU2o56Nxb31y/DuZwlRtaTPX5" is hard linked to "ex3/JfHOSU2o56Nxb31y/pVqOuDZXzoYQV51BP/UR7XeW".
+
+<p>
+One more example:
+<p>
+<pre>
+UNIX> <font color=darkred><b>/home/plank/cs360/labs/lab5/Gradescript-Examples/mrd 100 3 15 d 25 ex4</b></font>
+UNIX> <font color=darkred><b>ls -l ex4</b></font>
+total 36
+-r-------- 2 plank loci   49 2009-11-03 22:47 bk96SQ0XulqX2
+dr-x---r-x 7 plank loci 4096 2009-05-31 18:51 eNilEiW6LqL
+-r---wx--- 1 plank loci   10 2009-08-29 04:49 JRTSdgoOJ9SZe
+-r------w- 2 plank loci   53 2009-08-09 00:54 KZvw52JrO9WQG98X0
+drwxr---wx 6 plank loci 4096 2009-11-22 17:50 PPIaXLtmhxQlc
+-rw-rw-rwx 4 plank loci   59 2009-06-30 08:01 qCslBEuiCTdW
+-r------wx 1 plank loci   39 2009-04-07 19:45 R19I3CMOfYUC5u
+dr-x--x--- 3 plank loci 4096 2009-08-31 01:57 sKl09
+-r--rwxrw- 1 plank loci   31 2009-05-11 09:03 yzNqGZVUrvJSWKzqc
+UNIX> <font color=darkred><b>/home/plank/cs360/labs/lab5/jtar c ex4 > tarfile</b></font>
+UNIX> <font color=darkred><b>mv ex4 ex4-old</b></font>
+UNIX> <font color=darkred><b>/home/plank/cs360/labs/lab5/jtar x ex4 < tarfile</b></font>
+UNIX> <font color=darkred><b>/home/plank/cs360/labs/lab5/tar-checker ex4 ex4-old c t l p</b></font>
+UNIX> <font color=darkred><b></b></font>
+</pre>
+
+This is the tough case, since directories "ex4/eNilEiW6LqL" and "ex4/sKl09" don't have their write
+bits set.  Your <b>jtar</b> has to work with this case.
+
+<p>
+Removing these directories is a bit subtle, again because the write bit isn't set.
+
+<pre>
+UNIX> <font color=darkred><b>rm -rf ex4</b></font>
+rm: cannot remove `ex4/eNilEiW6LqL/H3fNgWEKn7TwWirTl/QRPhTjV2Tg': Permission denied
+rm: cannot remove `ex4/eNilEiW6LqL/H3fNgWEKn7TwWirTl/yYTIWJFn5': Permission denied
+rm: cannot remove `ex4/eNilEiW6LqL/H3fNgWEKn7TwWirTl/LHSpl6': Permission denied
+rm: cannot remove `ex4/eNilEiW6LqL/H3fNgWEKn7TwWirTl/uTO9g8Ovm': Permission denied
+....
+UNIX> <font color=darkred><b></b></font>
+</pre>
+
+Fortunately, <b>chmod</b> has a "recursive" option which sets all files reachable from 
+the argument.  That makes it easier:
+
+<pre>
+UNIX> <font color=darkred><b>chmod -R 0700 ex4 ex4-old</b></font>
+UNIX> <font color=darkred><b>rm -rf ex4 ex4-old</b></font>
+</pre>
+
+<HR><H2>The gradescript</H2>
+
+The grading script uses <b>mrd</b> to generate random test directories.  Cases 1-30 
+test only links, time and protection, or contents.  Cases 31-90 test all of them.
+In cases 1-70, the protection mode of directories is always 0755.  In cases 
+71 through 100, they are generated with the 'd' option to <b>mrd</b>.  Finally,
+cases 91 through 100 limit you to 7 open file descriptors.  
+<p>
+It's best to run the grading script in a clean directory that simply has a copy 
+of your <b>jtar</b> in it.
+
+<HR><H2>Strategy</H2>
+This is a nontrivial program.  
+The following is the strategy
+that I used for writing <b>jtar</b>.  You may want to use a different
+strategy if you find that easier; however, this one has the benefit of
+creating <b>jtar</b> in small pieces, each of which may be tested before
+going on.
+<UL>
+<LI> Write a small program to parse the command line arguments and flag
+errors.
+<LI> First attack the <b>c</b> option.
+Write a procedure <b>process_files()</b> that gets called on each 
+command line argument.  This procedure calls <b>lstat</b>, and tests
+to see if the 
+file is a directory or a regular file.  If so, <b>process_files()</b> 
+prints out something to that effect.
+<LI> Augment <b>process_files()</b> so that it identifies directories and
+prints out their contents.  
+<LI> Instead of printing out the contents, have <b>process_files()</b> 
+put each directory entry into a <b>dllist</b> (actually, have it put the
+full pathname:  if the directory is <b>xxx</b> and the directory entry is
+<b>yyy</b>, then have it put the string <b>"xxx/yyy"</b> in the <b>dllist</b>.
+This is just like the changes made to produce <b>prsize5.c</b> in my 
+<b>Prsize</b> lecture directory).
+Have it print out the <b>dllist</b> after closing the directory.
+Make sure you ignore <b>"."</b> and <b>".."</b> to avoid majorly bad
+infinite loops in your program.
+<LI> Instead of printing out the <b>dllist</b>, 
+recursively call <b>process_files()</b> on all the entries in the 
+<b>dllist</b>.  Then free up the <b>dllist</b>.  Why is it important to perform
+the <b>closedir</b> before making these recursive calls?  (you don't need to
+write down the answer to this question -- just make sure you understand.
+This is like <b>prsize7.c</b> vs. <b>prsize8.c</b>).
+<LI> Here's where you should put in the code for identifying duplicate
+entries and hard links.  Do this by maintaining two rb-trees -- 
+one keyed on inode number, and one keyed on <b>realpath</b> values.
+<LI> Put in code for making a rudimentary tarfile.  In the tarfile,
+just save the name of the file, and its <b>struct stat</b>.  (The command
+<pre>
+i = fwrite(&buf, sizeof(struct stat), 1, stdout);
+</pre>
+should be useful here).  Test the code by implementing enough of the <b>x</b>
+option to read in the file names and <b>struct stat</b>'s and print the 
+information to standard output.
+<LI> Flesh out the <b>x</b> option so that it makes all necessary directories,
+and creates all the regular files in the tarfile.  Don't worry about the 
+contents of the files just yet -- just make sure that the directories are
+made, and that the files are created with no contents.  Use the 
+<b>mkdir(2v)</b> system call to create directories.  Don't worry about 
+their protection modes just yet -- use 0777.
+<LI> Now, worry about the links.  If two files which are links to each
+other have been saved, get <b>jtar</b> to make one, and then create a 
+link for the second.  Use the <b>link(2v)</b> system call.
+<LI> Now, insert code to set the protection modes and the access 
+times of these recently-made files to their original values.  
+Use <b>chmod(2v)</b> and <b>utime(2v)</b> for these functions.
+As a hint -- you can change the modes and times just after creating 
+regular files.  For directories, you must wait until your done creating
+all files before you change their protection.  Think about why, and about
+how you want to do this (you'll need a <b>dllist</b> or <b>rb-tree</b>).
+<LI> Finally, put the code in <b>process_files()</b> to actually save
+the contents of regular files.  Save them to standard output right 
+after you save the <b>struct stat</b>.  Note that you need only 
+have one file open at any one time.  This includes directories.
+Moreover, you never need to hold the entire contents of any file
+in memory at any one time.
+Finally, note also that if you have two links to one file, you should only
+save one of their contents, since the second file will be made with 
+the <b>link(2v)</b> system call.
+Put code in the <b>x</b> option to skip over the contents of files.
+<LI> Put the code in the <b>x</b> option to read the contents of files
+and use them to actually create the correct file contents.
+<LI> Put in the <b>cv</b> and <b>xv</b> options (actually, I always had
+<b>jtar</b> printing stuff to <b>stderr</b> while developing the code).
+Here is where I changed the code so that it only printed this stuff out
+when <b>cv</b> and <b>xv</b> where specified.
+<LI> Test extensively and comment.
+</UL>
+

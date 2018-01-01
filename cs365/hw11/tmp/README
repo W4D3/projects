@@ -1,0 +1,7 @@
+Next time make the students also create a synchronized random number
+generator class that will generate random numbers for all of the threads.
+It should be simple--it creates a random number generator and makes
+its nextInt method synchronized. The nextInt method calls the random
+number generator's nextInt method and returns the value.
+
+

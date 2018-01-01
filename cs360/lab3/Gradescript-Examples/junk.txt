@@ -1,0 +1,11 @@
+sh do_it.sh 080 /home/plank/cs140/Labs/Lab2/Rodney.pgm 100
+sh do_it.sh 081 /home/plank/cs140/Labs/Lab2/Rodney.pgm 10
+sh do_it.sh 082 /home/plank/cs140/Labs/Lab2/Rodney.pgm 1
+sh do_it.sh 083 /home/plank/cs140/Labs/Lab2/Sheldon.pgm 100
+sh do_it.sh 084 /home/plank/cs140/Labs/Lab2/Sheldon.pgm 10
+sh do_it.sh 085 /home/plank/cs140/Labs/Lab2/Sheldon.pgm 1
+sh do_it.sh 086 /home/plank/cs140/Labs/Lab2/Schalk.pgm 100
+sh do_it.sh 087 /home/plank/cs140/Labs/Lab2/Schalk.pgm 10
+sh do_it.sh 088 /home/plank/cs140/Labs/Lab2/Schalk.pgm 1
+sh do_it.sh 089 /home/plank/cs140/Labs/Lab2/Red.pgm 100
+sh do_it.sh 100 /home/plank/cs140/Labs/Lab2/Red.pgm 10

@@ -1,0 +1,21 @@
+PRINT
+INSERT Victoria Ilyushin 172-031-5168 878-67-9952
+INSERT Anthony Example 256-306-5345 433-98-1714
+INSERT Madison Madeline Ellis 511-656-4147 686-55-8889
+INSERT Isaac Hoff 985-658-8560 251-92-1307
+INSERT Molly Kaylee Mitosis 858-788-3294 225-92-6705
+FIND Victoria Ilyushin
+INSERT Jacob Obdurate 920-975-9860 802-81-1890
+INSERT Brianna Alacrity 543-604-0641 937-44-0843
+DEPTH Isaac Hoff
+INSERT Lilly Sofia Muskox 510-721-8131 426-70-0448
+ROTATE Victoria Ilyushin
+INSERT Jake Wavenumber 092-360-3479 905-48-0624
+PREORDER
+SORT
+ROTATE Molly Kaylee Mitosis
+INSERT Oliver Toady 507-804-5283 655-84-9751
+ROTATE Victoria Ilyushin
+FIND Sophia Newsreel
+INSERT Charlie Proficient 551-691-0619 179-74-7058
+PRINT

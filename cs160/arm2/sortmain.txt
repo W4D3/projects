@@ -1,0 +1,24 @@
+Mitchell Wade
+sortmain.txt
+April 14, 2014
+
+SORT1:
+In sortmain.cpp the first thing the driver does is generate a random 
+number using srand(time(NULL)). Next, if the user of the program 
+enters more than one command line argument the program will convert 
+the second argument (argv[1]) on the command line to an integer. 
+Next the createList(listA, N) and createList(listB, N) functions use 
+a for loop to initialize each element of the lists. The for loop 
+reads through each element and initializes a random number that is 
+ANDed with 0xff (the value 255) into each spot.
+
+SORT2:
+The two for loops are used to get two element spots that are above
+and below linearly. The first loop will change the element of the list 
+to j which is n-1 and then it will decrement j at the end of the call. 
+The second for loop will change the element of the list to k which is
+j - 1 and then it will decrement k at the end of the call. Thus, the
+if statement compares the two spots of the list and puts the lower value
+in the spot that is before the higher value using a tempary value swap.
+This will change the lower value into the spot before the higher value 
+and the entire list will be sorted low to high.

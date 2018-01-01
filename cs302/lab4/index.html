@@ -1,0 +1,602 @@
+<title> CS302 -- Lab 4 -- Enumeration and Erasure Codes</title>
+
+<h1> CS302 -- Lab 4 -- Enumeration and Erasure Codes</h1>
+<h3>
+<UL> <LI> CS302 -- Data Structues and Algorithms II
+<LI> Fall, 2014
+<LI> <a href=http://www.cs.utk.edu/~plank>James S. Plank</a>
+<LI> <a href=http://www.cs.utk.edu/~plank/plank/classes/cs302/Labs/Lab4/index.html>This file:
+     <b>http://www.cs.utk.edu/~plank/plank/classes/cs302/Labs/Lab4</b></a>
+<LI> Lab Directory: <b>/home/plank/cs302/Labs/Lab4</b>
+</UL>
+</h3>
+
+<hr>
+As with lab 3, this is a long writeup, and there are a lot of moving parts. 
+I'm giving this to you for three reasons.  The first is to reinforce enumeration, yet again.
+The second is to give you practice in making use of third-party tools (the Galois Field
+library, and the Incremental Inverse library).  You'll be doing that a lot in your
+career, so practice is important.   The third is to get practice doing things that are
+foreign to you.  I'm sure the MIDI lab did that too. Being an effective programmer means
+understanding your problem space well enough to write useful programs, perhaps without
+understanding a lot of the underlying details, because as long as your tools work as they should,
+you don't <i>need</i> to understand the underlying details.
+
+<hr>
+<i>Just a caveat here.  Although this story may be influenced by real-life events,
+I've made up a bunch of the details and distorted the personalities to make
+the story more amusing.  So, "Luigi" or "Slim," if you read this, please don't take
+offense at my distortion of your personalities...</i>
+
+<hr>
+<h2>Welcome to the world of my research</h2>
+
+Here's the back story.  
+Every year, you travel to California to attend the biggest annual conference on
+storage, <I>SLOW: Storage Lovers Of the World</i>.  
+This year, you travel to SLOW, and while you are there, you stop by
+the giant computer company JCN to have lunch with your colleagues Luigi and Slim.
+They are giddy with excitement, because they've
+developed a new erasure coding paradigm, plus erasure codes to go with it.  
+For now, pretend that you're me and
+you know what that means.  They've applied for the patent and written up a
+60+ page, math-laden report on it, which they've asked you to read.  You do and agree -- 
+it's a really cool paradigm, and you're looking forward to them writing it
+up for next year's SLOW.
+<p>
+An awkward silence ensues, after which Luigi professes that he cannot 
+envision improving the 60 page report in any way.  He's a theoretician, and 
+those 60 pages are necessary for precision and completeness.  
+So, you turn to Slim -- he's a systems guy and could easily write this paper.
+No, Slim's got other things to do for JCN, and since the patent's done, and
+the codes are going into JCN's production systems, he's not really motivated to
+write the paper.  
+<p>
+As you finish off your Caesar salad, you realize that if this paradigm is going
+to make it to SLOW, it's going to be your job.  And that's fine with Luigi
+and Slim.  They'll be happy to help in any way.  So when you return to Tennessee,
+you start to work on this new paradigm.
+<hr>
+<h2>Erasure Codes</h2>
+
+Erasure codes prevent data loss in storage systems.  For the purposes of this work,
+your storage system is composed of <i>n</i> disks, each of which holds exactly <i>r</i>
+"words".  A word is composed of <i>w</i> bits, and the only values of <i>w</i> about which
+we care are 8, 16 and 32.  Let's draw a storage system below:
+
+<p><center><table border=3><td><img src=System.jpg></td></table></center><p>
+
+In this system, <i>n = 6</i> and <i>r = 4</i>.  We have labeled the disks 
+<i>D<sub>0</sub></i>
+through
+<i>D<sub>5</sub></i>.
+There are <i>nr</i> words in the 
+system, and we label each word <i>b<sub>i,j</sub></i>, where <i>j</i> is the 
+number of the disk that holds the word (<i>D<sub>j</sub></i>), 
+and <i>i</i> is the "row" of the word on the disk.
+<p>
+The problem with disk systems is that they break, and they break in two different
+ways.  Sometimes the entire disk breaks, which means that all of the data on it 
+is lost.  We will call that an "operational failure."  More frequently, though, individual
+words are lost.  These are called "sector failures."  
+<p>
+To protect against failures, you use an <i>erasure code</i>.  With an erasure code, you
+partition the <i>nr</i> words into "data" and "coding".  The data words store data.
+The coding words are calculated from the data.  However, the coding words are calculated
+in such a way that when operational and sector failures occur to data words, you can
+use the non-failed data and coding words to recalculate them.  In that way, you don't 
+lose data!
+<p>
+Let's call Luigi and Slim's code "LS" codes.  After reading the 60 page report, you 
+believe that they work as follows.  You choose two new parameters, <i>m</i> and <i>s</i>.
+You are going to dedicate all of the words on <i>m</i> disks to coding.  Of the remaining
+<i>r(n-m)</i> words, you are also going to dedicate <i>s</i> of them to coding.  In the
+picture above, <i>m = 2</i> and <i>s = 2</i>.  The codes are designed so that <i>any</i>
+combination of <i>m</i> operational failures and <i>s</i> sector failures can be tolerated.
+<p>
+So you write some tools to help you explore the LS codes, and when you try to 
+match your tools to the theorems in the 60 page report, you find a problem.  Either your
+tools are broken, or the theorems are wrong.  You double-check this, then triple-check it,
+because you know that Luigi is a brilliant theoretician, and it's highly unlikely that
+his theorems are wrong.  But you're a stellar programmer, and you've verified 
+that your tools are correct
+using every means possible.
+So you email Luigi, presenting him with a case
+where the tools don't match the math.  
+<p>
+Luigi responds that both the tools and the math are correct.  Phew!  What's incorrect is your
+understanding of the LS codes.  Their failure model is richer than the one you've described
+above.  The failure model takes a paragraph to explain, so I'm not going to bother, but
+the nice thing is that your failure model is new, and while you can use LS codes to fit your
+failure model, there are many cases where there are no LS codes for you to use.  This is 
+awesome, because it gives you great research to put into your SLOW paper.
+<p>
+Ok, time to get to work, and I'm sure you're tired of reading all this chatty prose and want
+to get on with this lab, so here it is.  You want your codes to have what we'll call
+the "JLS" property.  That is, that the codes can tolerate the failure of any <i>m</i> 
+disks and any additional <i>s</i> words.  You are going to write a program called
+<b>is_jls.cpp</b>.  That program is going to take as command line arguments the parameters
+of the erasure code.  I'll specify that more precisely below.   Then, your program 
+is going to enumerate all of the failure scenarios -- it will enumerate all failures of <i>m</i> 
+disks, plus all additional failures of <i>s</i> words.  That is a two-part enumeration.
+For each set of failures, it will double-check that the erasure code can tolerate the
+failures.  If it tolerates all the combinations that you have enumerated, then the 
+program prints <b>OK</b>.  If it discovers
+a set of failures that the code cannot tolerate, then it prints <b>No:</b>, and then specifies
+the failures. 
+<p>
+<hr>
+<h3>Erasure codes expressed as Parity Check Matrices</h3>
+
+For the purposes of our lab, an erasure code is specified by 
+a "Parity Check Matrix," which is a matrix with <i>mr+s</i> rows and
+<i>nr</i> columns.  Each row represents an equation and each column represents a word in
+the disk system.  Specifically, word <i>b<sub>i,j</sub></i> is in column <i>ni+j</i>.
+Now, when <i>m</i> disks and <i>s</i> words fail, we create a testing matrix from the
+<i>mr+s</i> columns of the Parity Check Matrix that correspond to the failed words.
+You'll note, this testing matrix is a square matrix because it has <i>mr+s</i> rows and
+<i>mr+s</i> columns.  If this matrix is invertible, then we can recalculate the failed
+words from the surviving words.  If this matrix is not invertible, then we cannot.
+<p>
+Here's an example.  Below is a Parity Check Matrix for our example system where <i>n = 6</i>,
+<i>m = 2</i>, <i>s = 2</i> and <i>r = 4</i>.  I've labeled how each column represents one
+word of the system.  I've colored columns that represent data words blue, and columns that 
+represent coding words pink.  
+<p><center><table border=0><td><img src=PCM.jpg></td></table></center><p>
+
+Suppose we have operational failures of disks <i>D<sub>0</sub></i>
+and <i>D<sub>4</sub></i>, plus sector failures on words 
+<i>b<sub>0,3</sub></i> and
+<i>b<sub>2,5</sub></i>.  To see if we can decode, we create the following 
+testing matrix from the columns that represent the failed words:
+
+<p><center><table border=0><td><img src=Tester.jpg></td></table></center><p>
+
+And we test to see if this matrix is invertible.  As it turns out, it is not invertible, so 
+the code represented by that Parity Check Matrix is not a JLS code.
+
+<hr>
+<h3>Final Pieces of the Puzzle: Galois Fields, Specifying Codes and Matrix Inversion</h3>
+
+Every element of our system is a <i>w</i>-bit word, and therefore can be represented by a
+ number between 0 and (2<sup><i>w</i></sup>-1).  Because we are using matrices, we need to 
+employ addition and multiplication.  However, since we are using a fixed set of numbers,
+our addition and multiplication have to work over this fixed set of numbers.  
+The addition and multiplication that we will use is called "Galois Field" arithmetic.
+It is denoted <i>GF(2<sup>w</sup>)</i>.  You don't have to worry about how it works -- you 
+just have to trust that it does work.  And it does.  
+<p>
+Addition in <i>GF(2<sup>w</sup>)</i> is equal to bitwise exclusive-or.  Thus, for example, 2+3 = 1,
+and 2+2 = 0.  Moreover, you don't really need to care about addition because you won't have to 
+do any addition in this lab.  Multiplication is more difficult, and I have written a small library
+that does multiplication for you.  It defines a class called <b>Galois_Field</b> with the
+following definition (in 
+<b><a href=galois_field.h>galois_field.h</a></b> and
+<b><a href=galois_field.cpp>galois_field.cpp</a></b>):
+
+<p><center><table border=3 cellpadding=3><td><pre>
+#include &lt;vector&gt;
+#include &lt;iostream&gt;
+using namespace std;
+
+typedef vector &lt;unsigned int&gt; UIVec;
+class Galois_Field {
+  public:
+    Galois_Field(int w);
+    unsigned int Multiply(unsigned int a, unsigned int b);
+    unsigned int Divide(unsigned int a, unsigned int b);
+    unsigned int Inverse(unsigned int a);
+  protected:
+    int W;
+    vector &lt;unsigned char&gt; Mult_Table_8;
+    vector &lt;unsigned char&gt; Div_Table_8;
+    vector &lt;unsigned short&gt; Log_Table_16;
+    vector &lt;unsigned short&gt; ILog_Table_16;
+    vector &lt;UIVec&gt; Tables_32;
+};
+
+</pre></td></table></center><p>
+
+It's pretty simple to use -- you construct an instance of it with the constructor, where
+you specify the value of <i>w</i> that you wish to use.  Only 8, 16 and 32 are supported.
+You use the methods <b>Multiply()</b> and <b>Divide()</b> to multiply and divide two
+numbers, respectively.  In this lab, you only have to use <b>Multiply()</b>. 
+<p>
+I've written a very small program, <b>galois_mult</b>, 
+that multiplies two numbers in <i>GF(2<sup>w</sup>)</i>.
+You give it the two numbers and <i>w</i> on the command line.  For example:
+<p>
+<pre>
+UNIX> <font color=darkred><b>galois_mult 2 3 8</b></font>
+6
+UNIX> <font color=darkred><b>galois_mult 20 20 8</b></font>
+13
+UNIX> <font color=darkred><b>galois_mult 200 2 8</b></font>
+141
+UNIX> <font color=darkred><b>galois_mult 30000 3 16</b></font>
+40784
+UNIX> <font color=darkred><b>galois_mult 100000 100000 32</b></font>
+1079264263
+UNIX> <font color=darkred><b></b></font>
+</pre>
+
+Yes, it's weird that 20 times 20 is equal to 13 in <i>GF(2<sup>8</sup>)</i>.
+That Galois dude was pretty smart when he invented this in the early 1800's.
+<p>
+I've also written <b>galois_divide</b>.  Although you won't use division in this
+lab, it's nice to see that multiplication and division have the correct properties
+in <i>GF(2<sup>w</sup>)</i>.  For example, see how the divisions below match to
+the multiplications above:
+
+<pre>
+UNIX> <font color=darkred><b>galois_divide 6 3 8</b></font>
+2
+UNIX> <font color=darkred><b>galois_divide 13 20 8</b></font>
+20
+UNIX> <font color=darkred><b>galois_divide 40784 30000 16</b></font>
+3
+UNIX> <font color=darkred><b>galois_divide 40784 3 16</b></font>
+30000
+UNIX> <font color=darkred><b>galois_divide 1079264263 100000 32</b></font>
+100000
+UNIX> <font color=darkred><b></b></font>
+</pre>
+
+Armed with this knowledge, I can now give you the complete specifications for
+how to create a parity check matrix.  Along with <i>n, m, s, r</i> and <i>w</i>,
+a code is defined by <i>m+s</i> "coding coefficients."  We are going to label
+them <i>a<sub>0</sub></i> through 
+<i>a<sub>m+s-1</sub></i>.
+The first <i>mr</i> rows of the Parity Check matrix are defined as follows:
+<p>
+Let <i>x</i>  be a number such that 0 <i>&le; x &lt; mr</i>.  
+Let <i>i = x % r</i> and <i>k = x / r</i>.  Then all entries in row <i>x</i> are
+equal to zero, except for those that correspond to words 
+<i>b<sub>i,j</sub></i>, for <i>0 &le; j &lt; n</i>.  The number in that row and column
+is equal to <i>(a<sub>k</sub>)<sup>ni+j</sup></i>.  Multiplication here is in <i>GF(2<sup>w</sup>)</i>.
+<p>
+Take a minute to see how this works for the first eight rows of the Parity Check Matrix pictured above.
+This matrix is the code in <i>GF(2<sup>8</sup>)</i> 
+where <i>a<sub>0</sub> = 1</i>,  
+<i>a<sub>1</sub> = 2</i>,  
+<i>a<sub>2</sub> = 4</i>  and 
+<i>a<sub>3</sub> = 8</i>.  
+Let's see how it matches to the definition.
+Suppose, for example, that <i>x = 6</i>.  Then <i>i= (6%4) = 2</i> and <i>k = (6/4) = 1</i>.
+Therefore, all entries in row <i>6</i> are zero, except for those that correspond to 
+<i>b<sub>2,0</sub></i> through <i>b<sub>2,5</sub></i>.
+Those entries should equal <i>(a<sub>1</sub>)<sup>(6)(2)+j</sup></i> for <i>0 &le; j &lt 6</i>.
+In other words, those entries should equal 2<sup>12</sup> through 
+2<sup>17</sup>  in <i>GF(2<sup>8</sup>)</i>.  Verify that they do with <b>galois_mult</b>.
+First, calculate 2<sup>2</sup> = 2*2, then 
+2<sup>4</sup> = 2<sup>2</sup>*2<sup>2</sup>, then
+2<sup>8</sup> = 2<sup>4</sup>*2<sup>4</sup>, then
+2<sup>12</sup> = 2<sup>8</sup>*2<sup>4</sup>:
+
+<pre>
+UNIX> <font color=darkred><b>galois_mult 2 2 8</b></font>
+4
+UNIX> <font color=darkred><b>galois_mult 4 4 8</b></font>
+16
+UNIX> <font color=darkred><b>galois_mult 16 16 8</b></font>
+29
+UNIX> <font color=darkred><b>galois_mult 29 16 8</b></font>
+205
+UNIX>
+</pre>
+
+That means that 2<sup>12</sup> = 205.  Now calculate 
+2<sup>13</sup> through
+2<sup>17</sup>:
+
+<pre>
+UNIX> <font color=darkred><b>galois_mult 205 2 8</b></font>
+135
+UNIX> <font color=darkred><b>galois_mult 135 2 8</b></font>
+19
+UNIX> <font color=darkred><b>galois_mult 19 2 8</b></font>
+38
+UNIX> <font color=darkred><b>galois_mult 38 2 8</b></font>
+76
+UNIX> <font color=darkred><b>galois_mult 76 2 8</b></font>
+152
+UNIX> 
+</pre>
+
+See how that matches row 6 in the Parity Check Matrix?
+<p>
+Now, the final <i>s</i> rows of the matrix are defined pretty simply.  The element in
+row <i>mr+i</i>, column <i>j</i> is equal to <i>(a<sub>m+i</sub>)<sup>j</sup></i>.
+Verify it for yourself.  The element in row 9, column 23 is 47.  That should equal
+<i>(a<sub>3</sub>)<sup>23</sup></i>= 8<sup>23</sup>.  See if you can follow that calculation
+below:
+
+<pre>
+UNIX> <font color=darkred><b>galois_mult 8 8 8</b></font>     
+64                                   This means that 8<sup>2</sup> = 64
+UNIX> <font color=darkred><b>galois_mult 64 64 8</b></font>
+205                                  This means that 8<sup>4</sup> = 205
+UNIX> <font color=darkred><b>galois_mult 205 205 8</b></font>
+143                                  This means that 8<sup>8</sup> = 143
+UNIX> <font color=darkred><b>galois_mult 143 143 8</b></font>
+70                                  This means that 8<sup>16</sup> = 70
+UNIX> <font color=darkred><b>galois_mult 143 70 8</b></font>
+101                                  This means that 8<sup>24</sup> = 101
+UNIX> <font color=darkred><b>galois_divide 101 8 8</b></font>
+47                                   This means that 8<sup>23</sup> = 47
+UNIX> <font color=darkred><b></b></font>
+</pre>
+
+Now that you know how to create a parity check matrix, you need to know how to test whether
+a matrix is invertible.  To help you with that, I have implemented a second library, defined
+in 
+<b><a href=incremental_inverse.h>incremental_inverse.h</a></b> and
+<b><a href=incremental_inverse.cpp>incremental_inverse.cpp</a></b>:
+
+<p><center><table border=3 cellpadding=3><td><pre>
+#include "galois_field.h"
+
+class Incremental_Inverse {
+  public:
+    Incremental_Inverse(int rows, Galois_Field *gf);
+    int Add_Col(vector &lt;unsigned int&gt; &col);
+    void Delete_Col();
+    void Print();   
+  protected:
+    Galois_Field *gf;
+    vector &lt;UIVec&gt; Cols;
+    vector &lt;int&gt; Pivots;
+    int Rows;
+    int NCols;
+};
+</pre></td></table></center><p>
+
+This library is nice because it allows you to test for invertibility of a square matrix,
+starting with an empty matrix and adding one column of the matrix at a time.  You create
+an instance of the class with the constructor, parameterized by the number of rows
+that the matrix will have when it is square, and a pointer to the Galois Field.
+When you want to add a column to the matrix, you call ,<b>Add_Col</b> with a vector
+of elements.  The vector should have <b>rows</b> elements.  <b>Add_Col</b> adds the column
+vector to the matrix and tests to see whether its possible that any square matrix with 
+the given columns is invertible.  If so, it returns 1.  If not, it returns 0, and does
+not add the column to the matrix.    
+<p>
+This allows you to add columns to the matrix and test for invertibility when you add the
+columns.  It allows your enumeration to run faster, because you can add the column when
+you define the failure.  You remove the column with <b>Delete_Col</b>.  If you don't 
+understand this paragraph, skip it and come back to it later.
+<p>
+The program <b>ii_test</b> is a program that allows you to get a feeling for 
+<b>Incremental_Inverse</b>.  You call it with the number of rows, and <i>w</i> for the
+Galois Field.  Then you can add a column with <b>ADD</b> and delete a column with
+<b>DELETE</b>.   <b>PRINT</b> is supported, but it's more likely to confuse you, frankly,
+than anythine else.
+<p>
+Let's call it with 4 rows and <i>w</i> equal to eight, and then add an identity matrix
+in four <b>ADD</b> calls.  Identity matrices are invertible, so each <b>ADD</b> call
+will be successful:
+
+<pre>
+UNIX> <font color=darkred><b>ii_test 4 8</b></font>
+II_TEST> <font color=darkred><b>ADD 1 0 0 0</b></font>
+Successful
+II_TEST> <font color=darkred><b>ADD 0 1 0 0</b></font>
+Successful
+II_TEST> <font color=darkred><b>ADD 0 0 1 0</b></font>
+Successful
+II_TEST> <font color=darkred><b>ADD 0 0 0 1</b></font>
+Successful
+II_TEST> <font color=darkred><b>QUIT</b></font>
+UNIX>
+</pre>
+
+However, suppose we instead add two duplicate columns.  No matrix with duplicate columns
+is invertible, so the <b>ADD</b> will be unsuccessful:
+
+<pre>
+UNIX> <font color=darkred><b>ii_test 4 8</b></font>
+II_TEST> <font color=darkred><b>ADD 1 2 3 4</b></font>
+Successful
+II_TEST> <font color=darkred><b>ADD 1 2 3 4</b></font>
+Unsuccessful
+II_TEST> <font color=darkred><b></b></font>
+</pre>
+
+Suppose we add a multiple of the first column -- that also will render the matrix
+not invertible:
+
+<pre>
+II_TEST> <font color=darkred><b>ADD 2 4 6 8</b></font>
+Unsuccessful
+II_TEST> <font color=darkred><b></b></font>
+</pre>
+
+However, the following matrix is invertible in <i>GF(2<sup>8</sup>)</i>:
+<center>
+<pre>
+1   4   8  11
+2   3   9 100
+3   2   7  59
+4   1   6  38
+</pre>
+</center>
+We add the columns incrementally, and each one is successful:
+
+<pre>
+II_TEST> <font color=darkred><b>ADD 4 3 2 1</b></font>
+Successful
+II_TEST> <font color=darkred><b>ADD 8 9 7 6</b></font>
+Successful
+II_TEST> <font color=darkred><b>ADD 11 100 59 38</b></font>
+Successful
+II_TEST> <font color=darkred><b></b></font>
+</pre>
+
+We can delete the last column and try to add (8 9 7 6).  That will be unsuccessful, because
+the following matrix has duplicate columns, and therefore cannot be invertible.
+<center>
+<pre>
+1   4   8   8
+2   3   9   9
+3   2   7   7
+4   1   6   6
+</pre>
+</center>
+
+<pre>
+II_TEST> <font color=darkred><b>DELETE</b></font>
+II_TEST> <font color=darkred><b>ADD 8 9 7 6</b></font>
+Unsuccessful
+II_TEST> <font color=darkred><b>QUIT</b></font>
+UNIX> <font color=darkred><b></b></font>
+</pre>
+
+
+
+
+<hr>
+<h2>Your program: is_jls.cpp</h2>
+
+Your program <b>is_jls.cpp</b> should accept the following command line parameters in this order:
+<i>n, m, s, r, w, a<sub>0</sub>, a<sub>1</sub>, ..., a<sub>m+s-1</sub></i>.
+It should create the Parity Check Matrix for these parameters, and then it should enumerate
+all combinations of <i>m</i> operational and <i>s</i> sector failures.  Each time it adds
+a failure to the enumeration, it should call <b>Add_Col()</b> with the proper column of the
+Parity Check Matrix to see if the resulting testing matrix will be invertible.  If it's
+not invertible, then the code is not JLS.  Print "No" and a string representing the failures (defined
+below).  
+If the testing matrix is invertible, then continue the enumeration.
+If you enumerate all failure scenarios and the testing matrix
+is always invertible, then print "OK" and exit.
+<p>
+To represent failures in the output, we will use a string with <i>nr</i> characters, one for
+each word in the system.  Or, put another way, one for each column of the Parity Check Matrix.
+Each character will have one of three values: 
+<p>
+<UL>
+<LI> 'U' if the word is not failed (i.e., it's "up").
+<LI> 'D' if the word is on a disk with an operational failure.
+<LI> 'S' if the word is down because of a sector failure.
+</UL>
+<p>
+For example, the string for our example Parity Check Matrix and failure scenario is:
+
+<p><center><table border=3><td>DUUSDUDUUUDUDUUUDSDUUUDU</td></table></center><p>
+<p>
+So, here are some examples:
+
+<pre>
+UNIX> <font color=darkred><b>is_jls 6 2 2 4 8 1 2 4 8</b></font>
+No: DUUSDUDUUUDUDUUUDSDUUUDU
+UNIX> <font color=darkred><b>is_jls 6 2 2 4 16 1 2 4 8</b></font>
+OK
+UNIX> <font color=darkred><b>is_jls 6 1 2 4 8 1 2 4 </b></font>
+OK
+UNIX> <font color=darkred><b>is_jls 6 1 2 4 8 1 1 1</b></font>
+No: DSUUUUDUUUUUDUUUUUDUUUUU
+UNIX> <font color=darkred><b>is_jls 6 2 2 4 8 1 1 1 1</b></font>
+No: DDUUUUDUUUUUDUUUUUDUUUUU
+UNIX> <font color=darkred><b></b></font>
+</pre>
+
+The last two calls are always going to fail because the Parity Check Matrix will have duplicate
+lines.  Note that in each case, it discovered the problem without generating all <i>m</i> disk
+failures and all <i>s</i> sector failures.  
+
+<hr>
+<h3>Grading and helper programs</h3>
+
+Your program does not have to match mine exactly.  Instead, if the given code is JLS, then
+your program must print "OK."  If it is not JLS, then it needs to print "No" and give a 
+failure scenario that is not recoverable.  It does <i>not</i> have to give the failure
+scenario that my program gives. 
+<p>
+You should error check the input, but I'm not going to grade you on it.  
+The TA's may -- that's up to them, and they'll let you know.
+The gradescripts will always give legal input.  
+<p>
+Since enumerations are exponential, the running times of these will blow up.
+The gradescript will limit parameters so that my program, when compiled with -O3, takes
+less than a second to complete.  If yours takes 5 seconds or more, you are doing something
+wrong.  The "incremental" nature of <b>Incremental_Inverse</b> is one of the things that
+makes this program fast.  The first version that I wrote simply generated the square matrix
+for each failure scenario that had the maximum number of failures, and it was slower than
+this one by a factor of 10 to 100.  
+<p>
+I have a few programs to help you.  They all take the same command line arguments as <b>is_jls</b>.
+The first is <b>print_pcm</b>, which simply prints the parity check matrix.  It prints each 
+element with <b>printf("%*u ", fw, PCM[i][j])</b>, where <b>fw</b> is 3 when <i>w=8</i>, 
+5 when <i>w=16</i> and 10 when <i>w=32</i>.  Here's the example Parity Check Matrix above:
+
+<pre>
+UNIX> <font color=darkred><b>print_pcm 6 2 2 4 8 1 2 4 8</b></font>
+  1   1   1   1   1   1   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0 
+  0   0   0   0   0   0   1   1   1   1   1   1   0   0   0   0   0   0   0   0   0   0   0   0 
+  0   0   0   0   0   0   0   0   0   0   0   0   1   1   1   1   1   1   0   0   0   0   0   0 
+  0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   1   1   1   1   1   1 
+  1   2   4   8  16  32   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0 
+  0   0   0   0   0   0  64 128  29  58 116 232   0   0   0   0   0   0   0   0   0   0   0   0 
+  0   0   0   0   0   0   0   0   0   0   0   0 205 135  19  38  76 152   0   0   0   0   0   0 
+  0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0  45  90 180 117 234 201 
+  1   4  16  64  29 116 205  19  76  45 180 234 143   6  24  96 157  78  37 148 106 181 238 159 
+  1   8  64  58 205  38  45 117 143  12  96  39  37  53 181 193  70  10  80 186 185 161  97  47 
+UNIX> <font color=darkred><b></b></font>
+</pre>
+
+The second program is <b>print_failures</b>.  It prints out every failure scenario that 
+<b>is_jls</b> will test.  The third program is <b>test_failures</b>.  It reads failure
+scenario strings on standard input, and for each of these, it prints out the tester matrix,
+and whether the tester matrix is invertible.  The failure scenario strings can have fewer
+than <i>mr+s</i> failures.  When that happens, the tester matrix will not be square, but
+the incremental inversion tester will state whether there exists a square matrix containing
+that matrix which is invertible, or whether no square matrix containing that matrix will be
+invertible.  
+
+<pre>
+UNIX> <font color=darkred><b>echo DUUSDUDUUUDUDUUUDSDUUUDU | test_failures 6 2 2 4 8 1 2 4 8</b></font>
+Failure string: DUUSDUDUUUDUDUUUDSDUUUDU
+Tester:
+
+  1   1   1   0   0   0   0   0   0   0 
+  0   0   0   1   1   0   0   0   0   0 
+  0   0   0   0   0   1   1   1   0   0 
+  0   0   0   0   0   0   0   0   1   1 
+  1   8  16   0   0   0   0   0   0   0 
+  0   0   0  64 116   0   0   0   0   0 
+  0   0   0   0   0 205  76 152   0   0 
+  0   0   0   0   0   0   0   0  45 234 
+  1  64  29 205 180 143 157  78  37 238 
+  1  58 205  45  96  37  70  10  80  97 
+
+Not invertible at column 7
+
+UNIX> <font color=darkred><b>echo SSUUUUUUUUUUUUUUUUUUUUUU | test_failures 6 2 2 4 8 1 1 1 1</b></font>
+Failure string: SSUUUUUUUUUUUUUUUUUUUUUU
+Tester:
+
+  1   1 
+  0   0 
+  0   0 
+  0   0 
+  1   1 
+  0   0 
+  0   0 
+  0   0 
+  1   1 
+  1   1 
+
+Not invertible at column 1
+
+UNIX> <font color=darkred><b></b></font>
+</pre>
+
+The gradescript is a combination of my <b>is_jls</b> and <b>test_failures</b>.
+<hr>
+<h3>Two final things</h3>
+
+First, use <b>unsigned int</b>'s for matrix elements.  Yes, you can use an <b>unsigned char</b>
+for <i>GF(2<sup>8</sup>)</i>, but that will only make your life more difficult.  Simply use
+<b>unsigned int</b>'s.
+<p>
+Second, there is a <b>makefile</b> in this directory that does all compilation for you.
+Use it.

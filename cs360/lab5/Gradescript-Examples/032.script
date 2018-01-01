@@ -1,0 +1,11 @@
+/home/plank/cs360/labs/lab5/Gradescript-Examples/mrd 32 9 8 y 38 your-dir
+./jtar c your-dir > tarfile
+mv your-dir test-dir
+./jtar x < tarfile
+
+if [ ! -d your-dir ]; then
+  echo 'Your tar x command did not create the directory your-dir.' >&2
+  exit 1
+fi
+
+/home/plank/cs360/labs/lab5/tar-checker test-dir your-dir c t p l

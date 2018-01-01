@@ -1,0 +1,21 @@
+PRINT
+ROTATE Hailey Cognizant
+INSERT Sophie Shrew 141-687-7908 246-63-2534
+INSERT Landon Jibe 052-981-6517 839-99-4973
+INSERT Sophie Shrew 993-812-0317 631-25-9651
+POSTORDER
+DELETE Hunter Debugging
+FIND Landon Jibe
+INSERT Jonathan Whack Jr 041-108-8332 572-21-9918
+INSERT Anna Hoot 801-091-2959 197-75-7114
+DELETE Connor Segmentation
+FIND Riley Assyriology
+DEPTH Nathan Nicholas Louisiana
+DELETE Sophie Shrew
+INSERT Isaiah Jacobsen 849-179-1982 458-64-3588
+INSERT Evelyn Fledge 103-651-6105 618-55-2696
+DELETE Landon Jibe
+SORT
+INSERT Nathan Planetarium 692-647-1029 625-16-7553
+INSERT Nicholas Avocation 213-658-1492 124-21-1112
+PRINT

@@ -1,0 +1,20 @@
+Chat Rooms:
+
+American-Idol:
+Art:
+Baseball:
+Bridge:
+Food:
+Movies:
+Music:
+Politics:
+Video-Games:
+Woodworking: Gallant Dontonio
+
+Enter your chat name (no spaces):
+Enter chat room:
+Mercutio has joined
+Dontonio has left
+Gallant has left
+Gus has joined
+Keroppi has joined

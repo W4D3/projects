@@ -1,0 +1,23 @@
+#!/bin/sh
+
+if [ $# = 1 -a "$1" = "-" ]; then
+  echo "<pre>" > tmp-hs.html
+  sort -nr scores.txt | head -50 | cat -n  >> tmp-hs.html
+  open tmp-hs.html
+  exit 0
+elif [ $# = 1 ]; then
+  sc=$1
+  un=$USER
+elif [ $# = 2 ]; then
+  sc=$2
+  un="$1"
+else
+sort -nr scores.txt | head -10 | cat -n
+echo "-"
+exit
+fi
+
+d=`date | sed 's/ /#/g'`
+un=`echo $un | sed 's/ /#/g'`
+
+echo $sc "$un" "$d" | awk '{ printf "%8d %-20s %s\n", $1, $2, $3 }' | sed 's/#/ /g' >> scores.txt

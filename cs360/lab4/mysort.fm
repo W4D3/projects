@@ -1,0 +1,8 @@
+E mysort
+
+C mysort.c
+
+F -g
+F -I/home/plank/cs360/include
+
+L /home/plank/cs360/objs/libfdr.a

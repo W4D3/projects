@@ -1,0 +1,9 @@
+INSERT Tristan Bladdernut
+PRINT
+INSERT Ryan Vomit
+INSERT Kayla Southampton
+INSERT Arianna Wallow
+PRINT
+INSERT Audrey Eveready
+INSERT Arianna Wallow
+PRINT

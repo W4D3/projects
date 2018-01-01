@@ -1,0 +1,31 @@
+SORT
+INSERT William Heidelberg 985-798-6737 209-27-1311
+INSERT Brandon Pinkie 774-538-6772 502-20-4026
+DELETE William Heidelberg
+DELETE Brandon Pinkie
+INSERT Gabriel Torrance 964-531-7328 990-56-5482
+POSTORDER
+ROTATE Gabriel Torrance
+INSERT Elijah Handgun 479-867-7751 084-41-8039
+PRINT
+INSERT Eli Supernovae 884-738-8554 052-46-6345
+INSERT Zoey Kayla Quintillion 211-874-3467 877-65-4789
+INSERT Oliver Pennsylvania 859-700-8276 634-73-5881
+INSERT Kylie Townsmen 698-949-6982 246-68-0725
+INSERT Mason Keg 866-684-4652 299-20-3840
+INSERT Katelyn Railbird 129-855-7707 940-35-6914
+INSERT Kayla Forbes 810-949-3834 012-81-3454
+DELETE Elijah Handgun
+ROTATE Zoey Kayla Quintillion
+INSERT Christopher Column 102-673-3052 709-60-8528
+DELETE Olivia Telecommunicate
+DELETE Oliver Pennsylvania
+ROTATE Gabriel Torrance
+FIND Katelyn Railbird
+INSERT Ella Emissary 106-989-4919 426-07-7748
+ROTATE Allison Exclamatory
+DELETE Katelyn Railbird
+DELETE Kayla Forbes
+INSERT Lucy Dianne 693-369-8387 600-25-2809
+HEIGHT
+PRINT

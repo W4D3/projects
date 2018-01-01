@@ -1,0 +1,1 @@
+SELECT DISTINCT r.roomNo, r.hotelNo, r.type, r.price, g.guestName FROM Room r, Booking b, Hotel h, Guest g WHERE (dateFrom <= CURRENT_DATE AND dateTo >= CURRENT_DATE) AND b.hotelNo = h.hotelNo AND hotelName = 'Grosvenor Hotel';

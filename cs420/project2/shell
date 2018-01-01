@@ -1,0 +1,6 @@
+#!/bin/bash
+
+PROCESS_TO_RUN=("/home/mwade18/COURSES/cs420/project2/lab.cpp")
+
+for i in ${PROCESS_TO_RUN[@]}; do
+   $(i%/*)/./${i##*/}

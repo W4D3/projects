@@ -1,0 +1,1 @@
+195 Last7 Double /home/plank/cs140/Labs/Lab4/Gradescript-Examples/077-dict.txt

@@ -1,0 +1,4 @@
+/home/plank/cs360/labs/lab7/cattostde /home/plank/cs360/labs/lab7/Gradescript-Examples/Input-File-9.txt
+cat /home/plank/cs360/labs/lab7/Gradescript-Examples/Input-File-8.txt
+/home/plank/cs360/labs/lab7/cattostde /home/plank/cs360/labs/lab7/Gradescript-Examples/Input-File-7.txt
+cat /home/plank/cs360/labs/lab7/Gradescript-Examples/Input-File-6.txt

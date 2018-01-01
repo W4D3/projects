@@ -1,0 +1,200 @@
+<title>CS360 Lecture notes -- Select</title>
+<body bgcolor=ffffff>
+<h1>CS360 Lecture notes -- Select</h1>
+<UL>
+<LI><a href=http://www.cs.utk.edu/~plank>Jim Plank</a>
+<LI>Directory: <b>/home/plank/cs360/notes/Select</b>
+<LI>Lecture notes:
+    <a href=http://www.cs.utk.edu/~plank/plank/classes/cs360/360/notes/Select/lecture.html>
+    <b>
+ http://www.cs.utk.edu/~plank/plank/classes/cs360/360/notes/Select/lecture.html
+</b></a>
+<LI>Most recently revised: 
+Tue Apr 19 09:44:38 EDT 2011
+</UL>
+<hr>
+
+
+<h1>Select()</h1>
+
+<b>Select()</b> is a system call that lets you probe the
+operating system to discern whether or not there
+is I/O to be done on various file descriptors. 
+
+<p>For example, suppose that we want to write
+<b>jtelnet</b>. This is a program that works just
+like "<b>telnet</b>" (for the most part).  
+The user specifies a hostname and a port,
+and <b>jtelnet</b> performs a <b>request_connection()</b> to that
+hostname and port. 
+
+<p>Once the connection is made, <b>jtelnet</b> will take any
+bytes that come from the socket connection and
+print them out on standard output, and it will
+take any input from standard input, and write it
+onto the socket connection. 
+
+<p><b>Jtelnet</b> needs <b>select()</b> because it needs to probe
+the operating system to discern whether there are
+bytes to be read from <b>stdin</b> or from the socket
+connection. 
+
+<p>The arguments to <b>select()</b> are as follows:
+
+<pre>
+int select (int width, fd_set *readfds, 
+                       fd_set *writefds, 
+                       fd_set *exceptfds, struct timeval *timeout)
+</pre>
+
+The data types <b>fd_set</b> and <b>struct timeval</b> are
+defined in 
+<a href=file:/usr/include/sys/types.h><b>sys/types.h</b></a>
+and 
+<a href=file:/usr/include/sys/time.h><b>sys/time.h</b></a>.
+In this class, we won't care about selecting for
+writable fd's or for exceptional conditions, so
+we will always use <b>select()</b> as follows:
+
+<pre>
+select(width, readfds, NULL, NULL, NULL);
+</pre>
+
+<b>Readfds</b> is a bitmap of file descriptors.  <b>Select()</b>
+will return when any of the file descriptors in
+the bitmap has something to read.  When it
+returns, <b>readfds</b> will be a new bitmap containing
+all the file descriptors that have something
+read.  In other words, a <b>read()</b> call on that file
+descriptor is guaranteed not to block.  It may
+return with a value of zero (i.e. end of file),
+but it is guaranteed to return. 
+
+<p>We manipulate the bitmaps with the macros:
+
+<pre>
+     FD_SET (fd, &fdset)
+     FD_CLR (fd, &fdset)
+     FD_ISSET (fd, &fdset)
+     FD_ZERO (&fdset)
+</pre>
+
+where <b>fd</b> is an <b>int</b> and <b>fdset</b> is a <b>fd_se</b>t.  
+So, to make a bitmap that has file descriptors 0 and
+3 set, we would do: 
+
+<pre>
+  fd_set fds;
+
+  FD_ZERO(&fds);
+  FD_SET(0, &fds);
+  FD_SET(3, &fds);
+</pre>
+
+We use <b>FD_CLR()</b> to clear bits from the
+bitmap, and <b>FD_ISSET()</b> to test to see if a
+particular bit is set.  
+
+<p>Now, jtelnet (in 
+<a href=jtelnet.c><b>jtelnet.c</b></a>):
+
+<p>First, we mess with <b>argc</b> and <b>argv</b> and do the 
+requisite <b>request_connection</b>:
+
+<p><center><table border=3 cellpadding=3><td><pre>
+#include "sockettome.h"
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;sys/time.h&gt;
+
+main(int argc, char **argv)
+{
+  int port;
+  int fd;
+  char *hostname, buf[100];
+  fd_set readfds, masterfds;                            
+  int nopen, n;
+
+  if (argc != 3) {
+    fprintf(stderr, "usage: jtelnet host port\n");
+    exit(1);
+  }
+
+  hostname = argv[1];
+  port = atoi(argv[2]);
+
+  fd = request_connection(hostname, port);
+</pre></td></table></center><p>
+
+Now, we are going to use two <b>fd_set</b>s 
+-- a permanent one called <b>masterfds</b>, and
+a temporary one called <b>readfds</b>.  First, we initialize 
+<b>masterfds</b> so that fd zero and the socket connection are set:
+
+<p><center><table border=3 cellpadding=3><td valign=top><pre>
+  FD_ZERO(&masterfds);
+  FD_SET(0, &masterfds);
+  FD_SET(fd, &masterfds);
+</pre></td></table></center><p>
+  
+Now, we go through an infinite loop that first
+copies <b>masterfds</b> to <b>readfds</b>, then calls <b>select()</b>
+on <b>readfds</b>, and then performs the correct action
+(sending <b>stdin</b> to the socket, or input from the
+socket to <b>stdout</b>) depending on what bits of
+<b>readfds</b> <b>select()</b> sets.  An <b>EOF</b> from
+either <b>stdin</b> or from the socket ends the telnet
+session.  
+
+<p><center><table border=3 cellpadding=3><td valign=top><pre>
+  while (1) {
+    memcpy(&readfds, &masterfds, sizeof(fd_set));
+
+    if (select(fd+1, &readfds, NULL, NULL, NULL) < 0) {
+      perror("on select");
+      exit(1);
+    }
+
+    if (FD_ISSET(0, &readfds)) {
+      n = read(0, buf, 100);
+      if (n == 0) {
+        close(0);
+        close(fd);
+        exit(1);
+      } else {
+        write(fd, buf, n);
+      }
+    } 
+
+    if (FD_ISSET(fd, &readfds)) {
+      n = read(fd, buf, 100);
+      if (n == 0) {
+        close(0);
+        close(fd);
+        exit(1);
+      } else {
+        write(1, buf, n);
+      }
+    }
+
+  }
+}
+</pre></td></table></center><p>
+
+<p><b>Telnet</b> is a nice program because it is a generalized client.  
+Back in the days before the web and massive security concerns, people
+wrote servers to which clients would telnet.  For example, as of the
+most recent revision of these lecture notes (April, 2010), there is a
+weather server 
+at host <b>rainmaker.wunderground.com</b> and port 
+3000.  If you 
+<b>telnet</b> to it (or <b>jtelnet</b>), you can get current weather conditions.
+This is a very powerful paradigm.  <b>Telnet</b> is nice because it allows
+the people at Michigan to set up a server without providing client 
+code -- we already have the client: <b>telnet</b>.  
+<p>
+Of course, now we have the web, which is made possible by protocols to write
+general graphical clients with hypertext.  That's a little beyond the scope of
+this lecture....

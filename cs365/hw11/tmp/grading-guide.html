@@ -1,0 +1,67 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=windows-1252">
+<style>
+ol ol {list-style-type: lower-alpha;}
+</style>
+</head>
+<body><center>
+<h1>HW 11 Grading Guide</h1>
+</center>
+<hr>
+<ol>
+<p>
+</p><li> (<b>30 points</b>)
+  <ol>
+    <li> (<b>20 points</b>) Test and make sure it works
+      <ol>
+	<li> The scoreboard is appropriately printed every 2 seconds
+	</li><li> The final queue of contestants is appropriately printed
+      </li></ol>
+    </li><li> (<b>10 points</b>) Your discretion. Scan the code and make sure
+         everything appears in order. Pay attention to the TimeKeeper class
+         and make sure they synchronized the proper methods and did not
+         synchronize unnecessary methods. Deduct a couple points for being
+         too aggressive with synchronization.
+   </li></ol>
+<p>
+</p></li><li> (<b>10 points</b>) 5 points for each part. 
+  Their answer should be consistent with the data structure they used. You can
+  award partial credit at your discretion.
+<p>
+</p></li><li> (<b>60 points</b>)
+  <ol>
+    <li> (<b>45 points</b>) Test and make sure it works
+      <ol>
+	<li> The chat rooms are listed in alphabetical order when a client 
+	  connects and the participants in each room are listed in the order
+	  they entered the room.
+	</li><li> You are able to add yourself to a chat room
+	</li><li> If you enter an unlisted chat room, you are continuously 
+	  prompted for a chat room until you enter an appropriate one
+	</li><li> When a user enters a chat room, all other users in the chat room
+	  are notified of the arrival.
+	</li><li> Lines from a user are broadcast to all other users in the
+	  chat room.
+	</li><li> When a user leaves the chat room, all other users in the chat room
+	  are notified of the departure.
+      </li></ol>
+    </li><li> (<b>15 points</b>) Your discretion. Scan the code and make sure
+      that it roughly follows the structure I outlined in class.
+      <ol>
+	<li> A main chat server that loops, accepts client connections, and
+	  forks server threads to handle each client.
+        </li><li> A server thread for each client that receives input and forwards
+	  the information to a chat room object.
+        </li><li> A chat room object that distributes messages to individuals in
+	  the chat rooms. There should be one chat room object per chat room.
+	  Having one chat room object for the entire application could result
+	  in unnecessary client blocking if two server threads from different chat
+	  rooms try to get to the chat room object simultaneously.
+	</li><li> A client-side program that connects to the server and 
+	  handles reading from stdin and the socket in an appropriate 
+	  fashion (probably with the main thread dealing with one of the
+	  input streams and a second thread dealing with the other input
+	  stream).
+      </li></ol>
+</li></ol>
+</li></ol></body></html>

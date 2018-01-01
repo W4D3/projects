@@ -1,0 +1,5 @@
+while [ 1 ]; do
+  echo --
+  gen_examples 100 3 | head -n 10
+    sleep 1
+done

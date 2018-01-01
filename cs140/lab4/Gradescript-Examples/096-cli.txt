@@ -1,0 +1,1 @@
+233 XOR Double /home/plank/cs140/Labs/Lab4/Gradescript-Examples/096-dict.txt

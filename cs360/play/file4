@@ -1,0 +1,5 @@
+And write
+Standard output now goes to file4
+It goes even after we closed file descriptor 3
+putchar works
+And fwrite

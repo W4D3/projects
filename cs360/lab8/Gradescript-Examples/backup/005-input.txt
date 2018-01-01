@@ -1,0 +1,4 @@
+/home/plank/cs360/labs/lab7/strays /home/plank/cs360/labs/lab7/Gradescript-Examples/Input-File-5.txt
+/home/plank/cs360/labs/lab7/scattostde /home/plank/cs360/labs/lab7/Gradescript-Examples/Input-File-4.txt
+/home/plank/cs360/labs/lab7/strays /home/plank/cs360/labs/lab7/Gradescript-Examples/Input-File-3.txt
+/home/plank/cs360/labs/lab7/cattostde /home/plank/cs360/labs/lab7/Gradescript-Examples/Input-File-2.txt

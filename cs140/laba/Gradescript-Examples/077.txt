@@ -1,0 +1,41 @@
+INSERT Cole Caution 558-979-7997 066-47-6217
+ROTATE Cole Caution
+INSERT Austin Earthmoving 295-311-1397 992-44-4221
+INSERT Samuel Ronald 758-242-3199 470-89-7274
+SORT
+ROTATE Isabella Austenite
+DELETE Cole Caution
+DEPTH Samuel Ronald
+PREORDER
+INSERT Owen Deject 860-205-4139 113-64-0975
+INSERT Austin Earthmoving 879-554-1587 941-12-9429
+INSERT Blake Savant 202-995-8828 928-99-9994
+INSERT Hannah Alexis Possessor 954-013-4673 083-03-6195
+DELETE Hannah Alexis Possessor
+INSERT Madison Bridgework 202-192-8663 535-07-7503
+DELETE Blake Savant
+INSERT Dylan North 335-266-7816 844-39-1368
+DEPTH Connor Nicholas Groom
+PREORDER
+SORT
+INSERT Claire Campfire 513-597-9649 017-37-0239
+INSERT Aidan Prolong MD 600-509-9814 758-54-7570
+DELETE Cameron Calhoun
+DELETE Dylan North
+INSERT Christian Cameron Trait 118-387-3634 418-17-3619
+INSERT Chloe Denotative 347-527-0236 480-79-2838
+SORT
+ROTATE Christian Cameron Trait
+DEPTH William Stalin
+DELETE Chloe Denotative
+INSERT Jonathan Whoa 649-806-4723 344-82-9181
+DEPTH Claire Campfire
+PRINT
+INSERT Alexandra Richfield 892-768-5592 103-34-6791
+DEPTH Madison Bridgework
+INSERT Emily Superannuate 049-180-1289 865-93-1880
+DEPTH Jonathan Whoa
+POSTORDER
+DEPTH Charlotte Audrey Wood
+INSERT Leah Wedge 169-654-0029 532-86-6763
+PRINT

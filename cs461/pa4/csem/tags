@@ -1,0 +1,328 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+ADD	cgram.c	123;"	d	file:
+ADD	y.tab.h	43;"	d
+AND	cgram.c	111;"	d	file:
+AND	y.tab.h	31;"	d
+BITAND	cgram.c	114;"	d	file:
+BITAND	y.tab.h	34;"	d
+BITOR	cgram.c	112;"	d	file:
+BITOR	y.tab.h	32;"	d
+BITXOR	cgram.c	113;"	d	file:
+BITXOR	y.tab.h	33;"	d
+BREAK	cgram.c	96;"	d	file:
+BREAK	y.tab.h	16;"	d
+CC	Makefile	/^CC=gcc$/;"	m
+CFLAGS	Makefile	/^CFLAGS= -g -DLEFTTORIGHT$/;"	m
+CHAR	cgram.c	84;"	d	file:
+CHAR	y.tab.h	4;"	d
+COM	cgram.c	130;"	d	file:
+COM	y.tab.h	50;"	d
+CON	cgram.c	82;"	d	file:
+CON	y.tab.h	2;"	d
+CONTINUE	cgram.c	95;"	d	file:
+CONTINUE	y.tab.h	15;"	d
+DIGIT	scan.c	11;"	d	file:
+DIV	cgram.c	126;"	d	file:
+DIV	y.tab.h	46;"	d
+DO	cgram.c	94;"	d	file:
+DO	y.tab.h	14;"	d
+DOUBLE	cgram.c	87;"	d	file:
+DOUBLE	y.tab.h	7;"	d
+ELSE	cgram.c	85;"	d	file:
+ELSE	y.tab.h	5;"	d
+EQ	cgram.c	115;"	d	file:
+EQ	y.tab.h	35;"	d
+FLOAT	cgram.c	86;"	d	file:
+FLOAT	y.tab.h	6;"	d
+FOR	cgram.c	88;"	d	file:
+FOR	y.tab.h	8;"	d
+GE	cgram.c	118;"	d	file:
+GE	y.tab.h	38;"	d
+GLOBAL	cc.h	16;"	d
+GOTO	cgram.c	97;"	d	file:
+GOTO	y.tab.h	17;"	d
+GT	cgram.c	117;"	d	file:
+GT	y.tab.h	37;"	d
+ID	cgram.c	81;"	d	file:
+ID	y.tab.h	1;"	d
+IF	cgram.c	89;"	d	file:
+IF	y.tab.h	9;"	d
+INT	cgram.c	90;"	d	file:
+INT	y.tab.h	10;"	d
+ITABSIZE	sym.c	12;"	d	file:
+LE	cgram.c	120;"	d	file:
+LE	y.tab.h	40;"	d
+LETTER	scan.c	10;"	d	file:
+LOCAL	cc.h	14;"	d
+LSH	cgram.c	121;"	d	file:
+LSH	y.tab.h	41;"	d
+LT	cgram.c	119;"	d	file:
+LT	y.tab.h	39;"	d
+LVAL	cgram.c	98;"	d	file:
+LVAL	y.tab.h	18;"	d
+MAXARGS	semutil.c	6;"	d	file:
+MAXLOCS	semutil.c	7;"	d	file:
+MAXSTK	sym.c	13;"	d	file:
+MAXTOK	scan.c	8;"	d	file:
+MOD	cgram.c	127;"	d	file:
+MOD	y.tab.h	47;"	d
+MUL	cgram.c	125;"	d	file:
+MUL	y.tab.h	45;"	d
+NE	cgram.c	116;"	d	file:
+NE	y.tab.h	36;"	d
+NOT	cgram.c	129;"	d	file:
+NOT	y.tab.h	49;"	d
+OR	cgram.c	110;"	d	file:
+OR	y.tab.h	30;"	d
+PARAM	cc.h	15;"	d
+RESERVED	cgram.c	91;"	d	file:
+RESERVED	y.tab.h	11;"	d
+RETURN	cgram.c	92;"	d	file:
+RETURN	y.tab.h	12;"	d
+RSH	cgram.c	122;"	d	file:
+RSH	y.tab.h	42;"	d
+SET	cgram.c	99;"	d	file:
+SET	y.tab.h	19;"	d
+SETADD	cgram.c	105;"	d	file:
+SETADD	y.tab.h	25;"	d
+SETAND	cgram.c	102;"	d	file:
+SETAND	y.tab.h	22;"	d
+SETDIV	cgram.c	108;"	d	file:
+SETDIV	y.tab.h	28;"	d
+SETLSH	cgram.c	103;"	d	file:
+SETLSH	y.tab.h	23;"	d
+SETMOD	cgram.c	109;"	d	file:
+SETMOD	y.tab.h	29;"	d
+SETMUL	cgram.c	107;"	d	file:
+SETMUL	y.tab.h	27;"	d
+SETOR	cgram.c	100;"	d	file:
+SETOR	y.tab.h	20;"	d
+SETRSH	cgram.c	104;"	d	file:
+SETRSH	y.tab.h	24;"	d
+SETSUB	cgram.c	106;"	d	file:
+SETSUB	y.tab.h	26;"	d
+SETXOR	cgram.c	101;"	d	file:
+SETXOR	y.tab.h	21;"	d
+STABSIZE	sym.c	11;"	d	file:
+STR	cgram.c	83;"	d	file:
+STR	y.tab.h	3;"	d
+SUB	cgram.c	124;"	d	file:
+SUB	y.tab.h	44;"	d
+T_ADDR	cc.h	24;"	d
+T_ARRAY	cc.h	23;"	d
+T_DOUBLE	cc.h	21;"	d
+T_INT	cc.h	19;"	d
+T_LBL	cc.h	25;"	d
+T_PROC	cc.h	22;"	d
+T_STR	cc.h	20;"	d
+UNARY	cgram.c	128;"	d	file:
+UNARY	y.tab.h	48;"	d
+WHILE	cgram.c	93;"	d	file:
+WHILE	y.tab.h	13;"	d
+YYABORT	cgram.c	720;"	d	file:
+YYACCEPT	cgram.c	722;"	d	file:
+YYBYACC	cgram.c	5;"	d	file:
+YYDEBUG	cgram.c	484;"	d	file:
+YYEMPTY	cgram.c	10;"	d	file:
+YYERRCODE	cgram.c	131;"	d	file:
+YYERROR	cgram.c	723;"	d	file:
+YYERROR_CALL	cgram.c	76;"	d	file:
+YYERROR_DECL	cgram.c	73;"	d	file:
+YYFINAL	cgram.c	482;"	d	file:
+YYINITSTACKSIZE	cgram.c	626;"	d	file:
+YYLEX	cgram.c	65;"	d	file:
+YYLEX	cgram.c	68;"	d	file:
+YYLEX_DECL	cgram.c	64;"	d	file:
+YYLEX_DECL	cgram.c	67;"	d	file:
+YYMAJOR	cgram.c	6;"	d	file:
+YYMAXDEPTH	cgram.c	615;"	d	file:
+YYMAXDEPTH	cgram.c	616;"	d	file:
+YYMAXDEPTH	cgram.c	622;"	d	file:
+YYMAXTOKEN	cgram.c	486;"	d	file:
+YYMINOR	cgram.c	7;"	d	file:
+YYPARSE_DECL	cgram.c	/^YYPARSE_DECL()$/;"	f
+YYPARSE_DECL	cgram.c	54;"	d	file:
+YYPARSE_DECL	cgram.c	56;"	d	file:
+YYPARSE_DECL	cgram.c	59;"	d	file:
+YYPATCH	cgram.c	8;"	d	file:
+YYPREFIX	cgram.c	15;"	d	file:
+YYPURE	cgram.c	17;"	d	file:
+YYRECOVERING	cgram.c	13;"	d	file:
+YYREJECT	cgram.c	721;"	d	file:
+YYSTACKDATA	cgram.c	/^} YYSTACKDATA;$/;"	t	typeref:struct:__anon4	file:
+YYSTACKSIZE	cgram.c	619;"	d	file:
+YYSTACKSIZE	cgram.c	621;"	d	file:
+YYSTYPE	cgram.c	/^} YYSTYPE;$/;"	t	typeref:union:__anon3	file:
+YYSTYPE	y.tab.h	/^} YYSTYPE;$/;"	t	typeref:union:__anon2
+YYSTYPE_IS_DECLARED	cgram.c	36;"	d	file:
+YYSTYPE_IS_DECLARED	cgram.c	37;"	d	file:
+YYSTYPE_IS_DECLARED	cgram.c	40;"	d	file:
+YYSTYPE_IS_DECLARED	y.tab.h	52;"	d
+YYSTYPE_IS_DECLARED	y.tab.h	53;"	d
+YYSTYPE_IS_DECLARED	y.tab.h	56;"	d
+YYTABLESIZE	cgram.c	235;"	d	file:
+alloc	sym.c	/^char *alloc(unsigned n)$/;"	f
+args	cgram.y	/^args    : type dclr		{ dcl($2, $1, PARAM); }$/;"	l
+back	cc.h	/^   } back;$/;"	m	struct:sem_rec	typeref:union:sem_rec::__anon1
+backpatch	sem.c	/^void backpatch(struct sem_rec *p, int k)$/;"	f
+bgnstmt	sem.c	/^void bgnstmt()$/;"	f
+block	cgram.y	/^block   : '{' stmts '}'         { }$/;"	l
+call	sem.c	/^struct sem_rec *call(char *f, struct sem_rec *args)$/;"	f
+ccand	sem.c	/^struct sem_rec *ccand(struct sem_rec *e1, int m, struct sem_rec *e2)$/;"	f
+ccexpr	sem.c	/^struct sem_rec *ccexpr(struct sem_rec *e)$/;"	f
+ccnot	sem.c	/^struct sem_rec *ccnot(struct sem_rec *e)$/;"	f
+ccor	sem.c	/^struct sem_rec *ccor(struct sem_rec *e1, int m, struct sem_rec *e2)$/;"	f
+cexpr	cgram.y	/^cexpr   : expr EQ expr          { $$ = rel("==", $1, $3); }$/;"	l
+cexpro	cgram.y	/^cexpro  :			{ $$ = node(0, 0, n(), 0); }$/;"	l
+comment	scan.c	/^void comment()$/;"	f
+con	sem.c	/^struct sem_rec *con(char *x)$/;"	f
+currtemp	semutil.c	/^int currtemp()$/;"	f
+dcl	cgram.y	/^dcl     : type dclr             { $$ = dcl($2, $1, 0); }$/;"	l
+dcl	semutil.c	/^struct id_entry *dcl(struct id_entry *p, int type, int scope)$/;"	f
+dclr	cgram.y	/^dclr    : ID                    { $$ = dclr($1, 0, 1); }$/;"	l
+dclr	semutil.c	/^struct id_entry *dclr(char *name, int type, int width)$/;"	f
+dcls	cgram.y	/^dcls    :			{}$/;"	l
+dobreak	sem.c	/^void dobreak()$/;"	f
+docontinue	sem.c	/^void docontinue()$/;"	f
+dodo	sem.c	/^void dodo(int m1, int m2, struct sem_rec *e, int m3)$/;"	f
+dofor	sem.c	/^void dofor(int m1, struct sem_rec *e2, int m2, struct sem_rec *n1,$/;"	f
+dogoto	sem.c	/^void dogoto(char *id)$/;"	f
+doif	sem.c	/^void doif(struct sem_rec *e, int m1, int m2)$/;"	f
+doifelse	sem.c	/^void doifelse(struct sem_rec *e, int m1, struct sem_rec *n,$/;"	f
+doret	sem.c	/^void doret(struct sem_rec *e)$/;"	f
+dowhile	sem.c	/^void dowhile(int m1, struct sem_rec *e, int m2, struct sem_rec *n,$/;"	f
+dump	sym.c	/^void dump(int blev, FILE *f)$/;"	f
+endloopscope	sem.c	/^void endloopscope(int m)$/;"	f
+enterblock	sym.c	/^void enterblock()$/;"	f
+exit_block	sym.c	/^void exit_block()$/;"	f
+expr	cgram.y	/^expr    : lval SET expr		{ $$ = set("",   $1, $3); }$/;"	l
+expro	cgram.y	/^expro   :			{}$/;"	l
+exprs	cgram.y	/^exprs   : expr                  { $$ = $1; }$/;"	l
+exprs	sem.c	/^struct sem_rec *exprs(struct sem_rec *l, struct sem_rec *e)$/;"	f
+extern	cgram.y	/^extern  : dcl ';'		{}				$/;"	l
+externs	cgram.y	/^externs :			{}$/;"	l
+fargs	cgram.y	/^fargs   : '(' ')' 		{ enterblock(); }$/;"	l
+fhead	cgram.y	/^fhead   : fname fargs '{' dcls  { fhead($1); }$/;"	l
+fhead	sem.c	/^void fhead(struct id_entry *p)$/;"	f
+fname	cgram.y	/^fname   : type ID               { $$ = fname($1, $2); }$/;"	l
+fname	sem.c	/^struct id_entry *fname(int t, char *id)$/;"	f
+formalnum	semutil.c	/^int formalnum;               \/* number of formal arguments *\/$/;"	v
+formaltypes	semutil.c	/^char formaltypes[MAXARGS];   \/* types of formal arguments  *\/$/;"	v
+ftail	sem.c	/^void ftail()$/;"	f
+func	cgram.y	/^func    : fhead stmts '}'	{ ftail(); }$/;"	l
+hash	sym.c	/^int hash(char *s)$/;"	f
+i_blevel	cc.h	/^   int i_blevel;		\/* block level *\/$/;"	m	struct:id_entry
+i_defined	cc.h	/^   int i_defined;		\/* non-zero if identifier is declared *\/$/;"	m	struct:id_entry
+i_link	cc.h	/^   struct id_entry *i_link;	\/* pointer to next entry on hash chain *\/$/;"	m	struct:id_entry	typeref:struct:id_entry::id_entry
+i_name	cc.h	/^   char *i_name;		\/* pointer to name in string table *\/$/;"	m	struct:id_entry
+i_offset	cc.h	/^   int i_offset;		\/* offset in activation frame *\/$/;"	m	struct:id_entry
+i_scope	cc.h	/^   int i_scope;			\/* scope *\/$/;"	m	struct:id_entry
+i_type	cc.h	/^   int i_type;			\/* type code *\/$/;"	m	struct:id_entry
+i_width	cc.h	/^   int i_width;			\/* number of words occupied *\/$/;"	m	struct:id_entry
+id	sem.c	/^struct sem_rec *id(char *x)$/;"	f
+id_entry	cc.h	/^struct id_entry {$/;"	s
+id_ptr	cgram.c	/^   struct id_entry *id_ptr;$/;"	m	union:__anon3	typeref:struct:__anon3::id_entry	file:
+id_ptr	y.tab.h	/^   struct id_entry *id_ptr;$/;"	m	union:__anon2	typeref:struct:__anon2::id_entry
+id_table	sym.c	/^struct id_entry *id_table[ITABSIZE] = {0}; \/* identifier hash table *\/$/;"	v	typeref:struct:id_entry
+indx	sem.c	/^struct sem_rec *indx(struct sem_rec *x, struct sem_rec *i)$/;"	f
+initlex	scan.c	/^void initlex()$/;"	f
+initrw	scan.c	/^void initrw(int k, char *s)$/;"	f
+install	sym.c	/^struct id_entry *install(char *name, int blev)$/;"	f
+inttype	cgram.c	/^   int inttype;$/;"	m	union:__anon3	file:
+inttype	y.tab.h	/^   int inttype;$/;"	m	union:__anon2
+istype	scan.c	/^int istype(int c)$/;"	f
+l_base	cgram.c	/^    YYSTYPE  *l_base;$/;"	m	struct:__anon4	file:
+l_mark	cgram.c	/^    YYSTYPE  *l_mark;$/;"	m	struct:__anon4	file:
+labeldcl	sem.c	/^void labeldcl(char *id)$/;"	f
+labels	cgram.y	/^labels	: ID ':'		{ labeldcl($1); }$/;"	l
+lblstmt	cgram.y	/^lblstmt	: b stmt		{ }$/;"	l
+leaveblock	sym.c	/^void leaveblock()$/;"	f
+level	sym.c	/^int level = 0;                             \/* current block level *\/$/;"	v
+lineno	scan.c	/^int lineno = 1;		\/* current line number *\/$/;"	v
+localnum	semutil.c	/^int localnum;                \/* number of local variables  *\/$/;"	v
+localtypes	semutil.c	/^char localtypes[MAXLOCS];    \/* types of local variables   *\/$/;"	v
+localwidths	semutil.c	/^int localwidths[MAXLOCS];    \/* widths of local variables  *\/$/;"	v
+lookup	sym.c	/^struct id_entry *lookup(char *name, int blev)$/;"	f
+lval	cgram.y	/^lval	: ID			{ $$ = id($1); }$/;"	l
+m	input1.c	/^double m[6];$/;"	v
+m	sem.c	/^int m()$/;"	f
+main	cgram.c	/^main(int argc, char *argv)$/;"	f
+main	input2.c	/^main(int a, int b)$/;"	f
+merge	semutil.c	/^struct sem_rec *merge(struct sem_rec *p1, struct sem_rec *p2)$/;"	f
+n	sem.c	/^struct sem_rec *n()$/;"	f
+new_block	sym.c	/^void new_block()$/;"	f
+nexttemp	semutil.c	/^int nexttemp()$/;"	f
+node	semutil.c	/^struct sem_rec *node(int a, int b, struct sem_rec *c, struct sem_rec *d)$/;"	f
+ntmp	semutil.c	/^int ntmp = 0;                \/* last temporary number      *\/$/;"	v
+numrecs	sym.c	/^int numrecs = 0;                           \/* number of semantic recs *\/$/;"	v
+op1	sem.c	/^struct sem_rec *op1(char *op, struct sem_rec *y)$/;"	f
+op2	sem.c	/^struct sem_rec *op2(char *op, struct sem_rec *x, struct sem_rec *y)$/;"	f
+opb	sem.c	/^struct sem_rec *opb(char *op, struct sem_rec *x, struct sem_rec *y)$/;"	f
+prevtop	sym.c	/^struct sem_rec **prevtop = NULL;           \/* previous top *\/$/;"	v	typeref:struct:sem_rec
+prog	cgram.y	/^prog    : externs		{}$/;"	l
+putbak	scan.c	/^void putbak(int c)$/;"	f
+quote	scan.c	/^int quote(char lin[])$/;"	f
+rec_ptr	cgram.c	/^   struct sem_rec *rec_ptr;$/;"	m	union:__anon3	typeref:struct:__anon3::sem_rec	file:
+rec_ptr	y.tab.h	/^   struct sem_rec *rec_ptr;$/;"	m	union:__anon2	typeref:struct:__anon2::sem_rec
+rel	sem.c	/^struct sem_rec *rel(char *op, struct sem_rec *x, struct sem_rec *y)$/;"	f
+s_base	cgram.c	/^    short    *s_base;$/;"	m	struct:__anon4	file:
+s_chain	sym.c	/^struct s_chain {$/;"	s	file:
+s_false	cc.h	/^   struct sem_rec *s_false;	\/* false backpatch list *\/$/;"	m	struct:sem_rec	typeref:struct:sem_rec::sem_rec
+s_last	cgram.c	/^    short    *s_last;$/;"	m	struct:__anon4	file:
+s_link	cc.h	/^       struct sem_rec *s_link;	\/* used for backpatching *\/$/;"	m	union:sem_rec::__anon1	typeref:struct:sem_rec::__anon1::sem_rec
+s_mark	cgram.c	/^    short    *s_mark;$/;"	m	struct:__anon4	file:
+s_mode	cc.h	/^   int s_mode;			\/* type *\/$/;"	m	struct:sem_rec
+s_next	sym.c	/^   struct s_chain *s_next;                 \/* next in chain *\/$/;"	m	struct:s_chain	typeref:struct:s_chain::s_chain	file:
+s_place	cc.h	/^   int s_place;			\/* temporary number *\/$/;"	m	struct:sem_rec
+s_ptr	sym.c	/^   char *s_ptr;                            \/* string pointer *\/$/;"	m	struct:s_chain	file:
+s_true	cc.h	/^       struct sem_rec *s_true;	\/* true backpatch list *\/$/;"	m	union:sem_rec::__anon1	typeref:struct:sem_rec::__anon1::sem_rec
+save_rec	sym.c	/^void save_rec(struct sem_rec *s)$/;"	f
+scale	input1.c	/^scale(double x, double y, int k) {$/;"	f
+sdump	sym.c	/^void sdump(FILE *f)$/;"	f
+sem_rec	cc.h	/^struct sem_rec {$/;"	s
+set	sem.c	/^struct sem_rec *set(char *op, struct sem_rec *x, struct sem_rec *y)$/;"	f
+skip	scan.c	/^void skip()$/;"	f
+slookup	sym.c	/^char *slookup(char str[])$/;"	f
+stacksize	cgram.c	/^    unsigned stacksize;$/;"	m	struct:__anon4	file:
+startloopscope	sem.c	/^void startloopscope()$/;"	f
+stk	sym.c	/^struct sem_rec *stk[MAXSTK];               \/* stack of ptrs to semantic recs *\/$/;"	v	typeref:struct:sem_rec
+stmt	cgram.y	/^stmt    : expr ';'$/;"	l
+stmts	cgram.y	/^stmts   :			{ }$/;"	l
+str_ptr	cgram.c	/^   char *str_ptr;$/;"	m	union:__anon3	file:
+str_ptr	y.tab.h	/^   char *str_ptr;$/;"	m	union:__anon2
+str_table	sym.c	/^   } *str_table[STABSIZE] = {0};           \/* string hash table *\/$/;"	v	typeref:struct:s_chain
+string	sem.c	/^struct sem_rec *string(char *s)$/;"	f
+top	sym.c	/^struct sem_rec **top = stk;                \/* stack pointer *\/$/;"	v	typeref:struct:sem_rec
+tsize	semutil.c	/^int tsize(int type)$/;"	f
+type	cgram.y	/^type    : CHAR                  { $$ = T_INT; }$/;"	l
+yychar	cgram.c	/^int      yychar;$/;"	v
+yycheck	cgram.c	/^static const short yycheck[] = {                         40,$/;"	v	file:
+yyclearin	cgram.c	11;"	d	file:
+yydebug	cgram.c	/^int      yydebug;$/;"	v
+yydefred	cgram.c	/^static const short yydefred[] = {                         2,$/;"	v	file:
+yydgoto	cgram.c	/^static const short yydgoto[] = {                          1,$/;"	v	file:
+yyerrflag	cgram.c	/^int      yyerrflag;$/;"	v
+yyerrok	cgram.c	12;"	d	file:
+yyerror	cgram.c	/^yyerror(char msg[])$/;"	f
+yyfreestack	cgram.c	/^static void yyfreestack(YYSTACKDATA *data)$/;"	f	file:
+yyfreestack	cgram.c	717;"	d	file:
+yygindex	cgram.c	/^static const short yygindex[] = {                         0,$/;"	v	file:
+yygrowstack	cgram.c	/^static int yygrowstack(YYSTACKDATA *data)$/;"	f	file:
+yylen	cgram.c	/^static const short yylen[] = {                            2,$/;"	v	file:
+yylex	scan.c	/^int yylex()$/;"	f
+yylhs	cgram.c	/^static const short yylhs[] = {                           -1,$/;"	v	file:
+yylval	cgram.c	/^YYSTYPE  yylval;$/;"	v
+yyname	cgram.c	/^static const char *yyname[] = {$/;"	v	file:
+yynerrs	cgram.c	/^int      yynerrs;$/;"	v
+yyrindex	cgram.c	/^static const short yyrindex[] = {                         0,$/;"	v	file:
+yyrule	cgram.c	/^static const char *yyrule[] = {$/;"	v	file:
+yysccsid	cgram.c	/^static const char yysccsid[] = "@(#)yaccpar	1.9 (Berkeley) 02\/21\/93";$/;"	v	file:
+yysindex	cgram.c	/^static const short yysindex[] = {                         0,$/;"	v	file:
+yystack	cgram.c	/^static YYSTACKDATA yystack;$/;"	v	file:
+yytable	cgram.c	/^static const short yytable[] = {                         18,$/;"	v	file:
+yyval	cgram.c	/^YYSTYPE  yyval;$/;"	v

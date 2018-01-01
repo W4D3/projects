@@ -1,0 +1,31 @@
+DEPTH Benjamin Imponderable
+INSERT Bella Equipping 289-982-6248 873-40-1236
+ROTATE Samantha Advert
+INSERT Xavier Prescript Jr 142-759-9919 393-81-1807
+ROTATE Bella Equipping
+DELETE Blake Oliver Theoretic
+DEPTH Xavier Prescript Jr
+DELETE Bella Equipping
+FIND Xavier Prescript Jr
+INSERT Daniel Senorita 038-543-8088 938-87-9334
+DELETE Xavier Prescript Jr
+INSERT Evelyn Scrumptious 325-417-8887 573-80-0298
+INSERT Arianna Pectoral 273-382-4596 724-20-5846
+INSERT Jonathan Mcgovern 271-363-9221 920-32-8842
+DEPTH Bailey Passivate
+FIND Daniel Senorita
+DELETE Evelyn Scrumptious
+DEPTH Savannah Posse
+PRINT
+INSERT Savannah Spatterdock 007-699-0382 019-19-2516
+FIND Arianna Pectoral
+DELETE Christopher Cuttlefish Jr
+DELETE Savannah Spatterdock
+FIND Thomas Drowsy
+INSERT Caleb Cognizant 137-895-0140 849-39-1852
+DEPTH Jonathan Mcgovern
+DEPTH Caleb Cognizant
+INSERT Gianna Necklace 487-860-3267 831-92-4538
+INSERT Savannah Til 255-336-5205 814-64-6009
+INSERT Kaitlyn Buss 194-521-1970 811-71-9462
+PRINT

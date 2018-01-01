@@ -1,0 +1,21 @@
+INSERT Elizabeth Fracture 505-538-1504 321-90-6768
+INSERT Samuel Michael Sudden 812-083-4603 640-44-7162
+INSERT Lily Bulldog 650-141-1960 753-95-4262
+POSTORDER
+INSERT Aubrey Dragonhead 275-532-2650 789-34-3005
+DELETE Aubrey Dragonhead
+ISAVL
+DELETE Elizabeth Fracture
+SORT
+PREORDER
+DEPTH Samuel Michael Sudden
+INSERT Brody Samuel Province 114-625-3502 444-35-6036
+INSERT Isabella Seoul 553-582-1795 003-02-9525
+ISAVL
+FIND Brody Samuel Province
+FIND Lily Bulldog
+DELETE Samuel Michael Sudden
+DELETE Brody Samuel Province
+SORT
+PREORDER
+PRINT

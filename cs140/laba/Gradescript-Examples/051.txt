@@ -1,0 +1,21 @@
+SORT
+PRINT
+FIND Carson Anabaptist III
+ISAVL
+INSERT Molly Diffract 316-240-6662 698-81-1326
+DELETE Molly Diffract
+INSERT Bella Victoria Casey 337-668-4925 591-06-1494
+PRINT
+DELETE Alexandra Smaller
+DELETE Bella Victoria Casey
+PREORDER
+FIND Olivia Gnarl
+ISAVL
+INSERT Ryan Ergodic 282-516-0791 034-51-3301
+PRINT
+INSERT Wyatt Bootstrapped 034-176-2551 592-08-5785
+DELETE Alexandra Gabriella Ninetieth
+INSERT Hailey Nielson 970-087-7063 486-61-8194
+INSERT Isabelle Chorine 344-912-2974 234-74-0524
+INSERT James Switchboard 262-182-8054 907-44-9447
+PRINT

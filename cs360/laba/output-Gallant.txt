@@ -1,0 +1,24 @@
+Chat Rooms:
+
+American-Idol:
+Art:
+Baseball:
+Bridge:
+Food:
+Movies:
+Music:
+Politics:
+Video-Games:
+Woodworking: Freddy Sunshine Tiger Frenchy Goofus
+
+Enter your chat name (no spaces):
+Enter chat room:
+Gallant has joined
+Sunshine has left
+Goofus has left
+Freddy has left
+Tiger has left
+Frenchy has left
+Dontonio has joined
+Mercutio has joined
+Dontonio has left

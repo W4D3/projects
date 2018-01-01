@@ -1,0 +1,896 @@
+<title> CS302 -- Lab 5 -- Superball!</title>
+
+<h1> CS302 -- Lab 5 -- Superball!</h1>
+<h3>
+<UL> <LI> CS302 -- Fundamental Algorithms
+<LI> Fall, 2014
+<LI> <a href=http://www.cs.utk.edu/~plank>James S. Plank</a>
+<LI> <a href=http://www.cs.utk.edu/~plank/plank/classes/cs302/Labs/Lab5/>This file:
+     <b>http://www.cs.utk.edu/~plank/plank/classes/cs302/Labs/Lab5/</b></a>
+</UL>
+</h3>
+
+<hr> <i>
+Tue Nov 27 16:37:58 EST 2007.  Last revision: 
+Thu Nov  7 09:28:14 EST 2013
+</i> <hr>
+
+<h2>What you hand in</h2>
+
+You need to submit the source code for two programs: <b>sb-analyze.cpp</b> 
+and <b>sb-play.cpp</b>.
+
+<h2>Also</h2>
+Every year, someone asks me for the source to <b>sb-player</b>.  Sorry, but I can't give it out, 
+because it's too easy to modify it to solve the lab.  I can try to make an <b>sb-player</b>
+binary for your machine, and if you want modifications, I'll listen.  Let me know.
+<p>
+There is an <b>sb-player</b> binary for macs in <b>sb-player-mac</b>.
+
+<hr>
+<h2>Disjoint Sets</h2>
+
+Use the disjoint sets code from the lecture notes.  Don't change <b>DJ.h</b>.  When
+the TA's grade, they should be able to use <b>DJ.h</b> and any of the three implementations
+from the lecture notes, and your programs should work.
+
+<p>
+
+<hr>
+<h2>Superball</h2>
+
+Superball is a simplistic game that was part of a games CD for my old
+Windows 95 box.  It works as follows.  You have a 8x10 grid which is
+the game board.  Each cell of the game board may be empty or hold
+a color:
+<p>
+<UL>
+<LI> P - Purple: worth 2 points.
+<LI> B - Blue: worth 3 points.
+<LI> Y - Yellow: worth 4 points.
+<LI> R - Red: worth 5 points.
+<LI> G - Green: worth 6 points.
+</UL>
+
+The board starts with five random colors set.  On your turn, you may
+do one of two things:
+<p>
+<UL>
+<LI> You may swap two cells.  After the swap, five new random 
+cells will be filled with a random colors.
+<LI> You may "score" a cell.  To score a cell, the cell must
+be one of the "goal" cells, and there are sixteen of these,
+in rows 2-5, columns 0, 1, 8 and 9.  (Everything is zero
+indexed).  Moreover, there must be at least five touching
+cells of the same color, one of which must be the goal cell
+that you want to score.  When you score, you get the sum
+of the cells connected to the cell that you are scoring, 
+and then all of those cells leave the board, and three new
+random ones are added.
+</UL>
+<p>
+I have a tcl/tk/shell-scripted Superball player at <b>/home/plank/Superball</b>.
+Simply copy that directory to your home directory:
+<p>
+<pre>
+UNIX> </b>cp -r /home/plank/Superball $HOME</b>
+</pre>
+<p>
+Then you can play it with <b>~/Superball/Superball</b>.  The
+high score probably won't work -- you'll have to change the 
+<b>open</b> command in the file <b>hscore</b> to the name of
+your web browser.
+<p>
+Let's look at some screen shots.  Suppose we fire up <b>Superball</b>:
+<p>
+<center><img src=SS1.jpg></center>
+<p>
+The "goal" cells are marked with asterisks, and there are five non-empty
+cells.  Our only legal action is to swap two cells -- I'm going to swap 
+cells [3,6] and [5,8].  This will make those two blue cells contiguous.
+In the game, I do that by clicking on the two cells that I want to swap.
+Afterwards, five new cells are put on the screen.  Here's the screen shot:
+<p>
+<center><img src=SS2.jpg></center>
+<p>
+I do a bunch more swaps and end up with the  following board: 
+<p>
+<center><img src=SS3.jpg></center>
+<p>
+I can score the green cells by clicking on cell [2,1], [3,0], [3,1]  or [4,0] and then clicking
+"Collect".  This will score that group of eight green squares, which gets me 
+48 points (8*6), and three new cells will be added:
+<p>
+<center><img src=SS4.jpg></center>
+<p>
+
+There are no cells to score here (the blues ones in the lower right-hand part
+of the board only compose a group of four).  So I revert to swapping.
+Suppose I keep doing so until I reach:
+
+<p>
+<center><img src=SS5.jpg></center>
+<p>
+
+I'm in trouble.  I've got these beautiful groups of red, green and purple cells, but
+I can't score any of them because they are not connected to a goal call.  Dang.  I can
+only score those two groups of blue cells.    When I do that, I'm only left
+with four open squares, and I can't score anything:
+
+<p>
+<center><img src=SS6.jpg></center>
+<p>
+
+Perhaps I should have been a little more thoughtful while playing the game.  Regardless, I'm stuck. 
+I simply swap two random squares and end the game:
+
+<p>
+<center><img src=SS7.jpg></center>
+<p>
+
+Oh well -- should have done that swap a little sooner....
+<hr>
+For this lab, we are going to deal with a text-based version of the game.  
+Our programs will have the following parameters:
+<UL>
+<LI> <b>rows</b> - the number of rows on the game board.  Although
+the tcl/tk version has that set to eight, our programs will handle any number.
+<LI> <b>cols</b> - the number of columns on the game board. 
+<LI> <b>min-score-size</b> - the number of contiguous cells that have to be
+together in order to score them.  This is 5 in the tcl/tk version
+<LI> <b>colors</b> - this must be a string of distinct lower-case 
+letters.  They represent that the colors that a cell can have.  The 
+point value of the first of these is 2, and each succeeding character
+is worth one more point.  To have the same values as the tcl/tk game, this parameter should be "pbyrg". 
+</UL>
+<p>
+I have written an interactive game player.  I'll discuss all the parameters later.  Call it as
+done below:
+<p>
+<pre>
+UNIX> <font color=darkred><b>cd /home/plank/cs302/Labs/Lab5/</b></font>
+UNIX> <font color=darkred><b>sb-player</b></font>
+usage: sb-player rows cols min-score-size colors player interactive(y|n) output(y|n) seed
+UNIX> <font color=darkred><b>sb-player 8 10 5 pbyrg - y y -</b></font>
+Empty Cells: 75     Score: 0
+
+..........
+..........
+**b....b**
+**....b.**
+**.g....**
+**......**
+..........
+..g.......
+
+Your Move: 
+</pre>
+The format of the board is as follows: 
+When a letter is capitalized, it is on a goal cell.  
+Dots and asterisks stand
+for empty cells -- asterisks are on the goal cells.  
+If you click on the
+<b>Print Boards</b> button in the tcl/tk game, it will print out each board on 
+standard output in that format.  That's nice for testing.
+<p>
+You can type two commands:
+
+<p><center><table border=3 cellpadding=3><td><pre>
+SWAP r1 c1 r2 c2
+SCORE r c
+</pre></td></table></center><p>
+
+In the board above, you can't score anything, so you'll have to swap.  We'll
+swap the blue cell in [2,2] with the green one in [7,2]:
+
+<center><table border=3><td>
+<pre>
+Your Move: <font color=darkred><b>SWAP 2 2 7 2</b></font>
+
+Empty Cells: 70     Score: 0
+
+.r........
+..........
+**g....b**
+**....b.**
+**.g....*Y
+**......*P
+.....rr...
+..b.......
+
+Your Move: 
+</pre></td></table></center><p>
+
+It's incredibly tedious -- play along with me:
+
+<center>
+<table border=3>
+<tr><TD><pre>Empty Cells: 70     Score: 0
+
+.r........
+..........
+**g....b**
+**....b.**
+**.g....*Y
+**......*P
+.....rr...
+..b.......
+
+Your Move: <font color=darkred><b>SWAP 0 1 7 2  </b></font>
+</pre></td>
+<TD><pre>Empty Cells: 65     Score: 0
+
+.b........
+..........
+**g....bB*
+**....b.**
+P*.g....RY
+**......*P
+.....rr...
+.gry......
+
+Your Move: <font color=darkred><b>SWAP 7 3 4 8</b></font>
+</pre></td>
+<TD><pre>Empty Cells: 60     Score: 0
+
+.b.......p
+....g.....
+**g.p..bB*
+**r...b.*R
+P*.g....YY
+**......*P
+.....rr...
+.grr......
+
+Your Move: <font color=darkred><b>SWAP 3 2 7 1</b></font>
+</pre></td>
+<TD><pre>Empty Cells: 55     Score: 0
+
+.b..r...pp
+....g...b.
+**g.p..bB*
+**g...b.*R
+P*.g....YY
+**.g....*P
+.....rr...
+rrrr......
+
+Your Move: <font color=darkred><b>SWAP 3 9 0 1</b></font>
+</pre></td>
+<TD><pre>Empty Cells: 50     Score: 0
+
+.r..rgy.pp
+....g...b.
+**g.p..bB*
+**g...b.*B
+P*.g....YY
+**.g....*P
+p...rrr...
+rrrr.p....
+
+Your Move: <font color=darkred><b>SWAP 6 0 0 1</b></font>
+</pre></td>
+</tr><tr><TD><pre>Empty Cells: 45     Score: 0
+
+.p..rgy.pp
+.g..g...b.
+**g.p..bB*
+**g...b.*B
+P*.g..y.YY
+**.g..yp*P
+r...rrr...
+rrrr.py...
+
+Your Move: <font color=darkred><b>SWAP 5 9 7 6</b></font>
+</pre></td>
+<TD><pre>Empty Cells: 40     Score: 0
+
+.p..rgy.pp
+.g..g...b.
+**g.p.pbB*
+R*g...by*B
+P*.g..y.YY
+P*.g..yp*Y
+r...rrrb..
+rrrr.pp...
+
+Your Move: <font color=darkred><b>SWAP 5 0 0 4</b></font>
+</pre></td>
+<TD><pre>Empty Cells: 35     Score: 0
+
+.p..pgy.pp
+.g..g.r.b.
+G*g.p.pbB*
+R*g...by*B
+P*.g..y.YY
+R*.g..yp*Y
+r..grrrb..
+rrrrbppy..
+
+Your Move: <font color=darkred><b>SWAP 7 4 1 6</b></font>
+</pre></td>
+<TD><pre>Empty Cells: 30     Score: 0
+
+.p..pgy.pp
+.g.pg.b.b.
+G*g.p.pbB*
+R*g.r.by*B
+P*pg..y.YY
+R*.g.bypBY
+r..grrrb..
+rrrrrppy..
+
+Your Move: <font color=darkred><b>SCORE 5 0</b></font>
+</pre></td>
+<TD><pre>Empty Cells: 37     Score: 50
+
+.p..pgy.pp
+.g.pg.b.by
+G*g.p.pbB*
+R*g.r.byGB
+P*pg..y.YY
+**.g.bypBY
+...g...b..
+.p...ppy..
+
+Your Move: <font color=darkred><b></b></font>
+</pre></td></tr>
+</table>
+</center>
+
+</pre>
+<p>
+You'll note, I could have scored cell [5,0] when there were 35 empty cells, but I really
+wanted to make that patch of red cells bigger.
+<p>
+
+<hr>
+<h3>Program #1: Sb-read</h3>
+
+I have written <b><a href=sb-read.cpp>sb-read.cpp</a></b> for you.  This program 
+takes the four parameters detailed above, reads in a game board with those parameters
+and prints out some very basic information.  For example, the following board:
+
+<p><center><img src=SS8.jpg></center><p>
+
+May be represented by the following text 
+(in <b><a href=input-1.txt>input-1.txt</a></b>):
+
+<p><center><table border=3 cellpadding=3><td><pre>
+...yyryy.p
+y.rg.yppyp
+**gg.yrpPP
+GGgbgybp**
+R*bg.yrp*P
+G*gygyypY*
+yyybpby.pb
+.pgg.yp.bb
+</pre></td></table></center><p>
+
+When we run <b>sb-read</b> on it, we get the following:
+
+<pre>
+UNIX> <font color=darkred><b>sb-read 8 10 5 pbyrg < input-1.txt</b></font>
+Empty cells:                    20
+Non-Empty cells:                60
+Number of pieces in goal cells:  8
+Sum of their values:            33
+UNIX> 
+</pre>
+
+There are three purple pieces in goal cells, one yellow, three
+green and one red.  That makes a total of 3*2 + 4 + 5 + 3*6 = 33.
+<p>
+You should take a look at 
+<b><a href=sb-read.cpp>sb-read.cpp</a></b>.
+In particular, look 
+at the <b>Superball</b> class:
+
+<p><center><table border=3 cellpadding=3><td><pre>
+class Superball {
+  public:
+    Superball(int argc, char **argv);
+    int r;
+    int c;
+    int mss;
+    int empty;
+    vector &lt;int&gt; board;
+    vector &lt;int&gt; goals;
+    vector &lt;int&gt; colors;
+};
+</pre></td></table></center><p>
+
+<b>Mss</b> is min-score-size.  <b>Empty</b> is the number of 
+empty cells in the board.  <b>Board</b> is a vector of <b>r * c</b>
+integers.  The element in [i,j] is in entry <b>board[i*c+j]</b>, and
+is either '.', '*' or a lower case letter.  
+<b>goals</b> is another array of <b>r * c</b> integers.  It is equal
+to 0 if the cell is not a goal cell, and 1 
+if it is a goal cell.  <b>Colors</b> is an array of 256 
+elements, which should be indexed by a letter.  Its value is the
+value of the letter (e.g. in the above example, <b>colors['p'] = 2</b>).
+
+<p>
+<b>sb-read</b> does all manner of error checking for you.  It is a nice
+program from which to build your other programs.
+
+<hr>
+<h3>Program #2: Sb-analyze</h3>
+
+You are to write this one.
+<p>
+With <b>sb-analyze</b>, you are to start with <b>sb-read.cpp</b> as a base, and augment
+it so that it prints out all possible scoring sets.  For example, in the above
+game board (represented by 
+<b><a href=input-1.txt>input-1.txt</a></b>), there are two scoring sets -- the 
+set of 10 purple cells in the upper right-hand corner, and the set of 6 green
+cells on the left side of the screen.  Here is the output to <b>sb_analyze</b>:
+<p>
+<pre>
+UNIX> <font color=darkred><b>sb-analyze</b></font>
+usage: sb-analyze rows cols min-score-size colors
+UNIX> <font color=darkred><b>sb-analyze 8 10 5 pbyrg < input-1.txt</b></font>
+Scoring sets:
+  Size: 10  Char: p  Scoring Cell: 2,8
+  Size:  6  Char: g  Scoring Cell: 3,0
+UNIX> 
+</pre>
+Each set must be printed exactly once, but in any 
+order, and with any legal goal cell.  Thus, the following
+output would also be ok:
+<pre>
+UNIX> <font color=darkred><b>sb-analyze 8 10 5 pbyrg < input-1.txt</b></font>
+Scoring sets:
+  Size:  6  Char: g  Scoring Cell: 3,1
+  Size: 10  Char: p  Scoring Cell: 2,9
+UNIX> 
+</pre>
+
+Think about how you would use the disjoint sets data structure to 
+implement this -- it is a straightforward connected components application.  
+I would recommend augmenting your <b>Superball</b>
+class with a <b>DisjointSet</b>, and then having a method called
+<b>analyze_superball()</b>, which performs the analysis. 
+<p>
+Here's another example:
+
+<p><center><img src=SS9.jpg></center><p>
+This is in the file
+<b><a href=input-2.txt>input-2.txt</a></b>:
+
+<p><center><table border=3 cellpadding=3><td><pre>
+yyggyryybp
+ggrgpyppyp
+RBgggyrpPP
+GGgggybpPP
+RGygryrpBP
+YGyygyypYB
+yyybpbyppb
+ppggyypbbb
+</pre></td></table></center><p>
+
+<pre>
+UNIX> <font color=darkred><b>sb-analyze 8 10 5 pbyrg < input-2.txt</b></font>
+Scoring sets:
+  Size: 14  Char: g  Scoring Cell: 5,1
+  Size: 15  Char: p  Scoring Cell: 4,9
+  Size:  7  Char: y  Scoring Cell: 5,0
+  Size:  5  Char: b  Scoring Cell: 5,9
+UNIX> 
+</pre>
+
+
+<hr>
+<h3>Program #3: Sb-play</h3>
+
+Your next program takes the same arguments and input as <b>sb-analyze</b>.
+However, now its job is to print a single move as would be accepted
+as input for the <b>sb-player</b> program.  In other words, it
+needs to output a SWAP or SCORE line with legal values.
+<p>
+If you have fewer than five pieces and cannot score any, you
+will lose the game -- you should do that by swapping two legal pieces
+so that the game can end.
+<p>
+The <b>sb-player</b> program takes as its 5th argument the name of
+a program that it will use for input.  I also have three programs - 
+<b>sb-play</b>, <b>sb-play2</b> and <b>sb-play3</b> in that directory.
+<b>sb-play</b> simply swaps two random cells until there are fewer
+than five empty, then it scores a set if it can.  The other two are
+smarter, but are by no means the best one can do.  
+
+<p>
+Here's <b>sb-player</b> running on <b>sb-play2</b> (note, <b>sb-player</b> creates
+a temporary file, so you must run it from your own directory):
+<pre>
+UNIX> <font color=darkred><b>/home/plank/cs302/Labs/Lab5/sb-player 8 10 5 pbyrg /home/plank/cs302/Labs/Lab5/sb-play2 y y -</b></font>
+Empty Cells: 75     Score: 0
+
+g.........
+..........
+**......**
+*Pr.....**
+**......**
+**..p...**
+........b.
+..........
+
+Type Return for the next play
+</pre>
+It waits for you to press the return key.  When you do so, it will send the game
+board to <b>/home/plank/cs302/Labs/Lab5/sp-play2</b> and perform the output.  Here's
+what happens:
+<pre>
+Move is: SWAP 5 4 3 2
+
+Empty Cells: 70     Score: 0
+
+g........g
+.......y..
+**......**
+*Pp.....**
+**......G*
+**..r...**
+..g.....b.
+........g.
+
+Type Return for the next play
+</pre>
+You can bet that the next move will swap that <b>b</b> with one of the <b>g</b>'s:
+<pre>
+Move is: SWAP 6 8 0 0
+
+Empty Cells: 65     Score: 0
+
+b........g
+.......y..
+**..b...**
+*Pp.g...**
+**.....gG*
+**..r...**
+..g.....g.
+.p...p..g.
+
+Type Return for the next play
+</pre>
+
+And so on.   If you run it with <b>n</b> for the 6th argument, it will simply run the
+program without your input:
+
+<pre>
+UNIX> <font color=darkred><b>/home/plank/cs302/Labs/Lab5/sb-player 8 10 5 pbyrg /home/plank/cs302/Labs/Lab5/sb-play2 n y -</b></font>
+Empty Cells: 75     Score: 0
+
+..........
+..........
+**......**
+**y..y..**
+**......**
+*P......**
+..........
+......p.g.
+
+Move is: SWAP 3 5 3 2
+
+</pre>
+<i>... a bunch of output skipped...</i>
+<pre>
+
+Empty Cells:  1     Score: 505
+
+yyrrgggpyy
+grrbppg.yg
+GYbgygggPB
+GBggpgbpPB
+PPgggggrYB
+YBbybgpbYR
+pprrrggggr
+byyrppppgg
+
+Move is: SWAP 0 1 7 5
+
+Game over.  Final score = 505
+UNIX> 
+</pre>
+Even though there were no good moves at the end, the program did a final
+SWAP so that the game could finish.
+
+<p>
+If you run with the 7th argument as <b>n</b>, it will only print out the end result, and
+the last argument can specify a seed (it uses the current time if that argument is "-"),
+so that you can compare multiple players on the same game:
+<p>
+<pre>
+UNIX> <font color=darkred><b>/home/plank/cs302/Labs/Lab5/sb-player 8 10 5 pbyrg /home/plank/cs302/Labs/Lab5/sb-play n n 1</b></font>
+Game over.  Final score = 0
+UNIX> <font color=darkred><b>/home/plank/cs302/Labs/Lab5/sb-player 8 10 5 pbyrg /home/plank/cs302/Labs/Lab5/sb-play2 n n 1</b></font>
+Game over.  Final score = 855
+UNIX> <font color=darkred><b>/home/plank/cs302/Labs/Lab5/sb-player 8 10 5 pbyrg /home/plank/cs302/Labs/Lab5/sb-play3 n n 1</b></font>
+Game over.  Final score = 2572
+UNIX> 
+</pre>
+It can take a while for these to run -- if it appears to be hanging, send the process a <b>QUIT</b> 
+signal and it will print out what the current score is.
+
+<h3>Shell Script to Run Multiple Times</h3>
+
+The file <b><a href=run_multiple.sh>run_multiple.sh</a></b> is a shell script to run 
+the player on multiple seeds and average the results.  Examples:
+
+<pre>
+UNIX> <font color=darkred><b>sh run_multiple.sh </b></font>
+usage: sh run_multiple.sh r c mss colors player nruns starting_seed
+UNIX> <font color=darkred><b>sh run_multiple.sh 8 10 5 pbyrg sb-play 10 1</b></font>
+Run   1 - Score:     38  - Average     38.000
+Run   2 - Score:      0  - Average     19.000
+Run   3 - Score:      0  - Average     12.667
+Run   4 - Score:     57  - Average     23.750
+Run   5 - Score:      0  - Average     19.000
+Run   6 - Score:      0  - Average     15.833
+Run   7 - Score:     89  - Average     26.286
+Run   8 - Score:     15  - Average     24.875
+Run   9 - Score:      0  - Average     22.111
+Run  10 - Score:     20  - Average     21.900
+UNIX> <font color=darkred><b>sh run_multiple.sh 8 10 5 pbyrg sb-play2 10 1</b></font>
+Run   1 - Score:    855  - Average    855.000
+Run   2 - Score:    979  - Average    917.000
+Run   3 - Score:    650  - Average    828.000
+Run   4 - Score:    833  - Average    829.250
+Run   5 - Score:    832  - Average    829.800
+Run   6 - Score:   3326  - Average   1245.833
+Run   7 - Score:   1507  - Average   1283.143
+Run   8 - Score:   3643  - Average   1578.125
+Run   9 - Score:    610  - Average   1470.556
+Run  10 - Score:    862  - Average   1409.700
+UNIX> <font color=darkred><b>sh run_multiple.sh 8 10 5 pbyrg sb-play3 10 1</b></font>
+Run   1 - Score:   2572  - Average   2572.000
+Run   2 - Score:   2708  - Average   2640.000
+Run   3 - Score:    745  - Average   2008.333
+Run   4 - Score:    424  - Average   1612.250
+Run   5 - Score:   1888  - Average   1667.400
+Run   6 - Score:   7140  - Average   2579.500
+Run   7 - Score:   3475  - Average   2707.429
+Run   8 - Score:   1701  - Average   2581.625
+Run   9 - Score:   2699  - Average   2594.667
+Run  10 - Score:   2291  - Average   2564.300
+UNIX> <font color=darkred><b></b></font>
+</pre>
+
+Obviously, to get a meaningful average, many more runs (than 10) will be
+required.
+<p>
+Oh, and make your programs run in reasonable time.  Roughly 5 seconds for
+every thousand points, and if you are burning all that time, your program 
+better be killing mine....
+
+<hr>
+<h3>The Superball Challenge</h3>
+
+To get credit, your player needs to average over 100 points on runs of 100 games.  
+<p>
+I will run a Superball tournament
+with all of your players with extra lab points going to the winners:
+<p>
+<UL>
+<LI> 1st place: 40 extra lab points.
+<LI> 2nd place: 25 extra lab points.
+<LI> 3rd place: 10 extra lab points.
+</UL>
+
+I have now performed the challenge four times:
+<UL>
+<LI> CS140 in 2007.
+<LI> CS302 in 2010.
+<LI> CS302 in 2011.
+<LI> CS302 in 2012.
+<LI> CS302 in 2013.
+</UL>
+
+Here's the Superball Challenge Hall Of Fame (scores over 500):
+
+<p>
+<center>
+<table border=3>
+<tr><td align=center><b>Rank</b></td>
+    <td align=center><b>Average</b></td>
+    <td align=center><b>Name</b></td>
+    <td align=center><b>Semester</b></td></tr>
+
+<tr><td align=center>1</td>
+<td align=center>14555.83</td>
+<td align=center>Adam Disney / Ben Arnold (Tie)</td>
+<td align=center>CS302, Fall, 2011 / 2012</td></tr>
+
+<tr><td align=center>2</td>
+<td align=center>14555.83</td>
+<td align=center>Adam Disney / Ben Arnold (Tie)</td>
+<td align=center>CS302, Fall, 2011 / 2012</td></tr>
+
+<tr><td align=center>3</td>
+<td align=center>11380.74</td>
+<td align=center>Nathan Ziebart</td>
+<td align=center>CS302, Fall, 2011</td></tr>
+
+<tr><td align=center>4</td>
+<td align=center>11291.39</td>
+<td align=center>Michael Jugan</td>
+<td align=center>CS302, Fall, 2010</td></tr>
+
+<tr><td align=center>5</td>
+<td align=center>7003.56</td>
+<td align=center>Andrew LaPrise</td>
+<td align=center>CS302, Fall, 2011</td></tr>
+
+<tr><td align=center>6</td>
+<td align=center>5467.56</td>
+<td align=center>Tyler Marshall</td>
+<td align=center>CS302, Fall, 2013</td></tr>
+
+<tr><td align=center>7</td>
+<td align=center>4808.03</td>
+<td align=center>Matt Baumgartner</td>
+<td align=center>CS302, Fall, 2010</td></tr>
+
+<tr><td align=center>8</td>
+<td align=center>4586.51</td>
+<td align=center>Jeramy Harrison</td>
+<td align=center>CS302, Fall, 2013</td></tr>
+
+<tr><td align=center>9</td>
+<td align=center>3882.53</td>
+<td align=center>Pranshu Bansal</td>
+<td align=center>CS302, Fall, 2013</td></tr>
+
+<tr><td align=center>10</td>
+<td align=center>3849.24</td>
+<td align=center>Chris Richardson</td>
+<td align=center>CS302, Fall, 2010</td></tr>
+
+<tr><td align=center>11</td>
+<td align=center>3464.83</td>
+<td align=center>Patrick Slavick</td>
+<td align=center>CS302, Fall, 2012</td></tr>
+
+<tr><td align=center>12</td>
+<td align=center>3436.21</td>
+<td align=center>sb-play3</td>
+<td align=center>CS140, Fall, 2007</td></tr>
+
+<tr><td align=center>13</td>
+<td align=center>3080.15</td>
+<td align=center>Andrew Messing</td>
+<td align=center>CS302, Fall, 2013</td></tr>
+
+<tr><td align=center>14</td>
+<td align=center>2903.38</td>
+<td align=center>Adam LaClair</td>
+<td align=center>CS302, Fall, 2013</td></tr>
+
+<tr><td align=center>15</td>
+<td align=center>2335.88</td>
+<td align=center>Mark Clark</td>
+<td align=center>CS302, Fall, 2012</td></tr>
+
+<tr><td align=center>16</td>
+<td align=center>2307.16</td>
+<td align=center>John Burnum</td>
+<td align=center>CS302, Fall, 2012</td></tr>
+
+<tr><td align=center>17</td>
+<td align=center>2205.17</td>
+<td align=center>Shawn Cox</td>
+<td align=center>CS302, Fall, 2011</td></tr>
+
+<tr><td align=center>18</td>
+<td align=center>2163.70</td>
+<td align=center>Alex Wetherington</td>
+<td align=center>CS302, Fall, 2011</td></tr>
+
+<tr><td align=center>19</td>
+<td align=center>2134.99</td>
+<td align=center>Julian Kohann</td>
+<td align=center>CS302, Fall, 2013</td></tr>
+
+<tr><td align=center>20</td>
+<td align=center>1778.83</td>
+<td align=center>Keith Clinart</td>
+<td align=center>CS302, Fall, 2011</td></tr>
+
+<tr><td align=center>21</td>
+<td align=center>1634.49</td>
+<td align=center>William Brummette</td>
+<td align=center>CS302, Fall, 2013</td></tr>
+
+<tr><td align=center>22</td>
+<td align=center>1340.32</td>
+<td align=center>John Murray</td>
+<td align=center>CS302, Fall, 2012</td></tr>
+
+<tr><td align=center>23</td>
+<td align=center>1329.34</td>
+<td align=center>Benjamin Brock</td>
+<td align=center>CS302, Fall, 2013</td></tr>
+
+<tr><td align=center>24</td>
+<td align=center>1149.80</td>
+<td align=center>Will Houston</td>
+<td align=center>CS302, Fall, 2010</td></tr>
+
+<tr><td align=center>25</td>
+<td align=center>1096.48</td>
+<td align=center>Daniel Cash</td>
+<td align=center>CS302, Fall, 2011</td></tr>
+
+<tr><td align=center>26</td>
+<td align=center>1059.91</td>
+<td align=center>Kaleb McClure</td>
+<td align=center>CS302, Fall, 2013</td></tr>
+
+<tr><td align=center>27</td>
+<td align=center>1058.26</td>
+<td align=center>sb-play2</td>
+<td align=center>CS140, Fall, 2007</td></tr>
+
+<tr><td align=center>28</td>
+<td align=center>972.36</td>
+<td align=center>Erik Rutledge</td>
+<td align=center>CS302, Fall, 2013</td></tr>
+
+<tr><td align=center>29</td>
+<td align=center>908.09</td>
+<td align=center>Chris Rains</td>
+<td align=center>CS302, Fall, 2012</td></tr>
+
+<tr><td align=center>30</td>
+<td align=center>875.44</td>
+<td align=center>Allen McBride</td>
+<td align=center>CS302, Fall, 2012</td></tr>
+
+<tr><td align=center>31</td>
+<td align=center>810.17</td>
+<td align=center>Collin Bell</td>
+<td align=center>CS302, Fall, 2012</td></tr>
+
+<tr><td align=center>32</td>
+<td align=center>763.58</td>
+<td align=center>Jacob Lambert</td>
+<td align=center>CS302, Fall, 2013</td></tr>
+
+<tr><td align=center>33</td>
+<td align=center>703.00</td>
+<td align=center>Don Lopez</td>
+<td align=center>CS140, Fall, 2007</td></tr>
+
+<tr><td align=center>34</td>
+<td align=center>677.83</td>
+<td align=center>KC Bentjen</td>
+<td align=center>CS302, Fall, 2011</td></tr>
+
+<tr><td align=center>35</td>
+<td align=center>665.60</td>
+<td align=center>Joshua Clark</td>
+<td align=center>CS302, Fall, 2012</td></tr>
+
+<tr><td align=center>36</td>
+<td align=center>659.96</td>
+<td align=center>Warren Dewit</td>
+<td align=center>CS302, Fall, 2010</td></tr>
+
+<tr><td align=center>37</td>
+<td align=center>650.98</td>
+<td align=center>Joaquin Bujalance</td>
+<td align=center>CS140, Fall, 2007</td></tr>
+
+</table>
+</center>
+<p>
+
+<hr>
+<h3>Hints</h3>
+
+Play the game for a bit to try to figure out some strategies.  However, one good way to
+write a game player is to figure out a way to come up with a rating for a game board.  Then when you are
+faced with making a move, you analyze all potential moves by trying them out and choosing
+the one that gives you the resulting board with the highest rating.  
+<p>
+

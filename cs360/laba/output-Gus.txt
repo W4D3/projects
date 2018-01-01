@@ -1,0 +1,16 @@
+Chat Rooms:
+
+American-Idol:
+Art:
+Baseball:
+Bridge:
+Food:
+Movies:
+Music:
+Politics:
+Video-Games:
+Woodworking: Mercutio
+
+Enter your chat name (no spaces):
+Enter chat room:
+Gus has joined

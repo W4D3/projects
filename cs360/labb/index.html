@@ -1,0 +1,552 @@
+<title>CS360 Lab B -- The Elevator Lab</title>
+
+<h1>CS360 Lab B -- The Elevator Lab</h1>
+<h3>
+<LI> James S. Plank
+<LI> CS360
+</h3>
+<hr>
+
+The layout of this lab is like
+<a href=http://www.cs.utk.edu/~plank/plank/classes/cs360/360/notes/Thread4/lecture.html>thread 
+lecture four</a>.  I have written a driver program and a header file.  These are in
+<b><a href=elevator_skeleton.c>elevator_skeleton.c</a></b>
+and
+<b><a href=elevator.h>elevator.h</a></b>.  You are not allowed to modify these
+files.  These drive a simulation for 
+of a building with multiple floors and a bunch of elevators.  As with 
+<a href=http://www.cs.utk.edu/~plank/plank/classes/cs360/360/notes/Thread4/lecture.html>thread 
+lecture four</a>, there are some procedures defined in 
+<b><a href=elevator.h>elevator.h</a></b> that you have to implement.  The other 
+procedures are implemented in 
+<b><a href=elevator_skeleton.c>elevator_skeleton.c</a></b>.
+Before going over all of these, we have to talk about some helper files and programs.
+<hr>
+<h3>Helper Files/Programs</h3>
+
+There are six helper files/programs:
+<UL>
+<LI> 
+<b><a href=finesleep.h>finesleep.h</a></b> and
+<b><a href=finesleep.c>finesleep.c</a></b>.  These define four procedures
+that we use to sleep for sub-second intervals.  I wrote this before <b>usleep()</b>
+became standard, and I don't want to change it -- 
+you can use <b>select()</b>
+to sleep for finer intervals than seconds (although, of course, there are limitations).
+I've hacked up a little library that does this reasonably well.  I wouldn't
+trust it enough to put it into the code for steering airplanes or running
+artificial hearts, but I trust it enough for this lab.  The procedures are:
+
+<p><center><table border=3 cellpadding=3><td><pre>
+void *finesleep_initialize(int cheat);          /* Initialize structures */
+void finesleep_sleep(void *fs, double time);    /* Sleep for the given time */
+double finesleep_time(void *fs);                /* Return the time since you initialized */
+void finesleep_free(void *a);                   /* Destroy data structures and free memory */
+</pre></td></table></center><p>
+
+The <b>cheat</b> variable is to deal with the fact that very small sleep times don't
+work too well.  In particular, the system call overhead and context switching overhead
+mean that you end up not sleeping long enough at times and sleeping too much at 
+times.  Specifically, two consecutive sleeps for time <i>x</i> return significantly 
+after one sleep for time <i>2x</i>.  If you set <b>cheat</b> to one, then 
+the time becomes slightly virtualized, and sleep calls return in the order in which
+they should.
+<p>
+<LI> <b><a href=names.h>names.h</a></b>: This is a header file that defines two
+arrays of first and last names.  Both are of size 200 and are nice for generating
+random names for people.  The first names come from the most popular girl and boy
+names of 2008.  The last names are random words.
+<p>
+<LI> <b><a href=makefile>makefile</a></b>: A makefile.  
+<p>
+<LI> <b><a href=elevator_null.c>elevator_null.c</a></b>: This is a solution that
+compiles, but won't run.
+<p>
+<LI> <b><a href=reorder.c>reorder.c</a></b>: This makes sure that the output of 
+a simulation prints events in ascending time.  This is because threads sometimes
+execute out of order.
+<p>
+<LI> <b><a href=double-check.c>double-check.c</a></b>: This double-checks the output
+of the simulation to make sure that it's legal.  In other words, people get on elevators
+that are on their floor with the door open, etc.  Your simulations should be double-checked
+by this program (after running <b>reorder</b>).
+</UL>
+<hr>
+<h3>Structure of the Simulation</h3>
+
+<b><a href=elevator_skeleton.c>Elevator_skeleton.c</a></b> defines a <b>main()</b>
+routine that is called as follows:
+
+<p><center><table border=3 cellpadding=3><td><pre>
+usage: elevator nfloors nelevators interarrival opentime floor_to_floor duration seed
+</pre></td></table></center><p>
+
+The command line arguments are:
+<UL>
+<LI> <b>nfloors</b>: The number of floors in our building.  It must be greater than one.
+The building will have floors one through <b>nfloors</b>.
+<LI> <b>nelevators</b>: The number of elevators in our building.  It must be greater than zero.
+<LI> <b>interarrival</b>: This is the average interarrival times of people who want
+to take an elevator.  People will be generated according to an exponential distributed
+with this mean interarrival time.
+<LI> <b>opentime</b>: This is the time, in seconds, that it takes an elevator to open 
+its door, or to close its door.  This is a <b>double</b> greater than zero.
+<LI> <b>floor_to_floor</b>: This is the time, in seconds, that it takes an elevator to
+move from one floor to an adjacent floor. This is a <b>double</b> greater than zero.
+<LI> <b>duration</b>: This is the duration, in seconds, of our simulation.  
+This is another <b>double</b> greater than zero.
+<LI> <b>seed</b>: Random number seed.
+</UL>
+
+The way the simulation works is that each elevator and person is its own thread.
+Each elevator starts the simulation on floor 1 with its door closed, and can
+hold an infinite number of people.
+People are generated randomly, with random first and last names.  Each last name
+is appended with an ascending number, so that person names are unique.  One third
+of the people will start at floor 1 and go to another floor.  Another third will 
+start on a floor higher than floor 1 and go to floor 1.  The remaining third go 
+from one random floor to another.  
+<p>
+To go from one floor to another, an elevator must go to the person's initial floor
+and open its door.  The person gets on the elevator, and the elevator must close its
+door.  The person gets off the elevator when it is at the person's destination floor
+with its door open.  The person then leaves the simulation.
+<p>
+<hr>
+<h3>An Example</h3>
+Let's look at a few examples.  In this first example, we simulate a building with 
+five floors and one elevator.  It takes one second to open and close doors, and to
+move from one floor to the next.  People arrive with a mean interarrival time of
+five seconds.  We simulate for 20 seconds:
+
+<pre>
+UNIX> <b>elevator_part_1 5 1 5 1 1 20 0</b>
+   0.937: Sofia Riley(0) arrives at floor 01 wanting to go to floor 04.
+   0.937: Elevator 01 moving from floor 01 to floor 01.
+   0.937: Elevator 01 arrives at floor 01.
+   0.937: Elevator 01 opening its door.
+   1.937: Elevator 01 door is open.
+   1.937: Sofia Riley(0) gets on elevator 01 on floor 01.
+   1.937: Elevator 01 closing its door.
+   2.937: Elevator 01 door is closed.
+   2.937: Elevator 01 moving from floor 01 to floor 04.
+   5.937: Elevator 01 arrives at floor 04.
+   5.937: Elevator 01 opening its door.
+   6.828: Christopher Naivete(1) arrives at floor 02 wanting to go to floor 03.
+   6.937: Elevator 01 door is open.
+   6.937: Sofia Riley(0) gets off elevator 01 on floor 04.
+   6.937: Sofia Riley(0) is done.
+   6.937: Elevator 01 closing its door.
+   7.937: Elevator 01 door is closed.
+   7.937: Elevator 01 moving from floor 04 to floor 02.
+   9.335: Devin Exploration(2) arrives at floor 02 wanting to go to floor 01.
+   9.768: Claire Describe(3) arrives at floor 03 wanting to go to floor 01.
+   9.937: Elevator 01 arrives at floor 02.
+   9.937: Elevator 01 opening its door.
+  10.937: Elevator 01 door is open.
+  10.937: Christopher Naivete(1) gets on elevator 01 on floor 02.
+  10.937: Elevator 01 closing its door.
+  11.937: Elevator 01 door is closed.
+  11.937: Elevator 01 moving from floor 02 to floor 03.
+  12.937: Elevator 01 arrives at floor 03.
+  12.937: Elevator 01 opening its door.
+  13.937: Elevator 01 door is open.
+  13.937: Christopher Naivete(1) gets off elevator 01 on floor 03.
+  13.937: Christopher Naivete(1) is done.
+  13.937: Elevator 01 closing its door.
+  13.972: Savannah Buffet(4) arrives at floor 01 wanting to go to floor 05.
+  14.937: Elevator 01 door is closed.
+  14.937: Elevator 01 moving from floor 03 to floor 02.
+  15.480: Jonathan Magpie(5) arrives at floor 02 wanting to go to floor 04.
+  15.609: Jason Stanch(6) arrives at floor 01 wanting to go to floor 05.
+  15.937: Elevator 01 arrives at floor 02.
+  15.937: Elevator 01 opening its door.
+  16.937: Elevator 01 door is open.
+  16.937: Devin Exploration(2) gets on elevator 01 on floor 02.
+  16.937: Elevator 01 closing its door.
+  17.937: Elevator 01 door is closed.
+  17.937: Elevator 01 moving from floor 02 to floor 01.
+  18.937: Elevator 01 arrives at floor 01.
+  18.937: Elevator 01 opening its door.
+  19.937: Elevator 01 door is open.
+  19.937: Devin Exploration(2) gets off elevator 01 on floor 01.
+  19.937: Devin Exploration(2) is done.
+  19.937: Elevator 01 closing its door.
+  20.000: Simulation Over.          7 Started.           3 Finished.
+UNIX> <b></b>
+</pre>
+
+Seven people enter the building in this simulation:
+
+<p><center><table border=3 cellpadding=3><td><pre>
+   0.937: Sofia Riley(0) arrives at floor 01 wanting to go to floor 04.
+   6.828: Christopher Naivete(1) arrives at floor 02 wanting to go to floor 03.
+   9.335: Devin Exploration(2) arrives at floor 02 wanting to go to floor 01.
+   9.768: Claire Describe(3) arrives at floor 03 wanting to go to floor 01.
+  13.972: Savannah Buffet(4) arrives at floor 01 wanting to go to floor 05.
+  15.480: Jonathan Magpie(5) arrives at floor 02 wanting to go to floor 04.
+  15.609: Jason Stanch(6) arrives at floor 01 wanting to go to floor 05.
+</pre></td></table></center><p>
+
+At time 0.937, the elevator opens its door.  This takes a second, and at time 1.937,
+Sofia Riley gets on the elevator.  It takes one second to close the door and four
+seconds to get to floor four, so at time 6.937, the elevator arrives at floor 4, and
+at time 7.937 its door is open and Sofia Riley gets out.
+<p>
+Next, it closes the door and travels to floor 2 to pick up the second person,
+Christopher Naivete.  It arrives there with the door open at time 10.937.
+It closes the door and takes him to his destination, arriving at time
+13.937.  At that point, it travels back to floor 2 to get the third person,
+Devin Exploration.  Note that it could have picked up Claire Describe at that
+point, since she is on floor 3 wanting to get to floor 1.  However, this is a
+relatively naive simulation (perhaps written by Christopher's relatives).  It
+arrives at floor 2 for Devin at time 16.937 and spits him out at time 19.937.
+By the time it gets its door closed, the simulation is over. 
+<p>
+<hr>
+<h3>The structs in elevator.h</h3>
+
+<b><a href=elevator.h>Elevator.h</a></b> defines three structures.  The
+first contains the parameters for the simulation, the number of people 
+during the simulation, and a lock for updating those variables.  It also
+contains a <b>(void *)</b> that you can define and use.
+
+<p><center><table border=3 cellpadding=3><td><pre>
+typedef struct {
+  int nfloors; 
+  int nelevators;
+  double interarrival_time;   /* The interarrival time of people */
+  double door_time;           /* The time to open or close a door */
+  double floor_to_floor_time; /* The time to go from one floor to an adjacent floor */
+  int npeople_started;        /* Stats. */
+  int npeople_finished;
+  pthread_mutex_t *lock;
+  void *v;                    /* This is what you get to define */
+} Elevator_Simulation;
+</pre></td></table></center><p>
+
+The <b>Elevator</b> struct also contains straightforward parameters.
+It has a pointer to the main <b>Elevator_Simulation</b> struct for
+the simulation, and each elevator has its own <b>(void *)</b> that you
+can define and use.  The <b>lock</b> and <b>cond</b> are for you to
+use to protect the elevator's data and to block when you have to block.
+
+<p><center><table border=3 cellpadding=3><td><pre>
+typedef struct {
+  int id;             /* Elevator id */
+  int onfloor;        /* What floor the elevator is currently on */
+  int door_open;      /* Whether the door is open */
+  int moving;         /* Whether the elevator is moving */
+  Dllist people;      /* Dllist of people on the elevator */
+  pthread_mutex_t *lock;    
+  pthread_cond_t *cond;    
+  void *v;
+  Elevator_Simulation *es;
+} Elevator;
+</pre></td></table></center><p>
+
+The <b>Person</b> struct also contains mostly straightforward data.
+The <b>Elevator</b> is the pointer to the elevator that will take 
+the person to his/her destination floor.  It will be set when the
+person gets on the elevator.  When that happens, <b>ptr</b> is set
+so that the person may be deleted quickly from the elevator's list of
+people.
+
+<p><center><table border=3 cellpadding=3><td><pre>
+typedef struct {
+  char *fname;           /* Person's first name */
+  char *lname;           /* Person's last name */
+  int from;              /* Starting floor */
+  int to;                /* Ending floor */
+  double arrival_time;   /* When the person will arrive at "from" */
+  Elevator *e;           /* The person's elevator */
+  Dllist ptr;            /* Pointer to the person's entry on the elevator's dllist */
+  pthread_mutex_t *lock;    
+  pthread_cond_t *cond;    
+  void *v;
+  Elevator_Simulation *es;
+} Person;
+</pre></td></table></center><p>
+
+
+<hr>
+<h3>The procedures in elevator.h and elevator_skeleton.c</h3>
+
+First, let's take a look at the <b>main()</b> procedure.  This of course
+reads the command line arguments and sets up the simulation's data.
+At that point, it calls the procedure <b>initialize_simulation()</b> so
+that you can initialize your <b>(void *)</b>.
+<p>
+It then creates <b>Elevator</b> structs for all the elevators and
+calls <b>initialize_elevator()</b> on each in case you want to use the
+elevator's <b>(void *)</b>.  Note that this is done before the elevator's
+thread is created.  After creating each elevator, it creates a thread
+calling the procedure <b>elevator()</b> with the elevator as an argument.
+You get to write <b>elevator()</b>.
+<p>
+After creating the elevators, it creates a person generator thread, which 
+sleeps and generates people at random times according to the <b>interarrival</b>
+parameter.  Finally, the <b>main()</b> thread sleeps until the simulation is
+over, at which time it prints out the final line and kills the program.
+<p>
+A note about sleeping -- all sleeping is done using <b>finesleep</b> and a 
+global variable <b>FINESLEEPER</b>.  All sleeping is performed in <b>elevator_skeleton.c</b>,
+and you are not allowed to do any sleeping in your programs.  
+<p>
+The person generating thread is straightforward.  It sleeps for a random amount
+of time, and then generates a random person.  It then calls <b>initialize_person</b>
+in case you want to initialize the person's <b>(void *)</b>.  Then it creates
+a thread running the procedure <b>person()</b>.
+<p>
+All threads are detached when they are created so that we don't have to worry about
+joining threads.
+<p>
+Now, let's take a detailed look at <b>person()</b>, defined in
+<b><a href=elevator_skeleton.c>elevator_skeleton.c</a></b>:
+
+<p><center><table border=3 cellpadding=3><td><pre>
+void *person(void *arg)
+{
+  Person *p;
+
+  p = (Person *) arg;
+
+  pthread_mutex_lock(p-&gt;es-&gt;lock);
+  p-&gt;es-&gt;npeople_started++;
+  printf("%8.3lf: %s %s arrives at floor %02d wanting to go to floor %02d.\n", 
+         finesleep_time(FINESLEEPER), 
+         p-&gt;fname, p-&gt;lname, p-&gt;from, p-&gt;to);
+  fflush(stdout);
+  pthread_mutex_unlock(p-&gt;es-&gt;lock);
+          
+  wait_for_elevator(p);
+  get_on_elevator(p);
+  wait_to_get_off_elevator(p);
+  get_off_elevator(p);
+  person_done(p);
+
+  pthread_mutex_lock(p-&gt;es-&gt;lock);
+  printf("%8.3lf: %s %s is done.\n", finesleep_time(FINESLEEPER), p-&gt;fname, p-&gt;lname);
+  fflush(stdout);
+  p-&gt;es-&gt;npeople_finished++;
+  pthread_mutex_unlock(p-&gt;es-&gt;lock);
+
+  pthread_mutex_destroy(p-&gt;lock);
+  free(p-&gt;lock);
+  pthread_cond_destroy(p-&gt;cond);
+  free(p-&gt;cond);
+  free(p);
+  return NULL;
+}
+</pre></td></table></center><p>
+
+The basic activities of a person are in the middle five lines.  A person first calls
+<b>wait_for_elevator()</b>, which you will define.  This should block until an 
+elevator is on the person's <b>from</b> floor, with the door open (and blocked
+on its condition variable).  At that time,
+the person's <b>e</b> field will be set to the appropriate elevator.  The person
+calls <b>get_on_elevator()</b>, which is defined in <b>elevator_skeleton.c</b>,
+which puts him/her on the elevator's Dllist.  
+<p>
+Next, the person calls <b>wait_to_get_off_elevator</b>, which you write.  This will
+block until the elevator has legally moved to the person's destination floor and
+opened the door (and is blocked on the elevator's condition variable).  At this point,
+the person calls <b>get_off_elevator()</b>, which is defined in <b>elevator_skeleton.c</b>,
+to take the person off the elevator's Dllist.  Finally, the person calls
+<b>person_done()</b>, which allows you to perform any final activties on the person.
+<p>
+The procedures <b>get_on_elevator()</b> and <b>get_off_elevator()</b> are all
+straightforward, putting people on elevators' lists and taking them off.  They
+also print out what is happening.
+<p>
+Finally, <b>open_door()</b>, <b>close_door()</b>, and <b>move_to_floor</b> 
+are three more procedures defined in <b>elevator_skeleton.c</b>.  They simulate
+the elevators' basic activities by calling <b>finesleep_sleep()</b> for the 
+appropriate amount of time, printing out
+information, and updating the relevant parts of the elevators' data.  
+<p>
+<hr>
+<h3>What you are to write</h3>
+
+You are going to write two solutions to this.  The first will be a simple solution
+like the one above, where each elevator serves each person in order.  Your second
+solution should be more creative.  Each solution must implement the following 
+seven procedures, defined above:
+<p>
+<UL>
+<LI><b> void initialize_simulation(Elevator_Simulation *es)</b>
+<LI><b> void initialize_elevator(Elevator *e)</b>
+<LI><b> void initialize_person(Person *p)</b>
+<LI><b> void wait_for_elevator(Person *p)</b>
+<LI><b> void wait_to_get_off_elevator(Person *p)</b>
+<LI><b> void person_done(Person *p)</b>
+<LI><b> void *elevator(void *arg)</b>
+</UL>
+<p>
+
+Your <b>elevator</b>'s should call <b>open_door()</b>, <b>close_door()</b>
+from <b>move_to_floor()</b> appropriately.  All sleeping and printing should
+be done in <b>elevator_skeleton.c</b>.  Thus, your final program that you hand
+in should not do any sleeping or any printing.  
+<p>
+
+<hr>
+<h3>elevator_null.c</h3>
+
+This is a null solution that compiles, but doesn't do anything in the procedures.
+It exits in <b>get_on_elevator()</b> because <b>wait_for_elevator()</b> doesn't
+set the person's <b>e</b> field:
+
+<pre>
+UNIX> <b>elevator_null 5 1 5 1 1 20 0</b>
+   0.937: Sofia Riley(0) arrives at floor 01 wanting to go to floor 04.
+Error at time 0.937: Sofia Riley(0) called get_on_elevator with a NULL elevator.
+UNIX> <b></b>
+</pre>
+
+<hr>
+<h3>elevator_part_1.c</h3>
+
+Your first solution should work like <b>elevator_part_1</b> above.  Each person,
+when he/she calls <b>wait_for_elevator()</b> should be appended to a global 
+list and block.  Each elevator simply removes the first person from the list
+and services just that person, ignoring all others.  It's a bad solution, but
+it is good practice.  
+
+To help you, here are the basic steps of each procedure.
+
+<UL>
+<LI><b> void initialize_simulation(Elevator_Simulation *es)</b>: Set up the global
+list and a condition variable for blocking elevators.
+<LI><b> void initialize_elevator(Elevator *e)</b>: Not used.
+<LI><b> void initialize_person(Person *p)</b>:Not used.
+<LI><b> void wait_for_elevator(Person *p)</b>: Append the person to the global list.
+Signal the condition variable for blocking elevators.  Block on the person's condition variable.
+<LI><b> void wait_to_get_off_elevator(Person *p)</b>: Unblock the elevator's 
+condition variable and block on the person's condition variable.
+<LI><b> void person_done(Person *p)</b>: Unblock the elevator's condition variable.
+<LI><b> void *elevator(void *arg)</b>: Each elevator is a while loop.  Check the
+global list and if it's empty, block on the condition variable for blocking elevators.
+When the elevator gets a person to service, it moves to the appropriate floor and
+opens its door.  It puts itself into the person's <b>e</b> field, 
+then signals the person and blocks until the person wakes it up.  When it wakes
+up, it goes to the person's destination floor, opens its door, signals the person
+and blocks.  When the person wakes it up, it closes its door and re-executes its
+while loop.
+</UL>
+<p>
+
+While your solution's output doesn't have to match mine exactly, it should be
+pretty close.  In fact, it really should match mine unless you call it with 
+very short times, and you may get into nondeterminism.  
+<p>
+Here are some example output files with <b>elevator_part_1</b>.  Note, the ones
+with tiny times can be nondeterministic, so if you run them, the results may differ
+slightly.
+<UL>
+<LI> <a href=output_1_10_01_1_1_1_120_0.html>elevator_part_1 10 1 1 1 1 120 0 | reorder</a>
+<LI> <a href=output_1_10_10_1_.1_.1_120_0.html>elevator_part_1 10 10 1 .1 .1 120 0 | reorder</a>
+<LI> <a href=output_1_10_10_1_1_1_120_0.html>elevator_part_1 10 10 1 1 1 120 0 | reorder</a>
+</UL>
+<hr>
+<h3>Part 2 -- Do Better</h3>
+
+Your second part is to implement a better solution.  I have implemented one that is 
+kind of better in 
+<b>elevator_part_2</b>.  It is boneheadedly simple.  Each elevator simply moves floor by 
+floor from floor one to the top and back again.  When it reaches a floor, it checks to
+see if there are any people waiting on that floor and going in the proper direction.
+If so, it opens its door and lets all such people on.  Obviously, it lets them off
+too.  The synchronization here is a little trickier, because the elevator has to wait
+for all people to get on and off before closing its door.    It also makes sure that
+if one elevator is opening its door to let people on, another elevator doesn't do
+the same.  Interestingly, I found that the best data structures were "buttons" on 
+each floor, just like a real building.
+<p>
+There are eight test scenarios that we will use to rate your <b>part 2</b> solution.
+It must perform at least as well as my <b>elevator_part_2</b> 
+in each of the eight cases.  I'll describe how to score the solutions below.
+<p>
+You should submit your two C files and a text file describing how your part 2 works.
+
+<h3>Scoring a Solution</h3>
+
+To score a solution, I will run one setting of the parameters with ten consecutive seeds.
+Each run will result in a percentage: percentage of people finished of those who started.
+We will average those percentages for ten different seeds and that will give you a score
+for those parameters.  The following table summarizes the eight test scenarios and how
+my programs ran on them with a starting seed of 0.  
+This is on the lab machines, which die if there are more than 
+350 or so threads at any one times.  
+<p>
+I use the shell script in <b>run_and_time.sh</b>.  If you run it, make sure that you
+copy the file <a href=runs.txt</b>runs.txt</b></a>.  Example:
+
+<pre>
+UNIX> <b>sh run_and_time.sh</b>
+usage: sh run_and_time.sh program test-num(1-8) nruns starting-seed
+UNIX> <b>sh run_and_time.sh elevator_part_1 1 10 0</b>
+10 1 .1 .1 .1 12
+Run 1 - 8/114: 7.01754 percent.  Overall Avg: 7.01754
+Run 2 - 10/129: 7.75194 percent.  Overall Avg: 7.38475
+Run 3 - 10/112: 8.92857 percent.  Overall Avg: 7.89937
+Run 4 - 8/115: 6.95652 percent.  Overall Avg: 7.66365
+Run 5 - 9/117: 7.69231 percent.  Overall Avg: 7.66938
+Run 6 - 9/125: 7.2 percent.  Overall Avg: 7.59115
+Run 7 - 9/133: 6.76692 percent.  Overall Avg: 7.4734
+Run 8 - 9/130: 6.92308 percent.  Overall Avg: 7.40461
+Run 9 - 12/150: 8 percent.  Overall Avg: 7.47077
+Run 10 - 9/132: 6.81818 percent.  Overall Avg: 7.40551
+ 10 1 .1 .1 .1 12    9.30 / 125.70 : 7.40551
+UNIX> <b>sh run_and_time.sh elevator_part_2 1 10 0</b>
+10 1 .1 .1 .1 12
+Run 1 - 87/114: 76.3158 percent.  Overall Avg: 76.3158
+Run 2 - 96/129: 74.4186 percent.  Overall Avg: 75.367
+Run 3 - 77/112: 68.75 percent.  Overall Avg: 73.1613
+Run 4 - 79/115: 68.6957 percent.  Overall Avg: 72.045
+Run 5 - 77/117: 65.812 percent.  Overall Avg: 70.7984
+Run 6 - 71/127: 55.9055 percent.  Overall Avg: 68.3163
+Run 7 - 90/133: 67.6692 percent.  Overall Avg: 68.2239
+Run 8 - 88/130: 67.6923 percent.  Overall Avg: 68.1574
+Run 9 - 104/150: 69.3333 percent.  Overall Avg: 68.288
+Run 10 - 91/132: 68.9394 percent.  Overall Avg: 68.3531
+ 10 1 .1 .1 .1 12    86.00 / 125.90 : 68.3531
+UNIX> <b>sh run_and_time.sh elevator_part_1 2 10 0</b>
+10 10 .01 .1 .1 12
+Run 1: Failed at person 400
+Run 2: Failed at person 404
+Run 3: Failed at person 403
+Run 4: Failed at person 399
+Run 5: Failed at person 397
+Run 6: Failed at person 402
+Run 7: Failed at person 400
+Run 8: Failed at person 400
+Run 9: Failed at person 402
+Run 10: Failed at person 405
+10 10 .01 .1 .1 12      Failed 
+UNIX>
+</pre>
+
+Here are the eight test cases and how my programs ran on them:
+
+<p>
+<center>
+<table border=3>
+<td><b>#</b></td>  <td><b>Parameters</b></td> <td align=center><b>part_1</b> s/f</td>  <td align=center><b>part_1</b> %</td> <td align=center><b>part_2</b></td><td align=center><b>part_2</b>%</td></tr>
+<td>1</td>  <td>10 1 .1 .1 .1 12</td>  <td align=center>9.30 / 125.70</td><td align=center>7.41%</td> <td align=center>86.00 / 125.90</td><td align=center>68.35%</td></tr>
+<td>2</td>  <td>10 10 .01 .1 .1 12</td>  <td align=center>Failed.</td><td align=center>0%</td> <td align=center>985.30 / 1168.60</td><td align=center>84.30%</td></tr>
+<td>3</td>  <td>10 10 .1 .01 .01 12</td>  <td align=center>124.50 / 125.90</td><td align=center>98.85%</td> <td align=center>124.50 / 125.80</td><td align=center>98.93%</td></tr>
+<td>4</td>  <td>10 10 .05 .1 .1 12</td>  <td align=center>94.0/245.20</td><td align=center>38.35%</td> <td align=center>217.10 / 244.80</td><td align=center>88.60%</td></tr>
+<td>5</td>  <td>10 10 .02 .2 .01 12</td>  <td align=center>Failed</td><td align=center>0%</td> <td align=center>486.50 / 597.80</td><td align=center>81.38%</td></tr>
+<td>6</td>  <td>10 6 .02 .02 .02 12</td>  <td align=center>293.10 / 601.10</td><td align=center>48.80%</td> <td align=center>582.10 / 599.40</td><td align=center>97.12%</td></tr>
+<td>7</td>  <td>100 25 .02 .2 .01 12</td>  <td align=center>Failed</td><td align=center>0%</td> <td align=center>345.70 / 607.40</td><td align=center>56.99%</td></tr>
+<td>8</td>  <td>100 4 .01 .01 .01 12</td>  <td align=center>Failed</td><td align=center>0%</td> <td align=center>982.10 / 1205.90</td><td align=center>81.40%</td></tr>
+</table>
+</center>
+<p>
+
+Again, your <b>part_2</b> has to score as well as (within a percentage point)
+or better than my <b>part_2</b> in each case, when
+run on ten test runs with consecutive seeds.  Note, the starting seed will not
+be zero.
+

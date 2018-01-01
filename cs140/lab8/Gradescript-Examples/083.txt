@@ -1,0 +1,28 @@
+INSERT Jacob Knot
+INSERT Layla Autonomous
+PRESENT Alyssa Cage
+ERASE Amelia Pianist
+PRESENT Sophia Cursory
+INSERT Jacob Knot
+PRINT
+# Jacob Knot
+# Layla Autonomous
+INSERT Joshua All
+PRINT
+# Jacob Knot
+# Layla Autonomous
+# Joshua All
+ERASE Layla Autonomous
+INSERT Joshua All
+PRESENT Liam Hostelry
+PRESENT Joshua All
+ERASE Victoria Infrastructure
+INSERT Natalie Phosphoresce
+INSERT Dylan Falter
+PRESENT Evelyn Key
+INSERT Ian Keen Jr
+INSERT Jacob Knot
+STRIP e
+PRINT
+# Jacob Knot
+# Joshua All

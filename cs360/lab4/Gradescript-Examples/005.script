@@ -1,0 +1,10 @@
+ge=/home/plank/cs360/labs/lab4/Gradescript-Examples
+cp $ge/onefile.c .
+gcc -c onefile.c
+gcc -o onefile onefile.o
+sleep 1
+touch onefile.o
+cp $ge/001.fm fmakefile
+if FAKEMAKE; then
+  ./onefile
+fi
